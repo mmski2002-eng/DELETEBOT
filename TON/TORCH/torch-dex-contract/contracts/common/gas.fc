@@ -1,0 +1,434 @@
+#include "./workchain.fc";
+const FACTORY_MIN_STORAGE_DURATION = 14 * 24 * 3600; ;; 14 days
+const VAULT_MIN_STORAGE_DURATION = 14 * 24 * 3600; ;; 14 days
+const BASE_POOL_STORAGE_DURATION = 45 * 24 * 3600; ;; 45 days
+const LP_ACCOUNT_STORAGE_DURATION = 1 * 24 * 3600; ;; 1 days
+
+;; Factory contract size
+const FACTORY_BITS = 121905;
+const FACTORY_CELLS = 247;
+
+;; Pool contract size
+const POOL_BITS = 83363;
+const POOL_CELLS = 170;
+
+;; Jetton Vault contract size
+const JETTON_VAULT_BITS = 16388;
+const JETTON_VAULT_CELLS = 42;
+
+;; TON Vault contract size
+const TON_VAULT_BITS = 12838;
+const TON_VAULT_CELLS = 36;
+
+;; Lp account size
+const LP_ACCOUNT_BITS = 15056;
+const LP_ACCOUNT_CELLS = 46;
+
+;; Jetton
+const SEND_TRANSFER_GAS_CONSUMPTION = 9255;
+const RECEIVE_TRANSFER_GAS_CONSUMPTION = 10355;
+const JETTON_WALLET_INITSTATE_BITS  = 931;
+const JETTON_WALLET_INITSTATE_CELLS = 3;
+const JETTON_TRANSFER_TON = 55000000; ;; 0.055 TON
+const TRANSFER_ASSET_VALUE = 65000000; ;; 0.065 TON
+
+;; Factory txs
+const CREATE_VAULT = 13286; 
+const INSTALL_VAULT = 4336;
+const CREATE_LP_VAULT = 15707;
+
+const CREATE_BASE_POOL = 27084;
+
+;; Jetton vault txs
+const DEPOSIT_TON = 11242; 
+const DEPOSIT_FP = 11073; 
+const DEPOSIT_ONE_FP = 12147; 
+const DEPOSIT_ONE_TON = 11492;
+
+const DEPOSIT_INTERNAL = 35211; 
+const INSTALL_LP_ACCOUNT = 18657;
+const DUPLICATE_DEPOSIT = 19921;
+
+;; base pool
+const DEPOSIT_ALL = 77736; 
+const DEPOSIT_TWO = 94660; 
+const DEPOSIT_ONE = 86590; 
+
+;; base pool with rates
+const DEPOSIT_ALL_LSD = 84094; 
+const DEPOSIT_TWO_LSD = 84336; 
+const DEPOSIT_ONE_LSD = 90135; 
+
+;; meta pool
+const DEPOSIT_ALL_META = 74470; 
+const DEPOSIT_ONE_META = 80565;
+
+;; Deposit Between
+const DEPOSIT_BETWEEN = 78510; 
+
+;; Swap Between
+const SWAP_BETWEEN = 62966;
+
+;; Withdraw Between
+const WITHDRAW_BETWEEN_ONE = 70347;
+const WITHDRAW_BETWEEN_ALL = 61909;
+
+const SWAP_FP = 9136;
+const SWAP = 8277;
+const SWAP_INTERNAL = 66227;
+const SWAP_INTERNAL_LSD = 66944;
+
+const DEADLINE_REFUND_FEE = 8800;
+
+const PAYOUT = 9887;
+const PAYOUT_TON = 11432;
+
+const WITHDRAW_FP = 8508;
+const WITHDRAW_INTERNAL = 61888;
+const WITHDRAW_INTERNAL_LSD = 63854;
+
+const WITHDRAW_ONE_INTERNAL = 71202;
+const WITHDRAW_ONE_INTERNAL_LSD = 74113;
+
+const WITHDRAW_INTERNAL_META = 54692;
+const WITHDRAW_ONE_INTERNAL_META = 68788;
+
+;; Other
+const PROVIDE_WALLET_ADDRESS_FEE = 16453;
+const CLAIM_ADMIN_FEE = 84087;
+
+;; Storage fee
+int cal_factory_min_storage_fee() inline {
+    return get_storage_fee(MY_WORKCHAIN, FACTORY_MIN_STORAGE_DURATION, FACTORY_BITS, FACTORY_CELLS);
+}
+
+int cal_jetton_vault_min_storage_fee() inline {
+    return get_storage_fee(MY_WORKCHAIN, VAULT_MIN_STORAGE_DURATION, JETTON_VAULT_BITS, JETTON_VAULT_CELLS);
+}
+
+int cal_ton_vault_min_storage_fee() inline {
+    return get_storage_fee(MY_WORKCHAIN, VAULT_MIN_STORAGE_DURATION, TON_VAULT_BITS, TON_VAULT_CELLS);
+}
+
+int cal_stable_pool_min_storage_fee() inline {
+    return get_storage_fee(MY_WORKCHAIN, BASE_POOL_STORAGE_DURATION, POOL_BITS, POOL_CELLS);
+}
+
+int cal_lp_account_min_storage_fee() inline {
+    return get_storage_fee(MY_WORKCHAIN, LP_ACCOUNT_STORAGE_DURATION, LP_ACCOUNT_BITS, LP_ACCOUNT_CELLS);
+}
+
+;; Init state fee
+int forward_stable_pool_init_state() inline {
+    return get_simple_forward_fee(MY_WORKCHAIN, POOL_BITS, POOL_CELLS);
+}
+
+int forward_vault_init_state() inline {
+    return get_simple_forward_fee(MY_WORKCHAIN, JETTON_VAULT_BITS, JETTON_VAULT_CELLS);
+}
+
+int forward_jetton_init_state() inline {
+    return get_simple_forward_fee(MY_WORKCHAIN, JETTON_WALLET_INITSTATE_BITS, JETTON_WALLET_INITSTATE_CELLS);
+}
+
+int forward_lp_account_init_state() inline {
+    return get_simple_forward_fee(MY_WORKCHAIN, LP_ACCOUNT_BITS, LP_ACCOUNT_CELLS);
+}
+
+;; Factory 
+int factory::cal_create_vault_fee() inline {
+    int gas_consumption = get_precompiled_gas_consumption();
+    int install_vault_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? INSTALL_VAULT : gas_consumption);
+
+    return install_vault_fee + forward_vault_init_state();
+}
+
+(int, int) factory::create_jetton_vault_fee(int fwd_fee) inline {
+    int gas_consumption = get_precompiled_gas_consumption();
+    int create_vault_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? CREATE_VAULT : gas_consumption);
+    int gas_consume = create_vault_fee + cal_factory_min_storage_fee() + forward_jetton_init_state();
+
+    int total_fee = gas_consume  + factory::cal_create_vault_fee() + PROVIDE_WALLET_TON + fwd_fee * 3;
+
+    return (total_fee, gas_consume);
+}
+
+(int, int) factory::create_lp_vault_fee(int fwd_fee) inline {
+    int gas_consumption = get_precompiled_gas_consumption();
+    int create_lp_vault_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? CREATE_LP_VAULT : gas_consumption);
+    int gas_consume = create_lp_vault_fee + cal_factory_min_storage_fee();
+
+    int total_fee = gas_consume + factory::cal_create_vault_fee() + CREATE_LP_VAULT_SUCCESS_TON + fwd_fee * 2;
+
+    return (total_fee, gas_consume);
+}
+
+(int, int) factory::create_base_pool_fee(int fwd_fee) inline {
+    int gas_consumption = get_precompiled_gas_consumption();
+    int CREATE_BASE_POOL_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? CREATE_BASE_POOL : gas_consumption);
+    int install_stale_pool_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? INSTALL_VAULT : gas_consumption);
+    int gas_consume = CREATE_BASE_POOL_fee + cal_factory_min_storage_fee();
+
+    int total_fee = 
+        gas_consume + 
+        factory::cal_create_vault_fee() + 
+        install_stale_pool_fee + 
+        forward_stable_pool_init_state() + 
+        PREMINT_LP_TON + 
+        install_stale_pool_fee + 
+        JETTON_TRANSFER_TON + 
+        fwd_fee * 3;
+
+    return (total_fee, gas_consume);
+}
+
+(int, int) factory::deposit_internal_fee(int fwd_fee) inline {
+    int gas_consumption = get_precompiled_gas_consumption();
+    int deposit_internal_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? DEPOSIT_INTERNAL : gas_consumption);
+    int install_lp_account_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? INSTALL_LP_ACCOUNT : gas_consumption);
+    int deposit_all_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? DEPOSIT_ALL : gas_consumption);
+    int gas_consume = deposit_internal_fee + cal_factory_min_storage_fee();
+
+    int total_fee = gas_consume + 
+        forward_lp_account_init_state() +
+        deposit_internal_fee + 
+        install_lp_account_fee +
+        deposit_all_fee +
+        cal_stable_pool_min_storage_fee() + 
+        cal_jetton_vault_min_storage_fee() + 
+        TRANSFER_ASSET_VALUE + 
+        fwd_fee * 6;
+
+    return (total_fee, gas_consume);
+}
+
+;; Vault
+
+int get_vault_storage_fee(int asset_type) inline {
+    return asset_type == JETTON_ASSET_TYPE ? cal_jetton_vault_min_storage_fee() : cal_ton_vault_min_storage_fee();
+}
+
+(int, int) vault::deposit_fee(int fwd_fee, int is_deposit_one?, int asset_type) inline {
+    int deposit_fee = asset_type == JETTON_ASSET_TYPE ? DEPOSIT_FP : DEPOSIT_TON;
+    int gas_consumption = get_precompiled_gas_consumption();
+    int deposit_fp_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? deposit_fee : gas_consumption);
+    if is_deposit_one? {
+        int deposit_one_fee = asset_type == JETTON_ASSET_TYPE ? DEPOSIT_ONE_FP : DEPOSIT_ONE_TON;
+        deposit_fp_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? deposit_one_fee : gas_consumption);
+    }
+    int deposit_internal_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? DEPOSIT_INTERNAL : gas_consumption);
+    int install_lp_account_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? INSTALL_LP_ACCOUNT : gas_consumption);
+    int deposit_all_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? DEPOSIT_ALL : gas_consumption);
+    int gas_consume = deposit_fp_fee + get_vault_storage_fee(asset_type);
+
+    int total_fee = gas_consume + 
+        forward_lp_account_init_state() +
+        deposit_internal_fee + 
+        install_lp_account_fee +
+        deposit_all_fee +
+        cal_factory_min_storage_fee() + 
+        cal_stable_pool_min_storage_fee() + 
+        cal_jetton_vault_min_storage_fee() + 
+        TRANSFER_ASSET_VALUE + 
+        fwd_fee * 7;
+
+    return (total_fee, gas_consume);
+}
+
+(int, int) vault::swap_fee(int fwd_fee, int asset_type, cell next) inline {
+    int swap_fee = asset_type == JETTON_ASSET_TYPE ? SWAP_FP : SWAP;
+    int gas_consumption = get_precompiled_gas_consumption();
+    int swap_fp_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? swap_fee : gas_consumption);
+    int swap_internal_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? SWAP_INTERNAL : gas_consumption);
+    int gas_consume = swap_fp_fee + get_vault_storage_fee(asset_type);
+
+    ;; If swap doesn't have next, only need to send asset out to user, otherwise, send asset out to next pool
+    int payout_fee = TRANSFER_ASSET_VALUE;
+    int next_pool_fee = 0;
+    if ~ next.cell_null?() {
+        ;; If swap has next, we need to send asset out to next pool, instead of payout
+        payout_fee = 0;
+
+        ;; If the swap next, we use swap between to estimate pool handle fee and use withdraw all to over estimate payout fee
+        next_pool_fee = (next.cell_depth() + 1) * (get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? SWAP_BETWEEN : gas_consumption) + fwd_fee + cal_stable_pool_min_storage_fee()) +
+            TRANSFER_ASSET_VALUE * DEFAULT_WITHDRAW_COUNT; ;; Use withdraw all payout to over estimate next fee
+    }
+    
+    int total_fee = gas_consume + swap_internal_fee + payout_fee + cal_stable_pool_min_storage_fee() + cal_jetton_vault_min_storage_fee() + next_pool_fee;
+
+    return (total_fee, gas_consume);
+}
+
+(int) vault::deadline_refund_fee(int asset_type) inline {
+    int gas_consumption = get_precompiled_gas_consumption();
+    int swap_fp_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? DEADLINE_REFUND_FEE : gas_consumption);
+    int gas_consume = swap_fp_fee + get_vault_storage_fee(asset_type);
+
+    return gas_consume;
+}
+
+(int, int) jetton_vault::withdraw_fee(int fwd_fee, cell first_pool_asset_out, int has_next?) inline {
+    int gas_consumption = get_precompiled_gas_consumption();
+    int withdraw_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? WITHDRAW_FP : gas_consumption);
+    int withdraw_internal_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? WITHDRAW_INTERNAL : gas_consumption);
+    int gas_consume = withdraw_fee + cal_jetton_vault_min_storage_fee();
+
+    int next_pool_withdraw_fee = 0;
+    int first_pool_withdraw_fee = 0;
+
+    ;; If has_next? is true, it means that first pool is meta pool
+    if has_next? {
+        ;; If withdraw has next, we use DEFAULT_WITHDRAW_COUNT to over estimate next fee
+        next_pool_withdraw_fee = TRANSFER_ASSET_VALUE * DEFAULT_WITHDRAW_COUNT + withdraw_internal_fee + fwd_fee + cal_stable_pool_min_storage_fee();
+
+        ;; If first_pool_asset_out is null in the meta pool, the user withdraws all assets, and only one TRANSFER_ASSET_VALUE is required. 
+        ;; Otherwise, the meta pool transfers LP to the base pool, requiring 0 TRANSFER_ASSET_VALUE.
+        first_pool_withdraw_fee = first_pool_asset_out.cell_null?() ? TRANSFER_ASSET_VALUE : 0;
+    } else {
+        first_pool_withdraw_fee = first_pool_asset_out.cell_null?() ? TRANSFER_ASSET_VALUE * DEFAULT_WITHDRAW_COUNT : TRANSFER_ASSET_VALUE;
+    }
+
+    int total_fee = gas_consume + cal_stable_pool_min_storage_fee() + cal_jetton_vault_min_storage_fee() + withdraw_internal_fee + first_pool_withdraw_fee + next_pool_withdraw_fee;
+
+    return (total_fee, gas_consume);
+}
+
+(int, int) vault::payout_fee(int fwd_fee, int asset_type) inline {
+    int payout_fee = asset_type == JETTON_ASSET_TYPE ? PAYOUT : PAYOUT_TON;
+    
+    int gas_consumption = get_precompiled_gas_consumption();
+    int payout_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? payout_fee : gas_consumption);
+    int gas_consume = payout_fee + get_vault_storage_fee(asset_type);
+
+    int total_fee = gas_consume + JETTON_TRANSFER_TON + fwd_fee * 2;
+
+    return (total_fee, gas_consume);
+}
+
+;; Pool
+(int, int) pool::deposit_all_fee(int fwd_fee, int deposit_count, int use_rates?, int is_deposit_between?, int has_next?) inline {
+    int gas_consumption = get_precompiled_gas_consumption();
+    int deposit_fee = use_rates? ? DEPOSIT_ALL_LSD : DEPOSIT_ALL;
+    int deposit_all_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? deposit_fee : gas_consumption);
+
+    if deposit_count == 1 {
+        deposit_fee = use_rates? ? DEPOSIT_ONE_LSD : DEPOSIT_ONE;
+        deposit_all_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? deposit_fee : gas_consumption);
+    }
+    elseif deposit_count == 2 {
+        deposit_fee = use_rates? ? DEPOSIT_TWO_LSD : DEPOSIT_TWO;
+        deposit_all_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? deposit_fee : gas_consumption);
+    }
+    deposit_fee = is_deposit_between? ? DEPOSIT_BETWEEN : deposit_fee;
+    
+    ;; we use DEPOSIT_BETWEEN to over estimate next fee, it may be SWAP_BETWEEN
+    int next_fee = has_next? ? get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? DEPOSIT_BETWEEN : gas_consumption) + fwd_fee : 0; 
+    int gas_consume = deposit_all_fee + cal_stable_pool_min_storage_fee();
+
+    int total_fee = gas_consume + 
+        cal_jetton_vault_min_storage_fee() + 
+        TRANSFER_ASSET_VALUE + 
+        next_fee +
+        fwd_fee * 4;
+
+    return (total_fee, gas_consume);
+}
+
+(int, int) pool::withdraw_fee(int fwd_fee, int withdraw_assets_count, int use_rates?, int is_withdraw_between?) inline {
+    int withdraw_fee = use_rates? ? WITHDRAW_INTERNAL_LSD : WITHDRAW_INTERNAL;
+    int gas_consumption = get_precompiled_gas_consumption();
+    int withdraw_internal_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? withdraw_fee : gas_consumption);
+    
+    if is_withdraw_between? {
+        withdraw_fee = withdraw_assets_count == 1 ? WITHDRAW_BETWEEN_ONE : WITHDRAW_BETWEEN_ALL;
+        withdraw_internal_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? withdraw_fee : gas_consumption);
+    } elseif withdraw_assets_count == 1 {
+        withdraw_fee = use_rates? ? WITHDRAW_ONE_INTERNAL_LSD : WITHDRAW_ONE_INTERNAL;
+        withdraw_internal_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? withdraw_fee : gas_consumption);
+    }
+    
+    ;; If it's withdraw_between, meta pool don't need to tranfer base lp asset to user -> withdraw_assets_count - 1
+    int payout_count = is_withdraw_between? ? withdraw_assets_count - 1 : withdraw_assets_count;
+    int gas_consume = withdraw_internal_fee + cal_stable_pool_min_storage_fee();
+
+    int total_fee = gas_consume + cal_jetton_vault_min_storage_fee() + TRANSFER_ASSET_VALUE * payout_count + fwd_fee * 4;
+
+    return (total_fee, gas_consume);
+}
+
+(int, int) pool::meta_withdraw_fee(int fwd_fee, int withdraw_assets_count, int has_next?) inline {
+    int withdraw_fee = withdraw_assets_count == 1 ? WITHDRAW_ONE_INTERNAL_META : WITHDRAW_INTERNAL_META;
+    int gas_consumption = get_precompiled_gas_consumption();
+    int withdraw_internal_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? withdraw_fee : gas_consumption);
+    
+    int next_pool_fee = 0;
+    if has_next? {
+        ;; If withdraw has next, we use DEFAULT_WITHDRAW_COUNT to over estimate next fee
+        next_pool_fee = TRANSFER_ASSET_VALUE * DEFAULT_WITHDRAW_COUNT + 
+            get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? WITHDRAW_INTERNAL : gas_consumption) +  ;; next withdraw internal fee
+            fwd_fee +
+            cal_stable_pool_min_storage_fee();
+
+        ;; If it's withdraw_between, meta pool don't need to tranfer base lp asset to user -> withdraw_assets_count - 1
+        withdraw_assets_count = withdraw_assets_count - 1;
+    }
+    int gas_consume = withdraw_internal_fee + cal_stable_pool_min_storage_fee();
+
+    int total_fee = gas_consume + cal_jetton_vault_min_storage_fee() + TRANSFER_ASSET_VALUE * withdraw_assets_count + next_pool_fee;
+
+    return (total_fee, gas_consume);
+}
+
+(int, int) pool::swap_internal_fee(int fwd_fee, int use_rates?, int is_swap_between?, cell next) inline {
+    int swap_fee = use_rates? ? SWAP_INTERNAL_LSD : SWAP_INTERNAL;
+    swap_fee = is_swap_between? ? SWAP_BETWEEN : swap_fee;
+    int gas_consumption = get_precompiled_gas_consumption();
+    int swap_internal_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? swap_fee : gas_consumption);
+
+    ;; If the swap next, we use swap between to estimate pool handle fee and use withdraw all to over estimate payout fee
+    int next_pool_fee = 0;
+    int payout_fee = TRANSFER_ASSET_VALUE;
+    if ~ next.cell_null?() {
+        ;; If swap has next, we need to send asset out to next pool, instead of payout
+        payout_fee = 0;
+
+        next_pool_fee = (next.cell_depth() + 1) * (get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? SWAP_BETWEEN : gas_consumption) + fwd_fee + cal_stable_pool_min_storage_fee()) +
+            TRANSFER_ASSET_VALUE * DEFAULT_WITHDRAW_COUNT; ;; Use withdraw all payout to over estimate payout fee
+    }
+    int gas_consume = swap_internal_fee + cal_stable_pool_min_storage_fee();
+
+    int total_fee = gas_consume + payout_fee + cal_jetton_vault_min_storage_fee() + next_pool_fee;
+
+    return (total_fee, gas_consume);
+}
+
+(int, int) get_provide_wallet_address_fee(int fwd_fee) inline {
+    int router_gas_consumption = get_precompiled_gas_consumption();
+    int gas_consume = get_compute_fee(MY_WORKCHAIN, null?(router_gas_consumption) ? PROVIDE_WALLET_ADDRESS_FEE : router_gas_consumption) + 
+    cal_stable_pool_min_storage_fee();
+
+    int total_fee = gas_consume + fwd_fee;
+
+    return (total_fee, gas_consume);
+}
+
+(int, int) pool::claim_fee(int fwd_fee) inline {
+    int pool_gas_consumption = get_precompiled_gas_consumption();
+    int claim_admin_fee = get_compute_fee(MY_WORKCHAIN, null?(pool_gas_consumption) ? CLAIM_ADMIN_FEE : pool_gas_consumption);
+    int gas_consume = claim_admin_fee + cal_stable_pool_min_storage_fee();
+
+    int total_fee = gas_consume + TRANSFER_ASSET_VALUE;
+
+    return (total_fee, gas_consume);
+}
+
+;; Lp account
+(int, int) lp_account::duplicate_deposit_fee(int fwd_fee) inline {
+    int gas_consumption = get_precompiled_gas_consumption();
+    int duplicate_deposit_fee = get_compute_fee(MY_WORKCHAIN, null?(gas_consumption) ? DUPLICATE_DEPOSIT : gas_consumption);
+    int gas_consume = duplicate_deposit_fee + cal_lp_account_min_storage_fee();
+
+    int total_fee = gas_consume + TRANSFER_ASSET_VALUE + fwd_fee * 3;
+
+    return (total_fee, gas_consume);
+}

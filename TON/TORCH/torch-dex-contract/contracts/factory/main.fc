@@ -1,0 +1,460 @@
+{-
+ * @title Torch Factory Contract
+ * @notice Handles deployment for vault, pool, and LP account contracts
+ -}
+#include "../imports/stdlib.fc";
+#include "../common/workchain.fc";
+#include "../common/constants.fc";
+#include "../common/opcode.fc";
+#include "../common/gas.fc";
+#include "../common/errors.fc";
+#include "../common/deploy_contracts/utils.fc";
+#include "../common/deploy_contracts/adapter.fc";
+#include "../common/deposit/adapter.fc";
+#include "../common/utils.fc";
+#include "storages.fc";
+#include "utils.fc";
+#include "constants.fc";
+#include "logs.fc";
+
+() factory::create_vault(int ctx::value, int ctx::fwd_fee, int query_id, cell asset) impure inline {
+    ;; Load asset type
+    slice asset_slice = asset.begin_parse();
+    int asset_type = asset_slice~load_uint(ASSET_TYPE_SIZE);
+
+    ;; Check whether asset type is supported in dict_get_vault_code()
+    cell vault_code = dict_get_vault_code(asset_type);
+
+    if asset_type == JETTON_ASSET_TYPE {
+        ;; Jetton Vault
+
+        ;; Calculate fee
+        (int total_fee, int gas_consume) = factory::create_jetton_vault_fee(ctx::fwd_fee);
+        throw_unless(error::not_enough_ton, ctx::value >= total_fee);
+        int remaining_ton = ctx::value - gas_consume;
+
+        ;; Get jetton master address
+        slice jetton_master = asset_slice~load_msg_addr();
+        
+        ;; Get Jetton Vault init and proof. General jetton vault won't have jetton_wallet_address in init state, so we pass address_none()
+        (cell vault_state_init, int proof) = get_jetton_vault_init_proof(jetton_master, asset, address_none());
+
+        ;; Get base init and jetton vault address
+        (cell base_contract_init, slice vault_address) = get_base_init_and_address(my_address(), proof, factory::base_code);
+        
+        ;; Pack install body and send to vault address to deploy
+        ;; After deploy, jetton vault has to send provide_wallet_address to jetton master to get its jetton wallet address
+        cell callback_payload = pack_callback_payload(jetton_master, PROVIDE_WALLET_TON,  pack_provide_wallet_address(query_id, vault_address));
+        cell install_body = pack_install_body(query_id, vault_code, vault_state_init, callback_payload);
+        send_deploy_msg(BOUNCEABLE, vault_address, remaining_ton, install_body, base_contract_init, SEND_MODE_REGULAR);
+    } elseif asset_type == TON_ASSET_TYPE {
+        ;; TON Vault
+
+        ;; Calculate fee
+        (int total_fee, int gas_consume) = factory::create_jetton_vault_fee(ctx::fwd_fee);
+        throw_unless(error::not_enough_ton, ctx::value >= total_fee);
+        int remaining_ton = ctx::value - gas_consume;
+        
+        ;; Get TON Vault init and proof.
+        (cell vault_state_init, int proof) = get_ton_vault_init_proof();
+
+        ;; Get base init and ton vault address
+        (cell base_contract_init, slice vault_address) = get_base_init_and_address(my_address(), proof, factory::base_code);
+        
+        ;; Pack install body and send to vault address to deploy
+        cell install_body = pack_install_body(query_id, vault_code, vault_state_init, null());
+        send_deploy_msg(BOUNCEABLE, vault_address, remaining_ton, install_body, base_contract_init, SEND_MODE_REGULAR);
+    }
+    ;; elseif asset_type == EXTRA_CURRENCY_TYPE is extra_currency is not supported yet
+    
+    asset_slice.end_parse();
+    return ();
+}
+
+() factory::create_lp_vault(int ctx::value, int ctx::fwd_fee, int query_id, cell asset) impure inline {
+    ;; Calculate fee
+    (int total_fee, int gas_consume) = factory::create_lp_vault_fee(ctx::fwd_fee);
+    throw_unless(error::not_enough_ton, ctx::value >= total_fee);
+    int remaining_ton = ctx::value - gas_consume;
+
+    ;; Lp Vault
+    slice asset_slice = asset.begin_parse();
+    int asset_type = asset_slice~load_uint(ASSET_TYPE_SIZE);
+
+    ;; Lp vault must be JETTON_ASSET_TYPE
+    throw_unless(error::invalid_asset_type, asset_type == JETTON_ASSET_TYPE);
+    
+    ;; Get pool address
+    slice pool_address = asset_slice~load_msg_addr();
+    asset_slice.end_parse();
+
+    ;; Get lp vault proof
+    int lp_vault_proof = get_vault_proof(asset);
+
+    ;; Get base init and lp vault address
+    (cell base_contract_init, slice lp_vault_address) = get_base_init_and_address(my_address(), lp_vault_proof, factory::base_code);
+
+    ;; Factory can calculate jetton wallet address for lp vault (it got lp wallet code, pool address and lp vault address)
+    ;; Therefore, lp vault doesn't need to send provide_wallet_address to pool
+    slice lp_vault_jetton_wallet_address = cal_jetton_wallet_address(pool_address, lp_vault_address, factory::lp_wallet_code);
+    cell vault_state_init = pack_jetton_vault_init(pool_address, lp_vault_jetton_wallet_address);
+
+    ;; Get jetton vault code
+    cell vault_code = dict_get_vault_code(JETTON_ASSET_TYPE);
+    
+    ;; Pack install body and send to lp vault address to deploy
+    ;; After deploy, lp vault has to send create_vault_success message to unstop the pool
+    cell callback_payload = pack_callback_payload(pool_address, CREATE_LP_VAULT_SUCCESS_TON, pack_create_vault_success(query_id));
+    cell install_body = pack_install_body(query_id, vault_code, vault_state_init, callback_payload);
+    send_deploy_msg(BOUNCEABLE, lp_vault_address, remaining_ton, install_body, base_contract_init, SEND_MODE_REGULAR);
+    return ();
+}
+
+() factory::create_pool(
+    int ctx::value, 
+    int ctx::fwd_fee, 
+    int query_id,
+    int use_rates?,
+    int A, 
+    int fee_numerator, 
+    cell assets, 
+    cell decimals,
+    cell base_asset ;; Only for meta pool
+) impure inline {
+    ;; Calculate Gas
+    (int total_fee, int gas_consume) = factory::create_base_pool_fee(ctx::fwd_fee);
+    throw_unless(error::not_enough_ton, ctx::value >= total_fee);
+    int remaining_ton = ctx::value - gas_consume;
+    
+    ;; Parse assets and sort assets
+    (cell sorted_assets, tuple assets_tuple, int assets_len) = parse_and_sort_assets(assets);
+
+    ;; base_lp_index is only for meta pool, base_lp_index won't be used in base pool so we set it to 0
+    int is_meta? = base_asset.cell_null?() ? FALSE : TRUE;
+    ;; For now, we only support base pool and meta pool
+    int pool_type = is_meta? ? META_POOL_POOL_TYPE : BASE_POOL_POOL_TYPE;
+    int base_lp_index = is_meta? ? find_asset_index(assets_tuple, base_asset) : 0;
+
+    ;; Check A and fee_numerator is valid
+    throw_unless(error::invalid_ramp_a, A  * A_PRECISION <= MAX_A);
+    throw_unless(error::invalid_fee, fee_numerator <= MAX_FEE);
+
+    ;; Get pool init and proof to calculate pool address
+    (cell pool_init, int pool_proof, int admin_fee_numerator) = get_pool_init_and_proof(
+        use_rates?,
+        A, 
+        fee_numerator, 
+        sorted_assets, 
+        decimals,
+        assets_len,
+        is_meta?, 
+        base_lp_index
+    );
+
+    ;; Get pool code
+    cell pool_code = dict_get_pool_code(pool_type);
+
+    ;; Get base init and pool address
+    (cell base_contract_init, slice pool_address) = get_base_init_and_address(my_address(), pool_proof, factory::base_code);
+    
+    ;; Pack install body and send to pool address to deploy
+    ;; After deploy pool, pool has to premint lp to lp vault
+    cell callback_payload = pack_callback_payload(pool_address, PREMINT_LP_TON, pack_premint_lp(query_id));
+    cell install_body = pack_install_body(query_id, pool_code, pool_init, callback_payload);
+    send_deploy_msg(BOUNCEABLE, pool_address, remaining_ton, install_body, base_contract_init, SEND_MODE_REGULAR);
+
+    ;; Log create pool
+    log_create_pool(pool_type, use_rates?, base_lp_index, fee_numerator, admin_fee_numerator, A, sorted_assets, decimals);
+    return ();
+}
+
+() factory::handle_deposit(
+    int ctx::value,
+    int ctx::fwd_fee,
+    int query_id,
+    slice provider,
+    slice pool_address,
+    cell assets,
+    int provide_amount,
+    cell provide_asset,
+    cell targets,
+    cell deposit_params,
+    cell next
+) impure inline {
+    ;; Calculate Gas
+    (int total_fee, int gas_consume) = factory::deposit_internal_fee(ctx::fwd_fee);
+    throw_unless(error::not_enough_ton, ctx::value >= total_fee);
+    int remaining_ton = ctx::value - gas_consume;
+
+    ;; Get lp account init and proof to calculate lp account address
+    (cell lp_account_init, int lp_account_proof, cell sorted_assets) = get_lp_account_init_and_proof(query_id, provider, pool_address, assets, next, provide_amount, provide_asset, targets);
+    
+    ;; Get base init and lp account address
+    (cell base_contract_init, slice lp_account_address) = get_base_init_and_address(my_address(), lp_account_proof, factory::base_code);
+
+    ;; Pack deposit internal message to lp account
+    cell deposit_internal_msg = pack_deposit_internal(
+        query_id,
+        provide_asset,
+        provider,
+        provide_amount,
+        pool_address,
+        sorted_assets,
+        targets,
+        deposit_params,
+        next
+    );
+    
+    ;; Pack install body and send deploy msg
+    cell callback_payload = pack_callback_payload(address_none(), ZERO_TON, deposit_internal_msg);
+    cell install_body = pack_install_body(query_id, factory::lp_account_code, lp_account_init, callback_payload);
+    send_deploy_msg(BOUNCEABLE, lp_account_address, remaining_ton, install_body, base_contract_init, SEND_MODE_REGULAR);
+    return ();
+}
+
+() route_internal(slice ctx::sender, int ctx::value, int ctx::fwd_fee, slice ctx::body) impure inline {
+    ;; Load op and query id
+    (int op, int query_id) = ctx::body~load_op_and_query_id();
+
+    if op == op::deposit_internal {
+        slice provider = ctx::body~load_msg_addr();
+        slice pool_address = ctx::body~load_msg_addr();
+        cell assets = ctx::body~load_ref();
+        cell provide_info = ctx::body~load_ref();
+        ;; Unpack provide info to get the info to deploy lp acocunt and also verify the sender
+        (int provide_amount, cell provide_asset, cell targets) = unpack_provide_info(provide_info);
+
+        ;; Only vault can send deposit_internal message to factory
+        slice true_vault_address = cal_vault_address(my_address(), provide_asset, factory::base_code);
+        throw_unless(error::not_vault, equal_slices_bits(ctx::sender, true_vault_address));
+
+        cell deposit_params = ctx::body~load_maybe_ref();
+        cell next = ctx::body~load_maybe_ref();
+        ctx::body.end_parse();
+
+        return factory::handle_deposit(
+            ctx::value,
+            ctx::fwd_fee,
+            query_id,
+            provider,
+            pool_address,
+            assets,
+            provide_amount,
+            provide_asset,
+            targets,
+            deposit_params,
+            next
+        );
+    }
+
+    if op == op::create_vault {
+        cell asset = ctx::body~load_ref();
+        ctx::body.end_parse();
+
+        return factory::create_vault(ctx::value, ctx::fwd_fee, query_id, asset);
+    }
+
+    if op == op::create_lp_vault {
+        cell asset = ctx::body~load_ref();
+        ctx::body.end_parse();
+
+        return factory::create_lp_vault(ctx::value, ctx::fwd_fee, query_id, asset);
+    }
+
+    if op == op::create_base_pool {
+        ;; Only admin can create base pool
+        throw_unless(error::not_admin, equal_slices_bits(ctx::sender, factory::admin));
+
+        int use_rates? = ctx::body~load_bool();
+        int A = ctx::body~load_uint(A_SIZE);
+        int fee_numerator = ctx::body~load_coins();
+        cell assets = ctx::body~load_ref();
+        cell decimals = ctx::body~load_ref();
+        ctx::body.end_parse();
+
+        return factory::create_pool(
+            ctx::value, 
+            ctx::fwd_fee, 
+            query_id, 
+            use_rates?,
+            A, 
+            fee_numerator, 
+            assets, 
+            decimals,
+            null()
+        );
+    }
+
+    if op == op::create_meta_pool {
+        ;; Only admin can create meta pool
+        throw_unless(error::not_admin, equal_slices_bits(ctx::sender, factory::admin));
+
+        int A = ctx::body~load_uint(A_SIZE);
+        int fee_numerator = ctx::body~load_coins();
+        cell assets = ctx::body~load_ref();
+        cell base_asset = ctx::body~load_ref();
+        cell decimals = ctx::body~load_ref();
+        ctx::body.end_parse();
+
+        return factory::create_pool(
+            ctx::value, 
+            ctx::fwd_fee, 
+            query_id, 
+            USE_RATES, ;; meta pool always use rates
+            A, 
+            fee_numerator, 
+            assets, 
+            decimals,
+            base_asset
+        );
+    }
+
+    if op == op::update_pool_code {
+        ;; Only admin can set pool
+        throw_unless(error::not_admin, equal_slices_bits(ctx::sender, factory::admin));
+        
+        int pool_type = ctx::body~load_uint(POOL_TYPE_SIZE);
+        cell pool_code = ctx::body~load_ref();
+        ctx::body.end_parse();
+
+        ;; Update pool code base on pool type in dict
+        factory::pool_codes~udict_set(POOL_TYPE_SIZE, pool_type, begin_cell().store_ref(pool_code).end_cell().begin_parse());
+
+        ;; Save data to storage
+        factory::save_data();
+        return ();
+    }
+
+    if op == op::update_vault_code {
+        ;; Only admin can update vault code
+        throw_unless(error::not_admin, equal_slices_bits(ctx::sender, factory::admin));
+        
+        int asset_type = ctx::body~load_uint(ASSET_TYPE_SIZE);
+        cell vault_code = ctx::body~load_ref();
+        ctx::body.end_parse();
+
+        ;; Update vault code base on asset type in dict
+        factory::vault_codes~udict_set(ASSET_TYPE_SIZE, asset_type, begin_cell().store_ref(vault_code).end_cell().begin_parse());
+
+        ;; Save data to storage
+        factory::save_data();
+        return ();
+    }
+
+    if op == op::update_admin_config {
+        ;; Only admin can update admin config
+        throw_unless(error::not_admin, equal_slices_bits(ctx::sender, factory::admin));
+        
+        int pool_type = ctx::body~load_uint(POOL_TYPE_SIZE);
+        int new_admin_fee_numerator = ctx::body~load_coins();
+        throw_unless(error::invalid_admin_fee, new_admin_fee_numerator <= MAX_ADMIN_FEE);
+        ctx::body.end_parse();
+
+        ;; Update admin fee config base on pool type in dict
+        factory::admin_fee_config~udict_set(POOL_TYPE_SIZE, pool_type, begin_cell().store_coins(new_admin_fee_numerator).end_cell().begin_parse());
+
+        ;; Save data to storage
+        factory::save_data();
+        return ();
+    }
+
+    if op == op::transfer_admin {
+        ;; Only admin can transfer admin
+        throw_unless(error::not_admin, equal_slices_bits(ctx::sender, factory::admin));
+        
+        slice new_admin = ctx::body~load_msg_addr();
+        ctx::body.end_parse();
+
+        ;; Update admin
+        factory::admin = new_admin;
+
+        ;; Save data to storage
+        factory::save_data();
+        return ();
+    }
+
+    if op == op::update_signer_key {
+        ;; Only admin can update signer key
+        throw_unless(error::not_admin, equal_slices_bits(ctx::sender, factory::admin));
+        
+        int new_signer_key = ctx::body~load_uint(SIGNER_KEY_SIZE);
+        ctx::body.end_parse();
+
+        ;; Update signer key
+        factory::signer_key = new_signer_key;
+
+        ;; Save data to storage
+        factory::save_data();
+        return ();
+    }
+
+    if op == op::update_lp_account_code {
+        ;; Only admin can update lp account code
+        throw_unless(error::not_admin, equal_slices_bits(ctx::sender, factory::admin));
+        
+        cell lp_account_code = ctx::body~load_ref();
+        ctx::body.end_parse();
+
+        ;; Update lp account code
+        factory::lp_account_code = lp_account_code;
+
+        ;; Save data to storage
+        factory::save_data();
+        return ();
+    }
+
+    if op == op::update {
+        ;; Only admin can update contract
+        throw_unless(error::not_admin, equal_slices_bits(ctx::sender, factory::admin));
+        update_contract(ctx::body);
+        return ();
+    }
+
+    throw(error::wrong_op);
+}
+
+() main(int ctx::value, cell in_msg_full, slice ctx::body) impure {
+    slice s = in_msg_full.begin_parse();
+    int flags = s~load_msg_flags();
+
+    if (is_bounced(flags)) { ;; skip all bounced messages
+        return ();
+    }
+    
+    ;; Only receive TON
+    if (ctx::body.slice_bits() < 32) {
+        return ();
+    }
+    
+    ;; get context
+    (slice ctx::sender, int ctx::fwd_fee) = s~retrieve_ctx(MY_WORKCHAIN);
+
+    ;; Load data from storage
+    factory::load_data();
+
+    ;; route function to handle internal message
+    route_internal(ctx::sender, ctx::value, ctx::fwd_fee, ctx::body);
+}
+
+{- Getters -}
+
+slice get_address(int proof) method_id {
+    factory::load_data();
+    (_, slice contract_address) = get_base_init_and_address(my_address(), proof, factory::base_code);
+    return contract_address;
+}
+
+(int, slice, cell, cell, cell, int, cell, cell, cell) get_factory_data() method_id {
+    factory::load_data();
+    return (
+        factory::contract_type,
+        factory::admin,
+        factory::base_code,
+        factory::lp_account_code,
+        factory::vault_codes,
+        factory::signer_key,
+        factory::pool_codes,
+        factory::lp_wallet_code,
+        factory::admin_fee_config
+    );
+}

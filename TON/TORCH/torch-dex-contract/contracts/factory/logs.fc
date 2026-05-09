@@ -1,0 +1,29 @@
+;; logs
+const log::create_pool = "create_pool"c; ;; 2e3034ef
+
+() log_create_pool(
+  int pool_type,
+  int use_rates?,
+  int base_lp_index,
+  int fee_numerator,
+  int admin_fee_numerator,
+  int init_A,
+  cell assets,
+  cell decimals
+) impure inline_ref {
+
+  builder log = begin_cell()
+        .store_op(log::create_pool)
+        .store_uint(pool_type, POOL_TYPE_SIZE)
+        .store_slice(factory::admin)
+        .store_uint(factory::signer_key, SIGNER_KEY_SIZE)
+        .store_bool(use_rates?)
+        .store_uint(base_lp_index, ASSET_INDEX_SIZE)
+        .store_coins(fee_numerator)
+        .store_coins(admin_fee_numerator)
+        .store_uint(init_A, A_SIZE)
+        .store_ref(assets)
+        .store_ref(decimals);
+
+  emit_log(log::create_pool, log);
+}

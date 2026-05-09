@@ -1,0 +1,25 @@
+{
+  "purpose": "КРИТ-02 on-chain verification: async add_liquidity race condition",
+  "network": "mainnet",
+  "nativeVault": "EQDa4VOnTYlLvDJ0gZjNYm5PXfSmmtL6Vs6A_CZEtXCNICq_",
+  "pair": "TON / USDt (EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs)",
+  "amounts": {
+    "depositTON": "0.001",
+    "gasTON": "0.3",
+    "cancelGasTON": "0.1"
+  },
+  "expectedFlow": [
+    "1. Open txALink → sends 0.01 TON deposit_a to NativeVault (value: 0.31 TON total)",
+    "2. Find LiquidityDeposit addr in tonviewer tx trace",
+    "3. npx ts-node scripts/crit02_read_state.ts <addr>",
+    "   → expect: isProcessing=false, balance_a>0, balance_b=0",
+    "4. Replace LIQUIDITY_DEPOSIT_ADDR_HERE in txBLink with real LD address",
+    "5. Open txBLink → CANCEL_DEPOSIT (0x166cedee), value 0.1 TON",
+    "   → expect: refund of 0.01 TON back to wallet (basic cancel)",
+    "6. isProcessing=true test: redo step 1 + complete deposit_b via DeDust UI",
+    "   Send TX B during LP minting window",
+    "   REVERT → КРИТ-02 confirmed | REFUND → safe"
+  ],
+  "txALink": "https://app.tonkeeper.com/transfer/EQDa4VOnTYlLvDJ0gZjNYm5PXfSmmtL6Vs6A_CZEtXCNICq_?amount=301000000&bin=te6cckEBAgEAPAABY9VeRoYAAAAAAAAAADD0JAAIBYidTKWoElCzjPtInJlHW6ysthxRL6yBRYo39m4bEO%2FxAQAJAw9CQAiCsT9g",
+  "txBLink_REPLACE_ADDR": "https://app.tonkeeper.com/transfer/LIQUIDITY_DEPOSIT_ADDR_HERE?amount=100000000&bin=te6cckEBAQEADwAAGRZs7e4AAAAAAAAAAEDUpkP%2F"
+}

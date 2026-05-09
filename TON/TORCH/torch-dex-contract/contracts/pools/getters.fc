@@ -1,0 +1,154 @@
+{- Getters -}
+
+cell get_pool_data() method_id {
+    ;; Load data from storage
+    pool::load_data();
+
+    return 	begin_cell()
+        .store_uint(pool::contract_type, CONTRACT_TYPE_SIZE)    
+        .store_uint(pool::pool_type, POOL_TYPE_SIZE)
+        .store_slice(pool::admin)
+        .store_uint(pool::signer_key, SIGNER_KEY_SIZE)
+        .store_bool(pool::is_stop)
+        .store_bool(pool::use_rates?)
+        .store_uint(pool::base_lp_index, ASSET_INDEX_SIZE)
+        .store_ref(pool::assets)
+        .store_ref(
+            begin_cell()
+                .store_ref(pool::reserve)
+                .store_ref(pool::admin_fees)
+            .end_cell()
+        )   
+        .store_ref(
+            begin_cell()
+                .store_coins(pool::fee_numerator)
+                .store_coins(pool::admin_fee_numerator)
+                .store_uint(pool::init_A, A_SIZE)
+                .store_uint(pool::future_A, A_SIZE)
+                .store_uint(pool::init_A_time, TIMESTAMP_SIZE)
+                .store_uint(pool::future_A_time, TIMESTAMP_SIZE)
+                .store_coins(pool::lp_total_supply)
+                .store_ref(pool::lp_wallet_code)
+                .store_ref(pool::decimals)
+                .store_dict(pool::plugin)
+            .end_cell()
+        )
+        .store_ref(
+            begin_cell()
+                .store_ref(pool::base_code)
+                .store_slice(pool::factory)
+            .end_cell()
+        )
+    .end_cell();
+}
+
+slice get_wallet_address(slice owner_address) method_id {
+    ;; Load data from storage
+    pool::load_data();
+    
+    slice wallet_address = get_lp_wallet_address(my_address(), owner_address, pool::lp_wallet_code);
+
+    return wallet_address;
+}
+
+cell get_assets() method_id {
+    ;; Load data from storage
+    pool::load_data();
+
+    return pool::assets;
+}
+
+int get_virtual_price(cell rates) method_id {
+    ;; Load data from storage
+    pool::load_data();
+    pool::rates_tuple = pool::use_rates? ? convert_coins_cell_to_tuple(rates) : pool::rates_tuple;
+
+    return get_vp();
+}
+
+(int, int, slice, cell, cell) get_jetton_data() method_id {
+    pool::load_data();
+    return (pool::lp_total_supply, -1, pool::admin,  get_lp_content(), pool::lp_wallet_code);
+}
+
+(int, int, int, int) get_simulate_deposit(cell targets, cell rates) method_id {
+    pool::load_data();
+    tuple targets_tuple = convert_coins_cell_to_tuple(targets);
+    pool::rates_tuple = pool::use_rates? ? convert_coins_cell_to_tuple(rates) : pool::rates_tuple;
+    int virtual_price_before = get_vp();
+    (int mint_lp_amount, _) = simulate::deposit(targets_tuple);
+    int virtual_price_after = get_vp();
+
+    return (mint_lp_amount, virtual_price_before, virtual_price_after, pool::lp_total_supply);
+}
+
+(int, int, int) get_simulate_swap(cell asset_in, cell asset_out, int amount, cell rates) method_id {
+    pool::load_data();
+    
+    ;; Check asset_in and asset_out is in pool::assets
+    (int asset_in_index, int asset_out_index) = find_assets_in_out_indexes(pool::assets_tuple, asset_in, asset_out);
+    throw_unless(error::asset_not_found, (asset_in_index != ASSET_NOT_FOUND) & (asset_out_index != ASSET_NOT_FOUND));
+
+    pool::rates_tuple = pool::use_rates? ? convert_coins_cell_to_tuple(rates) : pool::rates_tuple;
+    int virtual_price_before = get_vp();
+    (int amount_out, _) = simulate::swap(asset_in_index, asset_out_index, amount);
+    int virtual_price_after = get_vp();
+
+    return (amount_out, virtual_price_before, virtual_price_after);
+}
+
+(int, int, int) get_simulate_swap_exact_out(cell asset_in, cell asset_out, int amount_out, cell rates) method_id {
+    pool::load_data();
+    ;; Check asset_in and asset_out is in pool::assets
+    (int asset_in_index, int asset_out_index) = find_assets_in_out_indexes(pool::assets_tuple, asset_in, asset_out);
+    throw_unless(error::asset_not_found, (asset_in_index != ASSET_NOT_FOUND) & (asset_out_index != ASSET_NOT_FOUND));
+
+    pool::rates_tuple = pool::use_rates? ? convert_coins_cell_to_tuple(rates) : pool::rates_tuple;
+
+    int virtual_price_before = get_vp();
+    int amount_in = simulate::swap_exact_out(asset_in_index, asset_out_index, amount_out);
+
+    ;; Simulate swap to update reserves
+    (_, _) = simulate::swap(asset_in_index, asset_out_index, amount_in);
+    int virtual_price_after = get_vp();
+
+    return (amount_in, virtual_price_before, virtual_price_after);
+}
+
+(tuple, int, int) get_simulate_withdraw(int remove_amount, cell asset_out, cell rates) method_id {
+    pool::load_data();
+    pool::rates_tuple = pool::use_rates? ? convert_coins_cell_to_tuple(rates) : pool::rates_tuple;
+    slice asset_out_slice = asset_out.begin_parse();
+    cell asset_out_cell = asset_out_slice~load_maybe_ref();
+    int is_remove_all? = asset_out_cell.cell_null?();
+
+    if is_remove_all? {
+        int virtual_price_before = get_vp();
+        ;; If asset_out is null, then remove liquidity all
+        (tuple remove_amounts_tuple, _) = simulate::withdraw_all(remove_amount, null());
+
+        ;; Update total supply of LP tokens
+        pool::lp_total_supply -= remove_amount;
+
+        int virtual_price_after = get_vp();
+        return (remove_amounts_tuple, virtual_price_before, virtual_price_after);
+    }
+    else {
+        int virtual_price_before = get_vp();
+        
+        ;; Get asset_out index and check asset_out is in pool::assets
+        int asset_out_index = find_asset_index(pool::assets_tuple, asset_out_cell);
+        throw_unless(error::asset_not_found, asset_out_index != ASSET_NOT_FOUND);
+
+        ;; Remove one liquidity
+        (int d_y, _, _) = simulate::withdraw_one(remove_amount, asset_out_index, null());
+        tuple remove_amount_tuple = empty_tuple();
+        remove_amount_tuple~tpush(d_y);
+        
+        ;; Update total supply of LP tokens
+        pool::lp_total_supply -= remove_amount;
+
+        int virtual_price_after = get_vp();
+        return (remove_amount_tuple, virtual_price_before, virtual_price_after);
+    }
+}

@@ -1,0 +1,72 @@
+{- Base Contract -}
+
+{-
+ * @notice Packs the body of a `install` message
+ * @param query_id The unique query identifier
+ * @param new_code The contract will be updated to this new_code after deployment.
+ * @param new_data The contract will be updated to this new_d after deployment.
+ * @param callback_payload The payload to send to the callback address, if applicable
+ * @return A cell containing the packed `install` message
+ -}
+cell pack_install_body(int query_id, cell new_code, cell new_data, cell callback_payload) inline {
+    return begin_cell()
+        .store_op(op::install)
+        .store_query_id(query_id)
+        .store_ref(new_code)
+        .store_ref(new_data)
+        .store_maybe_ref(callback_payload)
+    .end_cell();
+}
+
+{-
+ * @notice Parses the callback payload to extract the receiver, the amount of TON to send and the payload body.
+ * @param callback_payload The callback payload cell to parse.
+ * @return receiver Contract will send message to receiver with value and body extracted from callback_payload.
+ * @return value The amount of TON to send (If it's transfer jetton, this field is forward_ton).
+ * @return body The body of the message to send (If it's transfer jetton, this field is forward_payload).
+ * @dev 
+ * - Returns (address_none(), 0, null) if the `callback_payload` is empty.
+ * - If the payload is set for transferring Jetton, using forward_payload and reject_payload, 
+ *   the receiver cannot be specified. The Jetton will be sent to the wallet's owner via Jetton notification.
+ * - If the payload is for a TON vault transfer, there's no need to specify the receiver and value. 
+ *   The receiver will be set in the interface, such as in a swap params, and the value will be transferred as the remaining TON from this operation.
+ -}
+(slice, int, cell) parse_callback_payload(cell callback_payload) inline {
+    if callback_payload.cell_null?() {
+        return (address_none(), 0, null());
+    }
+    slice sc = callback_payload.begin_parse();
+    return (sc~load_msg_addr(), sc~load_coins(), sc~load_ref());
+}
+
+{- Vault -}
+
+{-
+ * @notice Packs the success payload for creating a vault and send it to the pool. 
+ * @param query_id The unique query identifier
+ * @return A cell containing the packed success payload for the create vault operation.
+ -}
+cell pack_create_vault_success(int query_id) inline {
+    return begin_cell()
+        .store_op(op::create_vault_success)
+        .store_query_id(query_id)
+    .end_cell();
+}
+
+{-
+ * @notice Packs the payload to request the Jetton master contract to provide the wallet address for the Jetton vault.
+ * @param query_id The unique identifier for this operation.
+ * @param ask_address The address for which the Jetton wallet address will be computed.
+ * @return A cell containing the provide wallet address payload to be sent to the Jetton master.
+-}
+cell pack_provide_wallet_address(
+    int query_id,
+    slice ask_address
+) inline {
+    return begin_cell()
+        .store_op(op::provide_wallet_address)
+        .store_query_id(query_id)
+        .store_slice(ask_address)
+        .store_bool(FALSE)
+    .end_cell();
+}

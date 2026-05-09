@@ -1,0 +1,458 @@
+{-
+ * @title Torch Meta Pool Contract
+ * @notice Handles internal operations for the meta pool, including deposits, swaps, and withdrawals
+ * @dev 
+ * - This contract manages the core logic for handling deposits, swaps, and withdrawals within the meta pool.
+ * - It includes functions for interacting with other pools and managing administrative tasks such as updating fees and ramping A.
+ * - There are specific messages that are unique to the meta pool, such as `deposit_between`.
+ -}
+#include "../../imports/stdlib.fc";
+#include "../../common/workchain.fc";
+#include "../../common/constants.fc";
+#include "../../common/errors.fc";
+#include "../../common/opcode.fc";
+#include "../../common/gas.fc";
+#include "../../common/deploy_contracts/utils.fc";
+#include "../../common/deposit/adapter.fc";
+#include "../../common/swap/adapter.fc";
+#include "../../common/withdraw/adapter.fc";
+#include "../../common/utils.fc";
+#include "constants.fc";
+#include "../utils.fc";
+#include "../storages.fc";
+#include "../refund.fc";
+#include "../algorithms/curve_algorithm.fc";
+#include "../logs.fc";
+#include "../handler.fc";
+#include "../getters.fc";
+#include "../parser.fc";
+
+() route_internal(slice ctx::sender, int ctx::value, int ctx::fwd_fee, slice ctx::body) impure inline {
+    ;; Load op and query id
+    (int op, int query_id) = ctx::body~load_op_and_query_id();
+
+    if op == op::deposit_all {
+        ;; Parse deposit_all and also check sender is lp account or vault
+        (slice provider, tuple targets_tuple, cell deposit_params, cell next) = parse_deposit_all(ctx::body, ctx::sender, query_id);
+
+        ;; Calculate Gas
+        (int total_fee, int gas_consume) = pool::deposit_all_fee(ctx::fwd_fee, cal_nonzeros(targets_tuple), pool::use_rates?, IS_NOT_DEPOSIT_BETWEEN, ~ next.cell_null?());
+        throw_unless(error::not_enough_ton, ctx::value >= total_fee);
+        int remaining_ton = ctx::value - gas_consume;
+
+        ;; If pool is in stop status, refund
+        if pool::is_stop {
+            ;; Unpack deposit params to get reject_payload
+            (_, _, _, _, cell reject_payload, _) = unpack_deposit_params(deposit_params);
+            reject_payload = pack_forward_payload(select_forward_payload(reject_payload, pack_message_payload("Pool in stop state (Refund)")));
+
+            ;; Get meta asset and amount from next (If meta amount > 0, it should be refund)
+            (int next_meta_amount, cell next_meta_asset) = get_refund_meta_asset(next);
+
+            refund_deposit(reject_payload, query_id, provider, targets_tuple, next_meta_amount, next_meta_asset, remaining_ton);
+            commit();
+            throw(error::pool_in_stop_state);
+        }
+
+        return pool::handle_deposit_all(
+            remaining_ton, 
+            query_id, 
+            provider, 
+            targets_tuple, 
+            deposit_params, 
+            next,
+            IS_NOT_CLAIM_FEES
+        );
+    }
+
+    if op == op::swap_internal {
+        ;; Parse swap_internal and also check sender is vault
+        (
+            slice provider, 
+            cell asset_in, 
+            int asset_in_index, 
+            int amount, 
+            cell asset_out, 
+            int asset_out_index, 
+            cell swap_params, 
+            cell next
+        ) = parse_swap_internal(ctx::body, ctx::sender);
+
+        ;; Calculate gas
+        (int total_fee, int gas_consume) = pool::swap_internal_fee(ctx::fwd_fee, pool::use_rates?, IS_NOT_SWAP_BETWEEN, next);
+        throw_unless(error::not_enough_ton, ctx::value >= total_fee);
+        int remaining_ton = ctx::value - gas_consume;
+
+        ;; If pool is in stop status, refund
+        if pool::is_stop {
+            ;; Unpack swap params to get reject payload
+            (_, _, _, _, cell reject_payload, _) = unpack_swap_params(swap_params);
+            reject_payload = pack_forward_payload(select_forward_payload(reject_payload, pack_message_payload("Pool in stop state (Refund)")));
+            refund_swap(reject_payload, query_id, provider, asset_in, amount, remaining_ton);
+            commit();
+            throw(error::pool_in_stop_state);
+        }
+
+        return pool::handle_swap_internal(
+            remaining_ton, 
+            query_id, 
+            provider, 
+            asset_in, 
+            asset_in_index,
+            amount, 
+            asset_out, 
+            asset_out_index,
+            swap_params, 
+            next
+        );
+    }
+
+    if op == op::withdraw_internal {
+        ;; Parse withdraw_internal and also check sender is lp vault
+        (
+            slice provider, 
+            slice recipient, 
+            int remove_amount, 
+            cell signed_rates, 
+            cell asset_out, 
+            cell withdraw_params, 
+            int asset_out_index,
+            cell next
+        ) = parse_withdraw_internal(ctx::body, ctx::sender);
+
+        ;; Check is withdraw one or withdraw all
+        int is_remove_all? = asset_out.cell_null?();
+
+        ;; Calculate Gas
+        (int total_fee, int gas_consume) = pool::meta_withdraw_fee(ctx::fwd_fee, is_remove_all? ? pool::n_coins : 1, ~ next.cell_null?());
+        throw_unless(error::not_enough_ton, ctx::value >= total_fee);
+        int remaining_ton = ctx::value - gas_consume;
+
+        ;; If pool is in stop status and it's now withdraw all, refund
+        if ((pool::is_stop) & (~ is_remove_all?)) {
+            cell reject_payload = pack_forward_payload(NO_NEED_FORWARD_TON, pack_message_payload("Pool in stop state (Refund)"));
+            refund_withdraw(reject_payload, query_id, provider, remove_amount, remaining_ton);
+            commit();
+            throw(error::pool_in_stop_state);
+        }
+
+        return pool::handle_withdraw_internal(
+            is_remove_all?,
+            remaining_ton, 
+            query_id, 
+            provider,
+            recipient, 
+            remove_amount,
+            signed_rates,
+            asset_out, 
+            withdraw_params,
+            asset_out_index,
+            next
+        );
+    }
+
+    {- Pool <-> Pool interaction -}
+
+    if op == op::deposit_between {
+        ;; Parse deposit_between and also check sender is base pool
+        (slice provider, tuple targets_tuple, cell deposit_params) = parse_deposit_between(ctx::body, ctx::sender);
+
+        ;; Calculate Gas
+        (int total_fee, int gas_consume) = pool::deposit_all_fee(ctx::fwd_fee, cal_nonzeros(targets_tuple), pool::use_rates?, IS_DEPOSIT_BETWEEN, NO_NEXT); 
+        throw_unless(error::not_enough_ton, ctx::value >= total_fee);
+        int remaining_ton = ctx::value - gas_consume;
+
+        ;; If pool is in stop status, refund
+        if pool::is_stop {
+            ;; Unpack deposit params to get reject_payload
+            (_, _, _, _, cell reject_payload, _) = unpack_deposit_params(deposit_params);
+            reject_payload = pack_forward_payload(select_forward_payload(reject_payload, pack_message_payload("Pool in stop state (Refund)")));
+
+            ;; Deposit between doesn't have meta asset, so meta amount is 0 and meta asset is null
+            refund_deposit(reject_payload, query_id, provider, targets_tuple, ZERO_TON, null(), remaining_ton);
+            commit();
+            throw(error::pool_in_stop_state);
+        }
+
+        return pool::handle_deposit_all(
+            remaining_ton, 
+            query_id, 
+            provider, 
+            targets_tuple, 
+            deposit_params, 
+            null(), ;; Don't need next in deposit_between
+            IS_NOT_CLAIM_FEES
+        );
+    }
+
+    if op == op::swap_between {
+        ;; Parse swap_between and also check sender is valid (come from other pool deployed by factory)
+        (
+            slice provider, 
+            cell asset_in, 
+            int asset_in_index, 
+            int amount, 
+            cell asset_out, 
+            int asset_out_index, 
+            cell swap_params, 
+            cell next
+        ) = parse_swap_between(ctx::body, ctx::sender);
+
+        ;; Calculate gas
+        (int total_fee, int gas_consume) = pool::swap_internal_fee(ctx::fwd_fee, pool::use_rates?, IS_SWAP_BETWEEN, next);
+        throw_unless(error::not_enough_ton, ctx::value >= total_fee);
+        int remaining_ton = ctx::value - gas_consume;
+
+        ;; If pool is in stop status, refund
+        if pool::is_stop {
+            ;; Unpack swap params to get reject payload
+            (_, _, _, _, cell reject_payload, _) = unpack_swap_params(swap_params);
+            reject_payload = pack_forward_payload(select_forward_payload(reject_payload, pack_message_payload("Pool in stop state (Refund)")));
+            refund_swap(reject_payload, query_id, provider, asset_in, amount, remaining_ton);
+            commit();
+            throw(error::pool_in_stop_state);
+        }
+
+        return pool::handle_swap_internal(
+            remaining_ton, 
+            query_id, 
+            provider, 
+            asset_in,
+            asset_in_index,
+            amount, 
+            asset_out, 
+            asset_out_index,
+            swap_params, 
+            next
+        );
+    }
+    
+    if op == op::premint {
+        ;; Only pool can send premint message to itself
+        throw_unless(error::not_pool, equal_slices_bits(ctx::sender, my_address()));
+
+        slice lp_vault_address = cal_pool_lp_vault_address(pool::factory, pool::base_code);
+        mint_lp(pool::admin, lp_vault_address, PREMINT_AMOUNT, query_id, PREMINT_LP_TON, pool::lp_wallet_code);
+        return ();
+    }
+
+    if op == op::create_vault_success {
+        ;; Only pool's lp vault can send create_vault_success message to pool
+        throw_unless(error::not_lp_vault, equal_slices_bits(ctx::sender, cal_pool_lp_vault_address(pool::factory, pool::base_code)));
+
+        pool::is_stop = FALSE;
+        pool::save_data();
+        return ();
+    }
+
+    if op == op::provide_wallet_address {
+        (int total_fee, int gas_consume) = get_provide_wallet_address_fee(ctx::fwd_fee);
+        throw_unless(error::not_enough_ton, ctx::value >= total_fee);
+        int remaining_ton = ctx::value - gas_consume;
+
+        ;; see provide_wallet_address TL-B layout in jetton.tlb
+        slice owner_address = ctx::body~load_msg_addr();
+        int include_address? = ctx::body~load_bool();
+        ctx::body.end_parse();
+
+        send_take_wallet_address(
+            ctx::sender, 
+            remaining_ton, 
+            query_id, 
+            owner_address, 
+            include_address?, 
+            get_lp_wallet_address(my_address(), owner_address, pool::lp_wallet_code)
+        );
+
+        return ();
+    }
+
+    if op == op::stop_pool {
+        ;; Only admin can stop the pool
+        throw_unless(error::not_admin, equal_slices_bits(ctx::sender, pool::admin));
+
+        pool::is_stop = TRUE;
+        pool::save_data();
+        return ();
+    }
+
+    if op == op::unstop_pool {
+        ;; Only admin can unstop the pool
+        throw_unless(error::not_admin, equal_slices_bits(ctx::sender, pool::admin));
+
+        pool::is_stop = FALSE;
+        pool::save_data();
+        return ();
+    }
+
+    if op == op::update_signer_key {
+        ;; Only admin can update signer key
+        throw_unless(error::not_admin, equal_slices_bits(ctx::sender, pool::admin));
+        int new_signer_key = ctx::body~load_uint(SIGNER_KEY_SIZE);
+        ctx::body.end_parse();
+
+        ;; Update signer key
+        pool::signer_key = new_signer_key;
+
+        ;; Save data to storage
+        pool::save_data();
+        return ();
+    }
+
+    if op == op::update_admin_fee_numerator {
+        ;; Only admin can update admin fee numerator
+        throw_unless(error::not_admin, equal_slices_bits(ctx::sender, pool::admin));
+        int new_admin_fee_numerator = ctx::body~load_coins();
+        throw_unless(error::invalid_admin_fee, new_admin_fee_numerator <= MAX_ADMIN_FEE);
+
+        ctx::body.end_parse();
+
+        ;; Update admin fee numerator
+        pool::admin_fee_numerator = new_admin_fee_numerator;
+        ;; Save data to storage
+        pool::save_data();
+        return ();
+    }
+
+    if op == op::update_fee_numerator {
+        ;; Only admin can update fee numerator
+        throw_unless(error::not_admin, equal_slices_bits(ctx::sender, pool::admin));
+
+        int new_fee_numerator = ctx::body~load_coins();
+        throw_unless(error::invalid_fee, new_fee_numerator <= MAX_FEE);
+        ctx::body.end_parse();
+
+        ;; Update fee numerator
+        pool::fee_numerator = new_fee_numerator;
+
+        ;; Save data to storage
+        pool::save_data();
+        return ();
+    }
+
+    if op == op::claim_admin_fee {
+        ;; Only admin can claim admin fee
+        throw_unless(error::not_admin, equal_slices_bits(ctx::sender, pool::admin));
+        
+        ;; Calculate gas fee
+        (int total_fee, int gas_consume) = pool::claim_fee(ctx::fwd_fee);
+        throw_unless(error::not_enough_ton, ctx::value >= total_fee);
+        int remaining_ton = ctx::value - gas_consume;
+
+        ;; Get deposit params
+        cell deposit_params = ctx::body~load_maybe_ref();
+
+        ;; Deposit amounts = admin tuple
+        tuple deposit_amounts = pool::admin_fees_tuple;
+
+        ;; Init admin fees
+        pool::admin_fees_tuple = get_init_tuple(pool::n_coins);
+
+        ;; Use all admin fee to deposit to pool and transfer lp to admin
+        pool::handle_deposit_all(
+            remaining_ton, 
+            query_id, 
+            pool::admin, 
+            deposit_amounts, 
+            deposit_params, 
+            null(),
+            IS_CLAIM_FEES
+        );
+
+        pool::save_data();
+        return ();
+    }
+    
+    if op == op::ramp_a {
+        ;; Only admin can ramp A    
+        throw_unless(error::not_admin, equal_slices_bits(ctx::sender, pool::admin));
+
+        int future_A = ctx::body~load_uint(A_SIZE);
+        int future_A_time = ctx::body~load_uint(TIMESTAMP_SIZE);
+        ctx::body.end_parse();
+
+        ;; Check ramp time
+        throw_unless(error::invalid_ramp_time, now() >= pool::init_A_time + MIN_RAMP_TIME);
+        throw_unless(error::invalid_ramp_time, future_A_time >= now() + MIN_RAMP_TIME);
+
+        int init_A = get_a();
+        int future_A_p = future_A * A_PRECISION;
+
+        ;; Check ramp A
+        throw_unless(error::invalid_ramp_a, (future_A > 0) & (future_A < MAX_A));
+        if future_A < init_A {
+            throw_unless(error::invalid_a_change, future_A_p * MAX_A_CHANGE >= init_A);
+        } else {
+            throw_unless(error::invalid_a_change, future_A_p <= init_A * MAX_A_CHANGE);
+        }
+
+        pool::init_A = init_A;
+        pool::future_A = future_A_p;
+        pool::init_A_time = now();
+        pool::future_A_time = future_A_time;
+
+        pool::save_data();
+        return ();
+    }
+
+    if op == op::stop_ramp_a {
+        ;; Only admin can stop ramp A    
+        throw_unless(error::not_admin, equal_slices_bits(ctx::sender, pool::admin));
+
+        int current_A = get_a();
+        pool::init_A = current_A;
+        pool::future_A = current_A;
+        pool::init_A_time = now();
+        pool::future_A_time = now();
+            
+        pool::save_data();
+        return ();
+    }
+
+    if op == op::transfer_admin {
+        ;; Only admin can transfer admin
+        throw_unless(error::not_admin, equal_slices_bits(ctx::sender, pool::admin));
+        
+        slice new_admin = ctx::body~load_msg_addr();
+        ctx::body.end_parse();
+
+        ;; Update admin
+        pool::admin = new_admin;
+
+        ;; Save data to storage
+        pool::save_data();
+        return ();
+    }
+
+    if op == op::update {
+        throw_unless(error::not_admin, equal_slices_bits(ctx::sender, pool::admin));
+        update_contract(ctx::body);
+        return ();
+    }
+
+    throw(error::wrong_op);
+}
+
+() main(int ctx::value, cell in_msg_full, slice ctx::body) impure {
+    slice s = in_msg_full.begin_parse();
+    int flags = s~load_msg_flags();
+
+    if (is_bounced(flags)) { ;; skip all bounced messages
+        return ();
+    }
+
+    ;; Only receive TON
+    if (ctx::body.slice_bits() < 32) {
+        return ();
+    }
+    
+    ;; get context
+    (slice ctx::sender, int ctx::fwd_fee) = s~retrieve_ctx(MY_WORKCHAIN);
+
+    ;; Load data from storage
+    pool::load_data();
+
+    ;; route function to handle internal message
+    route_internal(ctx::sender, ctx::value, ctx::fwd_fee, ctx::body);
+}
+

@@ -1,0 +1,41 @@
+#pragma version >=0.4.0;
+#include "imports/stdlib.fc";
+
+;; Storage: should_reject (uint1)
+int load_data() inline {
+    var ds = get_data().begin_parse();
+    return ds~load_uint(1);
+}
+
+() save_data(int should_reject) impure inline {
+    set_data(begin_cell().store_uint(should_reject, 1).end_cell());
+}
+
+() recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
+    if (in_msg_body.slice_empty?()) { return (); }
+
+    int op = in_msg_body~load_uint(32);
+
+    if (op == 0xAAAAAAAA) { ;; op::set_reject_mode
+        in_msg_body~load_uint(64); ;; skip query_id
+        int mode = in_msg_body~load_uint(1);
+        save_data(mode);
+        return ();
+    }
+
+    if (op == 0x11111111) { ;; op::pool_swap_internal (mock)
+        throw_if(333, load_data());
+        return ();
+    }
+
+    if (op == 0x61ee542d) { ;; op::pool_swap_internal (real DeDust NativeVault)
+        throw_if(333, load_data());
+        return ();
+    }
+
+    throw(0xffff);
+}
+
+int get_should_reject() method_id {
+    return load_data();
+}

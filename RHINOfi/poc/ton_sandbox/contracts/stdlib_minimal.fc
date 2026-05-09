@@ -1,0 +1,17 @@
+;; Minimal stdlib for our PoC contract
+;; FunC types: begin_cell returns builder (typed as slice in FunC grammar)
+
+int send_raw_message(cell msg, int mode) impure asm "SENDRAWMSG";
+slice begin_cell() asm "NEWC";
+cell end_cell(slice b) asm "ENDC";
+slice begin_parse(cell c) asm "CTOS";
+int load_uint(slice s, int len) asm "LDU";
+slice load_msg_addr(slice s) asm "LDMSGADDR";
+int load_coins(slice s) asm "LDGRAMS";
+cell load_ref(slice s) asm "LDREF";
+int slice_empty?(slice s) asm "SEMPTY";
+slice store_uint(slice c, int val, int len) asm "STU";
+slice store_slice(slice c, slice s) asm "STSLICER";
+slice store_coins(slice c, int val) asm "STGRAMS";
+slice store_ref(slice c, cell r) asm "STREF";
+(slice, cell, cell) get_balance() asm "BALANCE";

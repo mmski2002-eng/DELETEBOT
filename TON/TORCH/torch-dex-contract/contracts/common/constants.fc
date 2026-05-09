@@ -1,0 +1,76 @@
+;; Sizes
+const CONTRACT_TYPE_SIZE = 5;
+const POOL_TYPE_SIZE = 4;
+const ASSET_TYPE_SIZE = 4;
+
+;; Contract types
+const VAULT_CONTRACT_TYPE = 1;
+const LP_ACCOUNT_CONTRACT_TYPE = 2;
+const POOL_CONTRACT_TYPE = 3;
+
+;; Pool types
+const BASE_POOL_POOL_TYPE = 0;
+const META_POOL_POOL_TYPE = 1;
+
+;; Asset types
+const TON_ASSET_TYPE = 0;
+const JETTON_ASSET_TYPE = 1;
+const XC_ASSET_TYPE = 2;
+
+;; Constants
+const PREMINT_AMOUNT = 531691198313966349161522824112137833; ;; maximum amount of store_coin()
+const TIMESTAMP_SIZE = 32;
+const PROOF_SIZE = 256;
+const SIGNER_KEY_SIZE = 256;
+const SIGNATURE_SIZE = 512;
+const PRECISION = 1000000000000000000; ;; 10^18
+const MUL_PRECISION = 1000000000000000000000000000000000000; ;; 10^36
+const A_SIZE = 20;
+const A_PRECISION = 100;
+const FEE_DENOMINATOR = 10000000000; ;; 10 ** 10
+const PROVIDE_WALLET_TON = 30000000;
+const CREATE_LP_VAULT_SUCCESS_TON = 30000000;
+const PREMINT_LP_TON = 30000000;
+const CANCEL_DEPOSIT_TON = 30000000;
+const META_ASSETS_COUNT = 2;
+const URI_BASE = "https://api.torch.finance/pools/";
+const URI_END = ".json";
+const MINIMUM_MINT_AMOUNT = 0;
+const BASE_ASSET_DECIMAL = 1000000000000000000;
+const ASSET_INDEX_SIZE = 4;
+const ZERO_TON = 0;
+const DEFAULT_WITHDRAW_COUNT = 3;
+const USE_RATES = TRUE;
+const INVALID_INIT_DEPOSIT = TRUE;
+const IS_DEPOSIT_BETWEEN = TRUE;
+const IS_NOT_DEPOSIT_BETWEEN = FALSE;
+const IS_SWAP_BETWEEN = TRUE;
+const IS_NOT_SWAP_BETWEEN = FALSE;
+const IS_WITHDRAW_BETWEEN = TRUE;
+const IS_NOT_WITHDRAW_BETWEEN = FALSE;
+const NEED_REFUND = TRUE;
+const NO_REFUND = FALSE;
+const NO_NEXT = FALSE;
+const IS_CLAIM_FEES = TRUE;
+const IS_NOT_CLAIM_FEES = FALSE;
+const ASSET_NOT_FOUND = TRUE;
+const NO_NEED_FORWARD_TON = FALSE;
+
+;; Next types
+const NEXT_TYPE_SIZE = 2;
+const NO_NEXT_TYPE = -1;
+const SWAP_NEXT_TYPE = 0;
+const DEPOSIT_NEXT_TYPE = 1;
+const WITHDRAW_NEXT_TYPE = 2;
+const WRONG_NEXT_TYPE = 3;
+
+;; Pool
+const MIN_RAMP_TIME = 86400;
+const MAX_A_CHANGE = 10;
+const MAX_A = 1000000;
+const MAX_ADMIN_FEE = 10000000000;
+const MAX_FEE = 5000000000;
+
+;; Meta Pool
+const BASE_LP_ASSET_INDEX = 0;   
+const META_ASSET_INDEX = 1; ;; Meta asset index is always 1, because the first asset is always base pool LP token

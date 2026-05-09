@@ -1,0 +1,18 @@
+;; Base Storage
+global slice base_contract::deployer; ;; Only deployer can use base contract to deploy new contract. In our case, only router (deployer) can deploy pool.
+global int base_contract::proof; ;; By hashing the key storage of the contract about to be deployed, you can generate a proof, which in turn creates a unique address.
+
+() base_contract::load_data() impure inline_ref {
+    slice ds = get_data().begin_parse();
+    base_contract::deployer = ds~load_msg_addr();
+    base_contract::proof = ds~load_uint(PROOF_SIZE);
+    ds.end_parse();
+}
+
+() base_contract::save_data() impure inline_ref {
+    begin_cell()
+        .store_slice(base_contract::deployer)
+        .store_uint(base_contract::proof, PROOF_SIZE)
+    .end_cell()
+    .set_data();
+}

@@ -1,0 +1,18 @@
+{
+  "name": "README.md",
+  "path": "README.md",
+  "sha": "a45b851d38aa472f0efb6b2f5edbf5dcae88221b",
+  "size": 902,
+  "url": "https://api.github.com/repos/ismaventuras/callpermit-nft-moonbeam/contents/README.md?ref=master",
+  "html_url": "https://github.com/ismaventuras/callpermit-nft-moonbeam/blob/master/README.md",
+  "git_url": "https://api.github.com/repos/ismaventuras/callpermit-nft-moonbeam/git/blobs/a45b851d38aa472f0efb6b2f5edbf5dcae88221b",
+  "download_url": "https://raw.githubusercontent.com/ismaventuras/callpermit-nft-moonbeam/master/README.md",
+  "type": "file",
+  "content": "IyBDYWxsIFBlcm1pdCBORlQgTW9vbmJlYW0KClRoZSBzbWFydCBjb250cmFj\ndCB1c2VzIHRoZSBDYWxsIFBlcm1pdCBwcmVjb21waWxlIHRvIGltcGxlbWVu\ndCBMYXp5IE1pbnRpbmcgcGF0dGVybi4KQmFzZWQgb24gW0ludGVyYWN0aW5n\nIHdpdGggdGhlIENhbGwgUGVybWl0IFByZWNvbXBpbGVdKGh0dHBzOi8vZG9j\ncy5tb29uYmVhbS5uZXR3b3JrL2J1aWxkZXJzL3BhbGxldHMtcHJlY29tcGls\nZXMvcHJlY29tcGlsZXMvY2FsbC1wZXJtaXQvKSBieSBNb29uYmVhbSB0ZWFt\nLgoKLSBEZXBsb3llZCBvbjogTW9vbmJhc2UgQWxwaGEKLSBGYXVjZXQ6IFtM\naW5rXShodHRwczovL2FwcHMubW9vbmJlYW0ubmV0d29yay9tb29uYmFzZS1h\nbHBoYS9mYXVjZXQvKQotIERlbW8gb24gdmVyY2VsOiBbTGlua10oaHR0cHM6\nLy9jYWxscGVybWl0LW5mdC1tb29uYmVhbS52ZXJjZWwuYXBwLykKCiMjIFJ1\nbiBsb2NhbGx5CgpgYGBiYXNoCiMgY2xvbmUgcmVwbwpnaXQgY2xvbmUgaHR0\ncHM6Ly9naXRodWIuY29tL2lzbWF2ZW50dXJhcy9jYWxscGVybWl0LW5mdC1t\nb29uYmVhbS5naXQgLgojIGNvcHkgLmVudiBmaWxlCmNwIC5lbnYuZXhhbXBs\nZSAuZW52CiMgaW5zdGFsbCBkZXBlbmRlbmNpZXMKbnBtIGluc3RhbGwKYGBg\nCgpBZGQgeW91ciBwcml2YXRlIGtleSBhbmQgbW9vbnNjYW4gYXBpIGtleSBv\nbiAuZW52IGZpbGUgdGhlbiBydW4gYG5wbSBydW4gZGVwbG95YCB0byBkZXBs\nb3kgdGhlIGNvbnRyYWN0IHRvIG1vb25iZWFtLiBUaGVuIGNvcHkgdGhlIGNv\nbnRyYWN0IGFkZHJlc3MgdG8gLmVudiBmaWxlLgoKUmVwbGFjZSB0aGUgUlBD\nIG9yIHRoZSBpcGZzIHVybCBmb3IgeW91ciBvd24gaWYgeW91IG5lZWQgdG8g\nYW5kIHJ1biBgbnBtIHJ1biBkZXZgIHRvIHN0YXJ0IHRoZSB3ZWIgc2VydmVy\nLgo=\n",
+  "encoding": "base64",
+  "_links": {
+    "self": "https://api.github.com/repos/ismaventuras/callpermit-nft-moonbeam/contents/README.md?ref=master",
+    "git": "https://api.github.com/repos/ismaventuras/callpermit-nft-moonbeam/git/blobs/a45b851d38aa472f0efb6b2f5edbf5dcae88221b",
+    "html": "https://github.com/ismaventuras/callpermit-nft-moonbeam/blob/master/README.md"
+  }
+}

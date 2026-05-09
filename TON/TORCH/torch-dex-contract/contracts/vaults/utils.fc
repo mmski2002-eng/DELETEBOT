@@ -1,0 +1,151 @@
+{-
+ * @notice Handles the deposit operation for the vault.
+ * @param remaining_ton The remaining TON after this transaction.
+ * @param is_deposit_one? Boolean indicating if it is a single asset deposit.
+ * @param query_id The unique query identifier.
+ * @param vault_asset The cell containing the vault asset.
+ * @param provider The address of the liquidity provider.
+ * @param amount The amount of vault asset to be deposited in this transaction.
+ * @param pool_address Deposit assets to this pool address
+ * @param assets The cell containing pool's assets.
+ * @param targets The cell containing the deposit amount for each asset.
+ * @param deposit_params The cell containing the deposit parameters.
+ * @param next The cell containing the next operation data.
+ * @dev If it is a single asset deposit, it sends a deposit all message to the pool. Otherwise, it sends a deposit internal message to the factory.
+-}
+() vault::handle_deposit(
+    int remaining_ton,
+    int is_deposit_one?,
+    int query_id,
+    cell vault_asset,
+    slice provider,
+    int amount,
+    slice pool_address,
+    cell assets,
+    cell targets,
+    cell deposit_params,
+    cell next
+) impure inline {
+    if is_deposit_one? {
+        ;; Check target is equal to deposit amount
+        tuple target_tuple = convert_coins_cell_to_tuple(targets);
+        int deposit_amount = get_deposit_one_amount(target_tuple);
+        throw_unless(error::invalid_deposit_one_amount, deposit_amount == amount);
+
+        ;; Pack deposit all
+        cell deposit_all_body = pack_deposit_all(query_id, provider, vault_asset, targets, deposit_params, next);
+
+        ;; Send deposit all message to pool
+        send_cell_msg(BOUNCEABLE, pool_address, remaining_ton, deposit_all_body, SEND_MODE_REGULAR);
+        return ();
+    }
+
+    ;; If it is not deposit one liquidity, then send deposit_internal message to factory
+
+    ;; Pack deposit internal message
+    cell deposit_internal_body = pack_deposit_internal(
+        query_id,
+        vault_asset,
+        provider,
+        amount,
+        pool_address,
+        assets,
+        targets,
+        deposit_params,
+        next
+    );
+
+    ;; Send deposit internal message to factory
+    send_cell_msg(BOUNCEABLE, vault::factory, remaining_ton, deposit_internal_body, SEND_MODE_REGULAR);
+    return ();
+}
+
+{-
+ * @notice Handles the swap operation for the vault.
+ * @param remaining_ton The remaining TON after this transaction.
+ * @param query_id The unique query identifier.
+ * @param vault_asset The cell containing the vault asset.
+ * @param provider The address of the liquidity provider.
+ * @param amount The amount of vault asset to be swapped in.
+ * @param pool_address Swap assets in this pool address.
+ * @param asset_out The cell containing the asset to be received.
+ * @param swap_params The cell containing the swap parameters.
+ * @param next The cell containing the next operation data.
+ * @dev Ensures that the asset in and asset out are different before sending the swap internal message to the pool.
+-}
+() vault::handle_swap(
+    int remaining_ton,
+    int query_id,
+    cell vault_asset,
+    slice provider,
+    int amount,
+    slice pool_address,
+    cell asset_out,
+    cell swap_params,
+    cell next
+) impure inline {
+    ;; Asset in and asset out must be different
+    throw_unless(error::same_assets, vault_asset.cell_hash() != asset_out.cell_hash());
+
+    ;; Pack swap internal message
+    cell swap_internal_body = pack_swap_internal(
+        query_id,
+        provider,
+        vault_asset,
+        amount,
+        asset_out,
+        swap_params,
+        next
+    );
+
+    ;; Send swap internal message to pool
+    send_cell_msg(BOUNCEABLE, pool_address, remaining_ton, swap_internal_body, SEND_MODE_REGULAR);
+    return ();
+}
+
+{-
+ * @notice Checks if the deposit is a single asset deposit.
+ * @param assets If the deposit is a single asset deposit, it will only contain one asset. Otherwise, it will contain pool's assets.
+ * @param next The cell containing the next operation data.
+ * @return Boolean indicating if it is a single asset deposit.
+ * @dev Only supports deposit next and swap next for now.
+-}
+int check_deposit_one?(cell assets, cell next) impure inline {
+    ;; Deposit one liquidity only contains one asset
+    int assets_count_check = assets.begin_parse().slice_refs() == 1;
+    if next.cell_null?() {
+        return assets_count_check;
+    } else {
+        slice next_slice = next.begin_parse();
+        int next_type = next_slice~load_uint(NEXT_TYPE_SIZE);
+        if next_type == SWAP_NEXT_TYPE {
+            return assets_count_check;
+        }
+
+        ;; If it is not swap next, it has to be deposit next (pool only support deposit & swap, deposit & next)
+        throw_unless(error::wrong_next_type, next_type == DEPOSIT_NEXT_TYPE);
+        slice next_pool_address = next_slice~load_msg_addr();
+        int meta_amount = next_slice~load_coins();
+        cell meta_asset = next_slice~load_ref();
+        return (assets_count_check) & (meta_amount == 0);
+    }
+}
+
+{-
+ * @notice Unpacks the deposit information from the given slice.
+ * @param deposit_info_slice The slice containing the deposit information.
+ * @return pool_address Lp deposit assets to this pool address.
+ * @return assets If the deposit is a single asset deposit, it will only contain one asset. Otherwise, it will contain pool's assets.
+ * @return targets The cell containing the deposit amount for each asset.
+ * @return deposit_params The cell containing the deposit parameters.
+-}
+(slice, cell, cell, cell, cell) unpack_deposit(slice deposit_info_slice) inline {
+    slice pool_address = deposit_info_slice~load_msg_addr();
+    cell assets = deposit_info_slice~load_ref();
+    cell targets = deposit_info_slice~load_ref();
+    cell deposit_params = deposit_info_slice~load_maybe_ref();
+    cell next = deposit_info_slice~load_maybe_ref();
+    deposit_info_slice.end_parse();
+
+    return (pool_address, assets, targets, deposit_params, next);
+}

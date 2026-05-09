@@ -1,0 +1,223 @@
+{-
+ * @notice Packs the data for a `deposit_internal` message into a cell.
+ * @param query_id The unique query identifier
+ * @param provide_asset A cell representing the asset provided for this deposit transaction.
+ * @param jetton_sender The address of the Jetton sender.
+ * @param jetton_amount The amount of Jetton to deposit.
+ * @param pool_address The address of the pool where the deposit is made.
+ * @param assets A cell containing all assets to be deposited.
+ * @param targets A cell specifying the deposit amount for each asset.
+ * @param deposit_params A cell containing additional deposit parameters, if any.
+ * @param next A cell containing the `next` next information, if any.
+ * @return A cell representing the packed `deposit_internal` message data.
+ * @dev Vault contract will send deposit_internal message to factory contract
+-}
+cell pack_deposit_internal(
+    int query_id,
+    cell provide_asset,
+    slice jetton_sender,
+    int jetton_amount,
+    slice pool_address, 
+    cell assets, 
+    cell targets, 
+    cell deposit_params, 
+    cell next
+) inline {
+    cell provide_info = begin_cell()
+        .store_coins(jetton_amount)
+        .store_ref(provide_asset)
+        .store_ref(targets)
+        .end_cell();
+
+    return begin_cell()
+        .store_op(op::deposit_internal)
+        .store_query_id(query_id)
+        .store_slice(jetton_sender)
+        .store_slice(pool_address)
+        .store_ref(assets)
+        .store_ref(provide_info)
+        .store_maybe_ref(deposit_params)
+        .store_maybe_ref(next)
+        .end_cell();
+}
+
+{-
+ * @notice Unpacks the `provide_info` cell to deposit details.
+ * @param provide_info A cell containing the packed provide information.
+ * @return provide_amount The amount of Jetton provided for this deposit transaction.
+ * @return provide_asset A cell representing the provided asset for this deposit transaction.
+ * @return targets A cell specifying the deposit amount for each asset.
+-}
+(int, cell, cell) unpack_provide_info(cell provide_info) inline {
+    slice provide_info_slice = provide_info.begin_parse();
+    int provide_amount = provide_info_slice~load_coins();
+    cell provide_asset = provide_info_slice~load_ref();
+    cell targets = provide_info_slice~load_ref();
+    provide_info_slice.end_parse();
+
+    return (provide_amount, provide_asset, targets);
+}
+
+{-
+ * @notice Packs the `premint_lp` message for pool to premint LP tokens to the LP vault.
+ * @param query_id The unique query identifier
+ * @return A cell representing the packed `premint_lp` message payload.
+ * @dev Pool will send premint_lp message to pool itself to ask pool to premint LP tokens to the LP vault.
+-}
+cell pack_premint_lp(int query_id) inline {
+    return begin_cell()
+        .store_op(op::premint)
+        .store_query_id(query_id)
+    .end_cell();
+}
+{-
+ * @notice Packs the data for a `deposit_all` message into a cell.
+ * @param query_id The unique query identifier
+ * @param provider The address of the liquidity provider.
+ * @param assets A cell containing the assets to be deposited.
+ * @param targets A cell specifying the deposit amount for each asset.
+ * @param deposit_params A cell containing additional deposit parameters, if any.
+ * @param next A cell containing the `next` next information, if any.
+ * @return A cell representing the packed `deposit_all` message data.
+ * @dev 
+ * - Lp account will send deposit_all message to the pool
+ * - If lp only deposit one asset, vault contract will directly send deposit_all message to the pool
+-}
+cell pack_deposit_all(
+    int query_id, 
+    slice provider,
+    cell assets, 
+    cell targets, 
+    cell deposit_params, 
+    cell next
+) inline {
+    return begin_cell()
+        .store_op(op::deposit_all)
+        .store_query_id(query_id)
+        .store_slice(provider)
+        .store_ref(assets)
+        .store_ref(targets)
+        .store_maybe_ref(deposit_params)
+        .store_maybe_ref(next)
+        .end_cell();
+}
+
+{-
+ * @notice Packs the deposit parameters into a cell.
+ * @param min_lp_amount The minimum amount of LP tokens that lp will accept.
+ * @param recipient The address that will receive the LP tokens from the deposit.
+ * @param signed_rates A cell containing the signed rate data (if required by the pool).
+ * @param fulfill_payload The payload that will be sent to the LP upon a successful deposit.
+ * @param reject_payload The payload that will be sent to the LP upon a failed deposit.
+ * @param extra_payload A cell containing additional data, currently used for the referral mechanism.
+ * @return A cell representing the packed deposit parameters.
+ * @dev Both fulfill_payload and reject_payload will be packed in the format of callback_payload, including the amount of TON to send and the payload.
+-}
+cell pack_deposit_params(
+    int min_lp_amount, 
+    slice recipient, 
+    cell signed_rates, 
+    cell fulfill_payload, 
+    cell reject_payload, 
+    cell extra_payload
+) inline {
+    return begin_cell()
+        .store_coins(min_lp_amount)
+        .store_slice(recipient)
+        .store_maybe_ref(signed_rates)
+        .store_maybe_ref(fulfill_payload)
+        .store_maybe_ref(reject_payload)
+        .store_dict(extra_payload)
+        .end_cell();
+}
+
+{-
+* @notice Unpacks the deposit parameters cell to extract deposit details.
+* @param deposit_params The cell containing the packed deposit parameters.
+* @return min_mint_amount The minimum amount of LP tokens that lp will accept.
+* @return recipient The address that will receive the LP tokens from the deposit.
+* @return signed_rates A cell containing the signed rate data (if required by the pool).
+* @return fulfill_payload The payload that will be sent to the LP upon a successful deposit.
+* @return reject_payload The payload that will be sent to the LP upon a failed deposit.
+* @return extra_payload A cell containing additional data, currently used for the referral mechanism.
+-}
+(int, slice, cell, cell, cell, cell) unpack_deposit_params(cell deposit_params) inline {
+    if deposit_params.cell_null?() {
+        return (0, address_none(), null(), null(), null(), null());
+    }
+
+    slice deposit_params_slice = deposit_params.begin_parse();
+    int min_mint_amount = deposit_params_slice~load_coins();
+    slice recipient = deposit_params_slice~load_msg_addr();
+    cell signed_rates = deposit_params_slice~load_maybe_ref();
+    cell fulfill_payload = deposit_params_slice~load_maybe_ref();
+    cell reject_payload = deposit_params_slice~load_maybe_ref();
+    cell extra_payload = deposit_params_slice~load_dict();
+    deposit_params_slice.end_parse();
+
+    return (min_mint_amount, recipient, signed_rates, fulfill_payload, reject_payload, extra_payload);
+}
+
+{-
+ * @notice Packs the data for a `deposit_between` message into a cell.
+ * @param query_id The unique query identifier
+ * @param provider The address of the liquidity provider.
+ * @param assets A cell containing base pool's assets so that meta pool can verify that message is from base pool.
+ * @param meta_asset A cell containing the meta asset so that meta pool can verify that it received the correct meta asset.
+ * @param targets A cell specifying the deposit amount for each asset.
+ * @param deposit_params A cell containing additional deposit parameters, if any.
+ * @param next A cell containing the `next` information which will be used after depositing the assets to the base pool.
+ * @return A cell representing the packed `deposit_between` message data.
+ * @dev 
+ * - Deposit between message will be sent to the meta pool after depositing the assets to the base pool.
+ * - Base pool will set deposit information for the next pool.  
+-}
+cell pack_deposit_between(
+    int query_id, 
+    slice provider, 
+    cell assets, 
+    cell meta_asset, 
+    cell targets, 
+    cell deposit_params,
+    cell next
+) inline {
+    return begin_cell()
+        .store_op(op::deposit_between)
+        .store_query_id(query_id)
+        .store_slice(provider)
+        .store_ref(
+            begin_cell()
+                .store_ref(assets)
+                .store_ref(meta_asset)
+            .end_cell()
+        )
+        .store_ref(targets)
+        .store_maybe_ref(deposit_params)
+        .store_maybe_ref(next)
+        .end_cell();
+}
+
+{-
+ * @notice Parses the `next` cell to extract deposit-next information.
+ * @param next The cell containing the deposit-next data to parse.
+ * @return next_type The type of the next cell.
+ * @return pool_address The address of the meta pool.
+ * @return meta_amount The amount of meta asset deposit to the meta pool.
+ * @return meta_asset A cell representing the meta asset that deposit to the meta pool.
+ * @dev Pool will use Lp token and meta asset with meta_amount to deposit to the next pool.
+-}
+(int, slice, int, cell) parse_deposit_next(cell next) inline {
+    if next.cell_null?() {
+        return (NO_NEXT_TYPE, "", 0, null());
+    }
+    slice next_slice = next.begin_parse();
+    int next_type = next_slice~load_uint(NEXT_TYPE_SIZE);
+    if next_type != DEPOSIT_NEXT_TYPE {
+        return (next_type, "", 0, null());
+    }
+    
+    slice pool_address = next_slice~load_msg_addr();
+    int meta_amount = next_slice~load_coins();
+    cell meta_asset = next_slice~load_ref();
+    return (next_type, pool_address, meta_amount, meta_asset);
+}

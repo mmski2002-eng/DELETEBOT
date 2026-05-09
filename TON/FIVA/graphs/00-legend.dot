@@ -1,0 +1,22 @@
+digraph {
+    label="
+        Each node is a smart contract.\l\
+        Arrows denote a message sent from one smart contract to another.\l\
+        The number on each arrow shows the order of messages.\l\
+        Each arrow has an operation identifying the message type being sent.\l\
+        "
+    node [ colorscheme=pastel19 style=filled ]
+
+    /* Entities */
+    staker1, staker2 [ color=2 ]
+    wallet1, wallet2 [ color=3 ]
+
+    /* Relationships */
+    staker1 -> wallet1 [ label="1\l op::send_tokens\l 0.10 TON\l tokens: 10\l" ]
+    wallet1 -> wallet2 [ label="2\l op::receive_tokens\l 0.09 TON\l tokens: 10\l" ]
+    wallet2 -> staker2 [ label="3\l op::transfer_notification\l 0.01 TON\l tokens: 10\l" ]
+    wallet2 -> staker1 [ label="4\l op::gas_excess\l 0.07 TON\l" ]
+
+    /* Ranks */
+    { rank=min staker1 staker2 }
+}

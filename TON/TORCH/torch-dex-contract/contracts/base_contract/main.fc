@@ -1,0 +1,66 @@
+{-
+ * @title Torch Base Contract
+ * @notice Handles deployment for all Torch contracts
+ * @dev 
+ * - All Torch contracts are initially deployed by using `base_code`, with `init_data` composed of the deployer and proof.
+ * - The `proof` contains the variables in the actual contract storage that determine the address and will not change in the future.
+ * - After receiving an `op::install` message, the base contract updates itself to the actual code and storage data through `set_code()` and `set_data()`.
+ * - If the callback_address is set, the callback_payload will be sent to the callback_address after updating the contract’s code.
+ -}
+#include "../imports/stdlib.fc";
+#include "../common/workchain.fc";
+#include "../common/opcode.fc";
+#include "../common/errors.fc";
+#include "../common/constants.fc";
+#include "../common/deploy_contracts/utils.fc";
+#include "../common/deploy_contracts/adapter.fc";
+#include "../common/utils.fc";
+#include "storages.fc";
+
+() route_internal(slice ctx::sender, int ctx::value, int ctx::fwd_fee, slice ctx::body) impure inline {
+    ;; Load op and query id
+    (int op, int query_id) = ctx::body~load_op_and_query_id();
+
+    if op == op::install {
+        ;; Only deployer can update code and data
+        throw_unless(error::not_deployer, equal_slices_bits(ctx::sender, base_contract::deployer));
+        
+        cell new_code = ctx::body~load_ref(); ;; The code that will be updated to this contract
+        cell new_data = ctx::body~load_ref(); ;; The data that will be set to this contract
+        cell callback_payload = ctx::body~load_maybe_ref();
+        ctx::body.end_parse();
+
+        ;; Parse callback payload
+        (slice receiver, int value, cell body) = parse_callback_payload(callback_payload);
+
+        ;; Send callback_payload to receiver if it is not address_none
+        if ~ is_address_none(receiver) {
+            send_cell_msg(BOUNCEABLE, receiver, value, body, SEND_MODE_REGULAR);
+        }
+
+        ;; Update code and data
+        set_data(new_data);
+        set_code(new_code);
+        return ();
+    }
+
+    throw(error::wrong_op);
+}
+
+() main(int ctx::value, cell in_msg_full, slice ctx::body) impure {
+    slice s = in_msg_full.begin_parse();
+    int flags = s~load_msg_flags();
+
+    if (is_bounced(flags)) { ;; skip all bounced messages
+        return ();
+    }
+    
+    ;; Get context
+    (slice ctx::sender, int ctx::fwd_fee) = s~retrieve_ctx(MY_WORKCHAIN);
+
+    ;; Load data from storage
+    base_contract::load_data();
+
+    ;; Route function to handle internal message
+    route_internal(ctx::sender, ctx::value, ctx::fwd_fee, ctx::body);
+}

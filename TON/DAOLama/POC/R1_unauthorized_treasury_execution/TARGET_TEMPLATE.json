@@ -1,0 +1,25 @@
+{
+  "target_name": "DAOLama vault / treasury-like contract",
+  "network": "ton-mainnet",
+  "treasury_address": "0:a4793bce49307006d3f4e97d815fb4c78ff7655faecf8606111ae29f8d6b41f4",
+  "governance_address": "",
+  "timelock_address": "",
+  "multisig_address": "",
+  "known_admin_addresses": [],
+  "withdraw_opcode_hex": "0x7bdd97de",
+  "execute_opcode_hex": "",
+  "payload_format": {
+    "target": "address?",
+    "value": "coins?",
+    "body": "cell?",
+    "state_init": "cell?",
+    "send_mode": "uint?"
+  },
+  "expected_trusted_senders": [],
+  "notes": [
+    "This file is prefilled with the observed DAOLama vault address from local artifacts.",
+    "Observed transaction in vault_txs.json shows op 0x7bdd97de decoded as daolama_vault_withdraw.",
+    "Governance/timelock fields remain unknown in the provided workspace.",
+    "If exact opcodes are unknown, derive them from source, ABI, decompiler output, or observed tx bodies."
+  ]
+}

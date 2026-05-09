@@ -1,0 +1,399 @@
+{- Jetton Wallet -}
+
+{-
+ * @notice Packs the data required to initialize a Jetton wallet.
+ * @param balance The initial balance of the Jetton wallet.
+ * @param owner_address The address of the wallet owner.
+ * @param jetton_master The address of the Jetton master contract.
+ * @return A cell containing the packed Jetton wallet data.
+ -}
+cell pack_jetton_wallet_data(int balance, slice owner_address, slice jetton_master) inline_ref {
+    return begin_cell()
+    .store_coins(balance)
+    .store_slice(owner_address)
+    .store_slice(jetton_master)
+    .end_cell();
+}
+
+{-
+ * @notice Calculates the state initialization data for a Jetton wallet.
+ * @param recipient The address of the wallet recipient.
+ * @param lp_wallet_code The code to initialize the wallet.
+ * @param jetton_master The address of the Jetton master contract.
+ * @return A cell containing the calculated state initialization data.
+ * @dev The Jetton wallet is initialized with a balance of 0 and links to the recipient and Jetton master.
+-}
+cell calculate_jetton_wallet_state_init(slice recipient, cell lp_wallet_code, slice jetton_master) inline_ref {
+    return begin_cell()
+    .store_uint(0, 2) ;; 0b00 - No split_depth; No special
+    .store_maybe_ref(lp_wallet_code)
+    .store_maybe_ref(
+        pack_jetton_wallet_data(
+            0, ;; balance
+            recipient,
+            jetton_master
+        )
+    )
+    .store_uint(0, 1) ;; Empty libraries
+    .end_cell();
+}
+
+{- Create Pool -}
+
+{-
+ * @notice Converts a cell containing assets data into a tuple.
+ * @param c The cell containing the assets data.
+ * @return A tuple containing all the assets extracted from the cell.
+ * @dev A cell can store a maximum of 4 references, so each layer can hold up to 3 assets, with the remaining reference used to store the next layer of assets_cell.
+-}
+tuple convert_assets_cell_to_tuple(cell c) inline_ref {
+    int depth = c.cell_depth();
+    slice sc = c.begin_parse();
+    tuple t = empty_tuple();
+
+    ;; A Cell can store a maximum of 4 Cell references, so each layer loads up to 3 assets. 
+    ;; If more assets remain, the 4th reference is used to store the next layer of assets_cell, 
+    ;; which is then parsed to extract the remaining assets.
+    repeat(depth) {
+        ;; Load assets from assets cell and push to assets_tuple
+        int refs = min(3, sc.slice_refs());
+        repeat (refs) {
+            t~tpush(sc~load_ref());
+        }
+
+        if sc.slice_refs() > 0 {
+            ;; If there are more assets, load the next layer
+            sc = sc~load_ref().begin_parse();
+        } 
+    }
+
+    return t;
+}
+
+{-
+ * @notice Checks if the asset type is supported.
+ * @param asset_type The asset type to check.
+ * @dev Throws an error if the asset type is not supported. Supported asset types are Jetton and TON for now.
+ -}
+() check_asset_type(int asset_type) impure inline {
+    if (asset_type == JETTON_ASSET_TYPE) | (asset_type == TON_ASSET_TYPE) {
+        return ();
+    }
+    throw(error::not_supported_asset_type);
+}
+
+{-
+ * @notice Compares two assets and determines their order.
+ * @param asset_0 The first asset to compare, represented as a cell.
+ * @param asset_1 The second asset to compare, represented as a cell.
+ * @return A TRUE(-1) if `asset_0` is greater than `asset_1`, a FALSE(0) if `asset_0` is less than `asset_1`, or 0 if they are equal.
+ * @dev 
+ * - The comparison prioritizes asset types in the order: TON < Jetton < XC.
+ * - For Jetton assets, the comparison is based on the hash of their jetton master addresses.
+ * - Throws `error::not_supported_asset_type` if an unsupported asset type is encountered.
+-}
+int compare_assets(cell asset_0, cell asset_1) inline {
+    slice asset_0_slice = asset_0.begin_parse();
+    int asset_0_type = asset_0_slice~load_uint(ASSET_TYPE_SIZE);
+    check_asset_type(asset_0_type);
+
+    slice asset_1_slice = asset_1.begin_parse();
+    int asset_1_type = asset_1_slice~load_uint(ASSET_TYPE_SIZE);
+    check_asset_type(asset_1_type);
+    
+    ;; Compare asset type (TON < Jetton < XC)
+    if(asset_0_type != asset_1_type) {
+        return asset_0_type > asset_1_type;
+    }
+    
+    if asset_0_type == JETTON_ASSET_TYPE {
+        int asset_0_hash = asset_0_slice~load_msg_addr().slice_hash();
+        int asset_1_hash = asset_1_slice~load_msg_addr().slice_hash();
+        return asset_0_hash > asset_1_hash;
+    }
+
+    throw(error::not_supported_asset_type);
+    return -1;
+}
+
+{-
+ * @notice Determines if a swap operation should occur based on the comparison of assets.
+ * @param asset_tuple A tuple containing the assets.
+ * @param index The index of the asset in the tuple to compare.
+ * @param current_cell The current asset represented as a cell for comparison.
+ * @return A boolean value (`TRUE` or `FALSE`) indicating whether the swap should occur.
+ * @dev 
+ * - Returns `FALSE` if the `index` is less than 0.
+ * - Compares the asset at the specified index in the tuple with the `current_cell` using `compare_assets`.
+-}
+int should_swap?(tuple asset_tuple, int index, cell current_cell) inline {
+    if index < 0 {
+        return FALSE;
+    }
+
+    cell asset_0_cell = asset_tuple.at(index);
+    return compare_assets(asset_0_cell, current_cell);
+}
+
+{-
+ * @notice Sorts the assets in the given tuple using insertion sort.
+ * @param assets_tuple A tuple containing the assets to be sorted.
+ * @return A tuple with the assets sorted in ascending order based on the defined comparison logic.
+ * @dev 
+ * - This function uses insertion sort due to its simplicity and suitability for small datasets.
+ * - Sorting the assets on-chain ensures correctness, but it is recommended to sort assets off-chain for better performance (O(n) complexity off-chain).
+ * - The sorting logic depends on the `should_swap?` function for asset comparison.
+-}
+tuple sort_assets(tuple assets_tuple) inline_ref {
+    ;; We are use insertion sort because if we sort the assets off-chain, the time complexity will be O(n)
+    int assets_len = assets_tuple.tlen();
+    int i = 1;
+    while i < assets_len {
+        cell current = assets_tuple.at(i);
+        int j = i - 1;
+        while (j >= 0) & should_swap?(assets_tuple, j, current) {
+            assets_tuple~tset(assets_tuple.at(j), j + 1);
+            j = j - 1;
+        }
+        assets_tuple~tset(current, j + 1);
+        i = i + 1;
+    }
+    return assets_tuple;
+}
+
+{-
+ * @notice Packs a tuple of assets into a cell, with a maximum of 3 assets stored in each layer.
+ * @param assets_tuple The tuple containing the assets to be packed into a cell.
+ * @param current_index The starting index in the tuple to begin packing.
+ * @return A cell containing the packed assets, following the layer-by-layer storage rule.
+ * @dev 
+ * - Each cell can hold up to 4 references, so at most 3 assets are stored in each layer, with the remaining reference used to link to the next layer of assets.
+ * - This function uses a recursive approach to handle packing across multiple layers, ensuring each cell stores no more than 3 assets.
+ * - The process continues until all assets in the tuple are packed into cells.
+-}
+cell convert_assets_tuple_to_cell(tuple assets_tuple, int current_index) inline_ref {
+    ;; Remaining assets count
+    int remaining_assets_count = assets_tuple.tlen() - current_index;
+
+    ;; One cell can only havev 4 references, so we can only pack 3 assets at most and use the last cell to pack the remain assets
+    int asset_count = min(3, remaining_assets_count);
+    builder assets_cell = begin_cell();
+
+    ;; We used a recursive approach to ensure each cell stores only 3 assets, with the fourth reference used to continue storing the remaining assets, following the same rule.
+    repeat asset_count {
+        cell asset = assets_tuple.at(current_index);
+        assets_cell = assets_cell.store_ref(asset);
+        current_index += 1;
+    }
+
+    ;; Update remaining_assets_count
+    remaining_assets_count -= asset_count;
+
+    if remaining_assets_count > 0 {
+        cell next_assets_cell = convert_assets_tuple_to_cell(assets_tuple, current_index);
+        return assets_cell.store_ref(next_assets_cell).end_cell();
+    }
+
+    return assets_cell.end_cell();
+}
+
+{-
+ * @notice Parses assets stored in a cell, sorts them, and returns the sorted assets in both cell and tuple formats.
+ * @param assets The cell containing the assets to be parsed and sorted.
+ * @return sorted_assets A cell containing the sorted assets.
+ * @return sorted_assets_tuple A tuple containing the sorted assets.
+ * @return assets_count The total number of assets parsed from the input cell.
+ * @dev 
+ * - The function first converts the input cell to a tuple format using `convert_assets_cell_to_tuple`.
+ * - It then sorts the assets in the tuple using `sort_assets`.
+ * - Finally, the sorted tuple is converted back into a cell using `convert_assets_tuple_to_cell`, starting from index 0.
+
+-}
+(cell, tuple, int) parse_and_sort_assets(cell assets) inline {
+    ;; Convert assets cell to tuple
+    tuple assets_tuple = convert_assets_cell_to_tuple(assets);
+
+    ;; Sort assets tuple
+    tuple sorted_assets_tuple = sort_assets(assets_tuple);
+    
+    ;; 0 mean that we start from 0 index in balances_tuple
+    cell sorted_assets = convert_assets_tuple_to_cell(sorted_assets_tuple, 0); 
+
+    ;; Return assets in cell and tuple format
+    return (sorted_assets, sorted_assets_tuple, assets_tuple.tlen());
+}
+
+{-
+ * @notice Initializes a tuple with the specified number of elements, each set to 0.
+ * @param assets_len The number of elements to initialize in the tuple.
+ * @return A tuple containing `assets_len` elements, all initialized to 0.
+ * @dev The function creates an empty tuple and iteratively pushes 0 into it for the specified number of elements.
+-}
+tuple get_init_tuple(int assets_len) inline {
+    tuple init_balance_tuple = empty_tuple();
+    repeat(assets_len) {
+        init_balance_tuple~tpush(0);
+    } 
+    return init_balance_tuple;
+}
+
+{- Base contract: init and proof -}
+
+{-
+ * @notice Constructs the initial state of the base contract.
+ * @param deployer The address of the deployer.
+ * @param proof An integer representing the proof value (hash the essential storage data).
+ * @param base_code The cell containing the base contract's code.
+ * @return A cell containing the base contract's initial state.
+ * @dev 
+ * - This function creates a cell representing the base contract's initial state.
+ * - The cell includes the deployer address, proof value, and base contract code.
+-}
+cell get_base_init(slice deployer, int proof, cell base_code) inline_ref {
+    return begin_cell()
+    .store_uint(0, 2) ;; 0b00 - No split_depth; No special
+    .store_maybe_ref(base_code)
+    .store_maybe_ref(
+        begin_cell()
+            .store_slice(deployer)
+            .store_uint(proof, PROOF_SIZE)
+        .end_cell()
+    )
+    .store_uint(0, 1) ;; Empty libraries
+    .end_cell();
+}
+
+{-
+ * @notice Computes and returns the standard address of a contract from its state initialization.
+ * @param state_init The cell containing the contract's state initialization data.
+ * @return An address representing the standard address of the contract.
+ * @dev 
+ * - This function constructs a standard contract address (`addr_std`) using the given `state_init`.
+ * - The address includes:
+ *   - `MY_WORKCHAIN` as the workchain ID.
+ *   - The hash of the `state_init` as the unique part of the address.
+ *   - No anycast flags (set to 0).
+ * - The computed address is parsed from the constructed cell and returned as an address.
+-}
+slice get_contract_addr(cell state_init) inline_ref {
+    return begin_cell()
+    .store_uint(2, 2) ;; addr_std$10
+    .store_uint(0, 1) ;; anycast nothing
+    .store_int(MY_WORKCHAIN, 8)
+    .store_uint(cell_hash(state_init), 256)
+    .end_cell()
+    .begin_parse();
+}
+
+{-
+ * @notice Generates the proof hash for a vault using the provided assets cell.
+ * @param asset_cell A cell containing the asset associated with the vault.
+ * @return An integer representing the hash of the vault essential storage data.
+-}
+int get_vault_proof(cell asset_cell) inline {
+    return begin_cell()
+        .store_uint(VAULT_CONTRACT_TYPE, CONTRACT_TYPE_SIZE)
+        .store_ref(asset_cell)
+        .end_cell().cell_hash();
+}
+
+{-
+ * @notice Generates the proof hash for a pool based on its sorted assets and pool type.
+ * @param sorted_assets A cell containing the sorted assets associated with the pool.
+ * @param pool_type An integer representing the type of the pool.
+ * @return An integer representing the hash of the pool proof.
+ * @dev Only support Base pool and Meta pool type for now.
+-}
+int get_pool_proof(cell sorted_assets, int pool_type) inline {
+    ;; Calculate pool proof
+    return begin_cell()
+        .store_uint(POOL_CONTRACT_TYPE, CONTRACT_TYPE_SIZE)
+        .store_uint(pool_type, POOL_TYPE_SIZE)
+        .store_ref(sorted_assets)
+        .end_cell().cell_hash();
+}
+
+{-
+ * @notice Generates the initial state of a base contract and computes its address.
+ * @param factory The address of the factory deploying the base contract.
+ * @param proof An integer representing the proof value (hash the essential storage data).
+ * @param base_code The cell containing the code of the base contract.
+ * @return base_contract_init A cell representing the initial state of the base contract.
+ * @return base_contract_address The address of the base contract.
+-}
+(cell, slice) get_base_init_and_address(slice factory ,int proof, cell base_code) inline_ref {
+    cell base_contract_init = get_base_init(factory, proof, base_code);
+    slice base_contract_address = get_contract_addr(base_contract_init);
+    return (base_contract_init, base_contract_address);
+}
+
+{- Get contract address -}
+
+{-
+ * @notice Calculates the address of a vault based on the factory, asset, and base code.
+ * @param factory The address of the factory deploying the vault.
+ * @param asset A cell containing the asset associated with the vault.
+ * @param base_code The cell containing the base contract code.
+ * @return vault address.
+-}
+slice cal_vault_address(slice factory, cell asset, cell base_code) inline {
+
+    ;; Get vault address by asset
+    (_, slice vault_address) = get_base_init_and_address(factory , get_vault_proof(asset), base_code);
+    return vault_address;
+}
+
+{-
+ * @notice Calculates the address of a Jetton wallet based on the Jetton master, wallet owner, and wallet code.
+ * @param jetton_master The address of the Jetton master contract.
+ * @param owner The address of the wallet owner.
+ * @param jetton_wallet_code The code of the Jetton wallet, in cell format.
+ * @return Owner's Jetton wallet address.
+-}
+slice cal_jetton_wallet_address(slice jetton_master, slice owner, jetton_wallet_code) inline {
+    return get_contract_addr(calculate_jetton_wallet_state_init(owner, jetton_wallet_code, jetton_master));
+}
+
+{-
+ * @notice Generates the proof hash for an LP (Liquidity Provider) account.
+ * @param query_id The unique identifier for the query.
+ * @param provider The address of the liquidity provider.
+ * @param pool_address The address of the pool where the liquidity provider wants to deposit funds.
+ * @param assets A cell containing the assets that the liquidity provider wants to deposit.
+ * @return An integer representing the hash of the LP account proof.
+-}
+int get_lp_account_proof(int query_id, slice provider, slice pool_address, cell assets) inline {
+    return begin_cell()
+        .store_uint(LP_ACCOUNT_CONTRACT_TYPE, CONTRACT_TYPE_SIZE)
+        .store_query_id(query_id)
+        .store_slice(provider)
+        .store_slice(pool_address)
+        .store_ref(assets)
+        .end_cell().cell_hash();
+}
+
+{-
+ * @notice Calculates the address of an LP (Liquidity Provider) account based on the given parameters.
+ * @param factory The address of the factory deploying the LP account.
+ * @param query_id The unique identifier for the query.
+ * @param provider The address of the liquidity provider.
+ * @param pool_address The address of the pool where the liquidity provider wants to deposit funds.
+ * @param assets A cell containing the assets that the liquidity provider wants to deposit.
+ * @param base_code The cell containing the base contract code for the LP account.
+ * @return A slice representing the calculated address of the LP account.
+-}
+slice cal_lp_account_address(slice factory, int query_id, slice provider, slice pool_address, cell assets, cell base_code) inline {
+    int lp_account_proof = get_lp_account_proof(query_id, provider, pool_address, assets);
+    (_, slice lp_account_address) = get_base_init_and_address(factory, lp_account_proof, base_code);
+    return lp_account_address;
+}
+
+{-
+ * @notice Packs a TON asset into a cell.
+ * @return A cell representing the packed TON asset.
+-}
+cell pack_ton_asset() inline {
+    return begin_cell()
+        .store_uint(TON_ASSET_TYPE, ASSET_TYPE_SIZE)
+        .end_cell();
+}

@@ -1,0 +1,2 @@
+const pool::contract_type = 3; ;; uint5
+const pool::pool_type = 0; ;; uint4

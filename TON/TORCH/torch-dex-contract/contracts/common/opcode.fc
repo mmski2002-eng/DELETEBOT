@@ -1,0 +1,56 @@
+;; Common
+const op::force_update = "force_update"c; ;; 8cb526e7
+const op::install = "install"c; ;; 2fcabd79
+const op::update = "update"c; ;; 98253578
+const op::message = 0;
+
+;; Factory
+const op::create_base_pool = "create_base_pool"c; ;; 18d8d56e
+const op::create_meta_pool = "create_meta_pool"c; ;; 1d1d68dd
+const op::create_vault = "create_vault"c; ;; cbdf3140
+const op::create_lp_vault = "create_lp_vault"c; ;; 5482139c
+const op::update_pool_code = "update_pool_code"c; ;; 50ae945a
+const op::update_vault_code = "update_vault_code"c; ;; 1ab12b78
+const op::update_admin_config = "update_admin_config"c; ;; 9ad37959
+const op::update_signer_key = "update_signer_key"c; ;;af74dd1b
+const op::transfer_admin = "transfer_admin"c; ;; 2b8af82e
+const op::update_lp_account_code = "update_lp_account_code"c; ;; bdf95d49
+
+;; Vault opcodes
+const op::create_vault_success = "create_vault_success"c; ;; 416c25f4
+const op::deposit = "deposit"c; ;; 95db9d39
+const op::swap = "swap"c; ;; 25938561
+const op::withdraw = "withdraw"c; ;; b5de5f9e
+const op::deposit_internal = "deposit_internal"c; ;; f74b5f85
+const op::payout = "payout"c; ;; 4e2ea902
+const op::swap_internal = "swap_internal"c; ;; fcb1be1e
+const op::withdraw_internal = "withdraw_internal"c; ;; 1a99da7b
+const op::success_ton_payout = "success_ton_payout"c; ;; 4e2ea902
+
+;; Lp account
+const op::deposit_all = "deposit_all"c; ;; ec328fb0
+const op::cancel_deposit = "cancel_deposit"c; ;; f31f8168
+
+;; Pool
+const op::premint = "premint"c; ;; 446077df
+const op::deposit_between = "deposit_between"c; ;; de90e25c
+const op::swap_between = "swap_between"c; ;; ffae5893
+const op::withdraw_between = "withdraw_between"c; ;; b4963cdc
+const op::stop_pool = "stop_pool"c; ;; 45776b99
+const op::unstop_pool = "unstop_pool"c; ;; 88a204a9
+const op::update_admin_fee_numerator = "update_admin_fee_numerator"c; ;; bcc232f0
+const op::update_fee_numerator = "update_fee_numerator"c; ;; 3a2e420d
+const op::claim_admin_fee = "claim_admin_fee"c; ;; 913e42af
+const op::ramp_a = "ramp_a"c; ;; c951044f
+const op::stop_ramp_a = "stop_ramp_a"c; ;; 716143ab
+
+;; Jetton opcodes
+const op::transfer_notification = 0x7362d09c;
+const op::internal_transfer = 0x178d4519;
+const op::transfer = 0xf8a7ea5;
+const op::excesses = 0xd53276db;
+const op::mint = 0x642b7d07;
+const op::provide_wallet_address = 0x2c76b973;
+const op::take_wallet_address = 0xd1735400;
+const op::top_up = 0xd372158c;
+const op::burn_fp = "burn_fp"c; ;; 0xb5de5f9e

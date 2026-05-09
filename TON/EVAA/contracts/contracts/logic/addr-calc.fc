@@ -1,0 +1,98 @@
+;; This file is licensed under the Business Source License (BUSL).
+;; See the LICENSE.md file in the project root for more information.
+
+#include "../external/stdlib.fc";
+#include "../external/ton.fc";
+#include "../storage/user-storage.fc";
+
+cell pack_state_init(cell code, cell data) inline {
+	return begin_cell()
+		.store_uint(0, 2)
+		.store_dict(code)
+		.store_dict(data)
+		.store_uint(0, 1)
+		.end_cell();
+}
+
+(slice) calculate_address (cell state_init) {
+	int wc = get_current_workchain();
+	return begin_cell()
+		.store_uint(4, 3)
+		.store_int(wc, 8)
+		.store_uint(cell_hash(state_init), 256)
+		.end_cell()
+		.begin_parse();
+}
+
+slice calc_address_from_hash (int addr_hash) inline {
+	int wc = get_current_workchain();
+	return begin_cell().store_uint(4, 3)
+	.store_int(wc, 8)
+	.store_uint(addr_hash, 256)
+	.end_cell()
+	.begin_parse();
+}
+
+slice calc_master_wallet_address_from_asset_id(int asset_id, cell token_keys) inline {
+	(int wallet_address_hash, slice data, int flag) = token_keys.udict_get_min?(256);
+	while (flag) {
+		int ticker_hash = data~load_uint(256);
+		if (ticker_hash == asset_id) {
+			return calc_address_from_hash(wallet_address_hash);
+		}
+
+		(wallet_address_hash, data, flag) = token_keys.udict_get_next?(256, wallet_address_hash);
+	}
+	return null();
+}
+
+cell platform::calculate_blank_state_init(
+    cell blank_code,
+    slice platform_address, slice owner_address,
+    int type_id, int subaccount_id
+) inline {
+	var data = begin_cell()
+		.store_slice(platform_address)
+		.store_slice(owner_address)
+		.store_uint(type_id, 8)
+		.store_uint(0, 1); ;; params = null
+
+	;; it is really not optimal to put subaccount_id into params cell, because that would require
+	;; additional cell creation for EACH user contract address calculation
+	;; therefore, it is optionally put after the old blank state init
+
+	if(subaccount_id != 0){
+		data = data.store_int(subaccount_id, 16);
+	}
+
+    return pack_state_init(
+        blank_code,
+        data.end_cell()
+    );
+}
+
+;; Functions to calculate lending-user Smart Contract's state_init
+;; and, correspondingly, lending-user's address
+
+cell calculate_user_init_data(int code_version, slice owner_address) {
+  return user::storage::pack_init(
+    code_version,
+    my_address(),
+    owner_address,
+    new_dict(),
+    user_state::free
+  );
+}
+
+cell calculate_user_state_init(cell blank_code, slice owner_address, int subaccount_id) {
+  return platform::calculate_blank_state_init(
+    blank_code,
+    my_address(), owner_address,
+    0, subaccount_id
+  );
+}
+
+slice calculate_user_address(cell blank_code, slice owner_address, int subaccount_id) {
+  return calculate_address(calculate_user_state_init(blank_code, owner_address, subaccount_id));
+}
+

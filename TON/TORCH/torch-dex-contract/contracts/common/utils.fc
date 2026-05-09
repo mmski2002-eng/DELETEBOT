@@ -1,0 +1,629 @@
+{- Send message methods -}
+
+() send_deploy_msg(
+    int bounce_flag,
+    slice to,
+    int value,
+    cell body,
+    cell state_init,
+    int mode
+) impure inline_ref {
+    var msg = begin_cell()
+        .store_msg_flags_and_address_none(bounce_flag)
+        .store_slice(to)
+        .store_coins(value)
+        .store_statinit_ref_and_body_ref(state_init, body)
+        .end_cell();
+    send_raw_message(msg, mode);
+}
+
+() send_cell_msg( 
+    int bounce_flag,
+    slice receiver,
+    int value,
+    cell body,
+    int mode
+) impure inline_ref {
+    var msg = begin_cell()
+        .store_msg_flags_and_address_none(bounce_flag)
+        .store_slice(receiver)
+        .store_coins(value)
+        .store_only_body_ref(body);
+    
+    send_raw_message(msg.end_cell(), mode);
+}
+
+() send_jetton(
+    int bounce_flag,
+    slice receiver, 
+    slice response_address,
+    slice jetton_wallet, 
+    int jetton_amount, 
+    int ton_amount, 
+    int query_id, 
+    cell payload, 
+    int forward_ton,
+    int mode
+) impure inline_ref {
+    ;; send jetton transfer to jetton wallet
+    cell msg_body = begin_cell()
+	.store_op(op::transfer)
+	.store_query_id(query_id)
+	.store_coins(jetton_amount)
+	.store_slice(receiver)
+	.store_slice(response_address)
+	.store_uint(0, 1)
+	.store_coins(forward_ton)
+	.store_maybe_ref(payload)
+	.end_cell();
+
+    cell msg = begin_cell()
+	.store_msg_flags_and_address_none(bounce_flag)
+	.store_slice(jetton_wallet)
+	.store_coins(ton_amount)
+	.store_only_body_ref(msg_body)
+	.end_cell();
+
+    send_raw_message(msg, mode); 
+}
+
+{- Update contaracts -}
+
+{-
+ * @notice Updates the contract's code and optionally its data.
+ * @param msg_body A slice containing the message body with the new contract code and data.
+ * @dev 
+ * - The `msg_body` must include:
+ *   - A reference to the new contract code (`new_code`).
+ *   - An optional reference to the new contract data (`new_data`).
+ * - The function updates the contract's code using `set_code`.
+ * - If `new_data` is not null, the contract's data is also updated using `set_data`.
+ -}
+() update_contract(slice msg_body) impure inline_ref {
+    (cell new_code, cell new_data) = (msg_body~load_ref(), msg_body~load_maybe_ref());
+    msg_body.end_parse();
+    set_code(new_code);
+    if (~ cell_null?(new_data)) {
+        set_data(new_data);
+    }
+    return ();
+}
+
+{- Basic operation -}
+
+{-
+ * @notice Converts a cell containing assets coin data into a tuple.
+ * @param assets_coins The cell containing the assets coin data to be converted.
+ * @return A tuple where each element represents the coin amount extracted from the cell.
+ * @dev 
+ * - This function parses the `assets_coins` cell, iterating through its references and bits to extract coin amounts.
+ * - Typically, a single cell can store up to 8 coin amounts; if there are more, they are stored in the next cell reference. 
+ * - For now, there is no senario that more than 8 coin amounts are stored in a cell.
+ * -
+ * - WARNING: Because implementing this function is very expensive in our case, as it requires the use of a recursive function. 
+ * - However, in the context of stableswap, the number of assets we handle will not exceed 4. 
+ * - Therefore, we will not implement the recursive version in this case.
+
+ Recursive version:
+
+ tuple convert_coins_cell_to_tuple(cell assets_coins) inline_ref {
+    int depth = assets_coins.cell_depth() + 1;
+    slice assets_coins_slice = assets_coins.begin_parse();
+    tuple assets_coins_tuple = empty_tuple();
+    repeat depth {
+        while assets_coins_slice.slice_bits() {
+            assets_coins_tuple~tpush(assets_coins_slice~load_coins());
+        }
+
+        if ~ assets_coins_slice.slice_refs_empty?() {
+            assets_coins_slice = assets_coins_slice~load_ref().begin_parse();
+        }
+    }
+
+    return assets_coins_tuple;
+}
+-}
+tuple convert_coins_cell_to_tuple(cell assets_coins) impure inline_ref {
+    ;; Assume the assets coins do not have nested coins cell
+    slice assets_coins_slice = assets_coins.begin_parse();
+    throw_unless(error::invalid_coins_cell, assets_coins_slice.slice_refs_empty?());
+
+    ;; Thus we can simply load at most 7 coins per cell
+    tuple coins_tuple = empty_tuple();
+    while ~ assets_coins_slice.slice_data_empty?() {
+        coins_tuple~tpush(assets_coins_slice~load_coins());
+    }
+    return coins_tuple;
+}
+
+{-
+ * @notice Converts a tuple containing coin amounts into a cell.
+ * @param coins_tuple The tuple containing coin amounts to be converted.
+ * @return A cell where each coin amount from the tuple is sequentially stored.
+ * @dev This function iterates through the `coins_tuple` and sequentially stores each coin amount into the cell.
+ * 
+ * WARNING: Because implementing this function is very expensive, as it requires the use of a recursive function. 
+ * However, in the context of stableswap, the number of assets we handle will not exceed 4. 
+ * Therefore, we will not implement the recursive version in this case.
+-}
+cell convert_coins_tuple_to_cell(tuple coins_tuple) inline_ref {
+    builder assets_coins = begin_cell();
+    int coins_len = coins_tuple.tlen();
+    int i = 0;
+
+    while i < coins_len {
+        assets_coins = assets_coins.store_coins(coins_tuple.at(i));
+        i += 1;
+    }
+
+    return assets_coins.end_cell();
+}
+
+{-
+ * @notice Finds the index of a target asset in a tuple of sorted assets.
+ * @param sorted_assets_tuple The tuple containing the sorted assets.
+ * @param target_asset The cell representing the asset to find.
+ * @return The index of the target asset in the sorted assets tuple. Returns -1 if the asset is not found.
+ * @dev 
+ * - The function supports TON and Jetton asset types. XC asset comparison will be implemented later.
+ * - For TON assets:
+ *   - The function directly compares the hash of the first asset in the tuple with the `target_asset` hash.
+ *   - If matched, it returns index 0.
+ * - For Jetton assets:
+ *   - The function calculates the hash of the Jetton master address and iterates through the tuple to find a match.
+ * - Unsupported asset types will throw an error.
+ * - If no matching asset is found, the function returns -1.
+-}
+int find_asset_index(tuple sorted_assets_tuple, cell target_asset) impure inline_ref {
+    slice target_asset_slice = target_asset.begin_parse();
+    int target_asset_type = target_asset_slice~load_uint(ASSET_TYPE_SIZE);
+    int target_hash = 0;
+    if target_asset_type == JETTON_ASSET_TYPE {
+        target_hash = target_asset_slice~load_msg_addr().slice_hash();
+    } elseif target_asset_type == TON_ASSET_TYPE {
+        throw_unless(error::asset_not_found, sorted_assets_tuple.at(0).cell_hash() == target_asset.cell_hash());
+        return 0;
+    } else {
+        throw(error::not_supported_asset_type);
+    }
+
+    int i = 0;
+    int length = sorted_assets_tuple.tlen();
+    while i < length {
+        ;; Get the asset at the i
+        cell asset_i = sorted_assets_tuple.at(i);
+
+        ;; XC compare will be implemented when XC is ready
+
+        ;; Get asset type
+        slice asset_i_slice = asset_i.begin_parse();
+        int asset_i_type = asset_i_slice~load_uint(ASSET_TYPE_SIZE);
+        if asset_i_type != TON_ASSET_TYPE {
+            int asset_i_hash = asset_i_slice~load_msg_addr().slice_hash();
+
+            ;; Compare target_asset with mid_asset
+            if (target_hash == asset_i_hash) {
+                ;; Asset found, return the index
+                return i;
+            }
+        }
+        i += 1;
+    }
+
+    return ASSET_NOT_FOUND;
+}
+
+{-
+ * @notice Finds the indexes of the input and output assets in a tuple of assets.
+ * @param assets_tuple The tuple containing the list of assets.
+ * @param asset_in The cell representing the input asset to find.
+ * @param asset_out The cell representing the output asset to find.
+ * @return A tuple containing:
+ *         - The index of `asset_in` in the tuple.
+ *         - The index of `asset_out` in the tuple.
+ *         If either asset is not found, its index will be -1.
+-}
+(int, int) find_assets_in_out_indexes(tuple assets_tuple, cell asset_in, cell asset_out) inline {
+    ;; Check asset_in and asset_out is in pool::assets
+    int asset_in_index = find_asset_index(assets_tuple, asset_in);
+    int asset_out_index = find_asset_index(assets_tuple, asset_out);
+
+    return (asset_in_index, asset_out_index);
+}
+
+{-
+ * @notice Calculates the number of non-zero elements in a tuple.
+ * @param elements_tuple The tuple containing the elements to be checked.
+ * @return The count of non-zero elements in the tuple.
+-}
+int cal_nonzeros(tuple elements_tuple) inline {
+    int tuple_length = elements_tuple.tlen();
+    int non_zero_elements_count = 0;
+    repeat tuple_length {
+        non_zero_elements_count += elements_tuple~tpop() != 0 ? 1 : 0;
+    }
+    return non_zero_elements_count;
+}
+
+{-
+ * @notice Extracts the single non-zero amount from a tuple of deposit amounts.
+ * @param amounts_tuple A tuple containing the deposit amounts.
+ * @return The single non-zero amount in the tuple.
+ * @dev 
+ * - This function iterates through the `amounts_tuple` to count and extract the non-zero element.
+ * - Ensures that there is exactly one non-zero element in the tuple.
+ * - Throws an error (`error::invalid_deposit_one_amount`) if there are zero or more than one non-zero elements.
+-}
+int get_deposit_one_amount(tuple amounts_tuple) inline {
+    int tuple_length = amounts_tuple.tlen();
+    int non_zero_elements_count = 0;
+    int amount = 0;
+    repeat tuple_length {
+        int value = amounts_tuple~tpop();
+        if value != 0 {
+            non_zero_elements_count += 1;
+            amount = value;
+        }
+    }
+
+    ;; Deposit one only can have one non-zero element
+    throw_unless(error::invalid_deposit_one_amount, non_zero_elements_count == 1);
+    return amount;
+}
+
+{-
+ * @notice Packs a message slice into a cell with the appropriate operation code.
+ * @param message The slice representing the message to be packed.
+ * @return A cell containing the packed message payload.
+ * @dev This message is used to tell user the result of the operation.
+-}
+cell pack_message_payload(slice message) inline {
+    return begin_cell().store_uint(op::message, MSG_OP_SIZE).store_slice(message).end_cell();
+}       
+
+{-
+ * @notice Selects the appropriate payload to be forwarded.
+ * @param original_payload The original payload (fulfill_payload or reject_payload) to be packed.
+ * @param default_comment_payload A default comment payload to be packed (e.g., "Send Lp" or "Min amount not reached (Refund)").
+ * @return (int, cell):
+ *         - A boolean flag indicating the need for `forward_ton`.
+ *         - The selected forward payload.
+ * @dev 
+ * - If the user has set `original_payload` to something other than null, the vault will send `original_payload`; otherwise, it will send `default_comment_payload`.
+ * - The `need_forward_ton?` flag is specifically used by the Jetton vault to determine if `forward_ton` should be calculated. If `original_payload` is null, `forward_ton` is set to 0.
+ * - TON vault will directly send this payload along with `remaining_ton`.
+-}
+(int, cell) select_forward_payload(cell original_payload, cell default_comment_payload) inline {
+    int need_forward_ton? = ~ original_payload.cell_null?();
+    cell forward_payload = need_forward_ton? ? original_payload : default_comment_payload;
+    return (need_forward_ton?, forward_payload);
+}
+
+{-
+ * @notice Packs the forward payload into a cell.
+ * @param need_forward_ton? A boolean flag indicating whether `forward_ton` is needed.
+ * @param forward_payload The payload to be forward to the recipient if need_forward_ton? is true.
+ * @return A cell containing the packed forward payload.
+-}
+cell pack_forward_payload(int need_forward_ton?, cell forward_payload) inline {
+    return begin_cell().store_bool(need_forward_ton?).store_maybe_ref(forward_payload).end_cell();
+}
+
+{-
+ * @notice Parses the forward payload to determine whether to calculate `forward_ton` and then get the `forward_payload` to send to the recipient.
+ * @param payload A cell containing a boolean indicating whether the vault needs to calculate `forward_ton` and the `forward_payload` to be sent to the recipient.
+ * @dev
+ * - If `need_forward_ton?` is true, it indicates that the user has set a fulfill/reject payload; otherwise, it indicates that the payload is the default comment payload provided by Torch.
+ * - For Jetton vault, if `need_forward_ton?` is true, `forward_ton` will be calculated as `remaining_ton - JETTON_TRANSFER_TON`. Otherwise, `forward_ton` will be 0.
+ * - Jetton vault will use `JETTON_TRANSFER_TON` as the gas fee for transferring jettons, and the remaining TON will be forwarded to the receiver via `forward_ton` in the jetton notification.
+ * - For TON vault, it will send the `forward_payload` along with `remaining_ton`.
+-}
+(int, cell) parse_forward_payload(cell payload) inline {
+    slice payload_slice = payload.begin_parse();
+    int need_forward_ton? = payload_slice~load_bool();
+    cell forward_payload = payload_slice~load_maybe_ref();
+    return (need_forward_ton?, forward_payload);
+}
+
+{-
+ * @notice Packs a callback payload into a cell.
+ * @dev If it is for packing a payout message, there is no need to specify the receiver, 
+ *      as it will already be set in the deposit/swap parameters.
+ * @parans receiver Contract will send this message to receiver
+ * @param value The amount of TON to forward.
+ * @param body The cell containing the body to be forwarded.
+ * @return A cell representing the packed callback payload.
+-}
+cell pack_callback_payload(slice receiver, int value, cell body) inline {
+    return begin_cell().store_slice(receiver).store_coins(value).store_ref(body).end_cell();
+}
+
+{- LP Account -}
+
+{-
+ * @notice Updates the LP account balances based on the provided asset and amount.
+ * @param sorted_assets_tuple A tuple containing the sorted assets in the pool.
+ * @param provide_asset The cell representing the asset being deposited in this transaction.
+ * @param provide_amount The amount of the asset being deposited in this transaction.
+ * @param balances A tuple representing the current balances in the Lp account.
+ * @param meta_asset The cell representing the meta asset, if applicable.
+ * @return A tuple containing:
+ *         - The updated balances as a cell.
+ *         - The meta amount (0 if the deposit asset is not the meta asset).
+ *         - A flag indicating whether a refund is needed (e.g., `NO_REFUND` or `NEED_REFUND`).
+ * @dev 
+ * - If provide_asset is one of the base pool’s assets and already has a value in balances_tuple, it indicates a duplicate deposit and will trigger a refund.
+ * - Duplicate deposits of the meta asset will be checked in the lp_account contract.
+-}
+(cell, int, int) set_lp_account_balances(
+    tuple sorted_assets_tuple, 
+    cell provide_asset, 
+    int provide_amount, 
+    tuple balances, 
+    cell meta_asset
+) inline {
+    ;; Find provide_asset's index in sorted_assets_tuple (Binary search)
+    int index = find_asset_index(sorted_assets_tuple, provide_asset);
+
+    if ~ meta_asset.cell_null?() {
+        ;; Check this deposit asset is meta_asset
+        ;; Requires this deposit asset can't be found in assets_tuple and cell_hash should be equal to meta_asset's cell_hash
+        if (index == ASSET_NOT_FOUND) & (provide_asset.cell_hash() == meta_asset.cell_hash()) {
+            return (convert_coins_tuple_to_cell(balances), provide_amount, NO_REFUND);
+        }
+    }
+
+    ;; Deposit asset should be found in sorted_assets_tuple or it is meta_asset
+    throw_unless(error::asset_not_found, index != ASSET_NOT_FOUND);
+
+    ;; Update provide amount to balances with provide_asset's index
+    tuple balances_tuple = balances;
+
+    ;; Check if provider is already provided this asset to pool then refund the asset to provider
+    if(balances_tuple.at(index) != 0) {
+        return (null(), 0, NEED_REFUND);
+    }
+
+    ;; If provider is not provided this asset to pool, then update balances_tuple with provide_amount
+    balances_tuple~tset(provide_amount, index);
+    
+    ;; meta_amount is 0, because this deposit asset is not meta_asset. meta_asset is return on above code if it is meta_asset
+    return (convert_coins_tuple_to_cell(balances_tuple), 0, NO_REFUND);
+}
+
+{- Vault payout -}
+
+{-
+ * @notice Packs a Jetton asset into a cell.
+ * @param jetton_master The address of the Jetton master contract.
+ * @return A cell representing the packed Jetton asset.
+-}
+cell pack_jetton_to_asset(slice jetton_master) inline {
+    return begin_cell()
+        .store_uint(JETTON_ASSET_TYPE, ASSET_TYPE_SIZE)
+        .store_slice(jetton_master)
+        .end_cell();
+}
+
+{-
+ * @notice Packs the data for a `payout` message into a cell.
+ * @param query_id The unique query identifier
+ * @param proof Allows the vault contract to verify that ctx::sender is a Torch contract.
+ * @param recipient The address of the recipient to receive the payout.
+ * @param asset_out A cell representing the asset to be paid out.
+ * @param amount The amount of the asset to be paid out.
+ * @param payload An optional cell containing additional fullfill payload or reject payload send to the recipient
+ * @return A cell representing the packed `payout` message data.
+-}
+cell pack_payout(int query_id, int proof, slice provider, slice recipient, cell asset_out, int amount, cell payload) inline {
+    return begin_cell()
+        .store_op(op::payout)
+        .store_query_id(query_id)
+        .store_uint(proof, PROOF_SIZE)
+        .store_slice(provider)
+        .store_slice(recipient)
+        .store_ref(asset_out)
+        .store_coins(amount)
+        .store_maybe_ref(payload)
+        .end_cell();
+}
+
+{-
+ * @notice Sends a request to the vault to transfer a specified amount of an asset to a recipient.
+ * @param factory The address of the factory used to calculate the vault address.
+ * @param proof Allows the vault contract to verify that ctx::sender is a Torch contract.
+ * @param asset_out A cell representing the asset to be paid out.
+ * @param base_code The base code used to calculate the vault address.
+ * @param query_id The unique query identifier
+ * @param recipient The address of the recipient to receive the asset.
+ * @param amount The amount of the asset to be paid out.
+ * @param payload An optional cell containing additional fullfill payload or reject payload send to the recipient
+ * @param remaining_ton The amount of TON remaining for transaction costs and it will be used to send the payout message.
+ * @dev Pool or Lp account will send payout message to vault to transfer asset to recipient
+-}
+() ask_vault_transfer(
+    slice factory, 
+    int proof, 
+    cell asset_out, 
+    cell base_code, 
+    int query_id, 
+    slice provider, 
+    slice recipient, 
+    int amount, 
+    cell payload, 
+    int remaining_ton
+) impure inline {
+    ;; Get vault address
+    slice vault_address = cal_vault_address(factory, asset_out, base_code);
+
+    ;; Pack payout body
+    cell payout_body = pack_payout(query_id, proof, provider, recipient, asset_out, amount, payload);
+
+    ;; Send cell message to vault
+    send_cell_msg(BOUNCEABLE, vault_address, remaining_ton, payout_body, SEND_MODE_REGULAR);
+    return ();
+}
+
+{-
+ * @notice Sends the specified assets back to the recipient.
+ * @param query_id The unique query identifier
+ * @param recipient The address of the recipient to receive the assets.
+ * @param targets_tuple A tuple containing the target amounts for each asset to be sent.
+ * @param assets_tuple A tuple containing the assets to be sent.
+ * @param factory The address of the factory used to calculate vault addresses.
+ * @param proof Allows the vault contract to verify that `ctx::sender` is a Torch contract.
+ * @param base_code The base code used to calculate the vault address.
+ * @param remaining_ton The total remaining TON to be used to send all payout messages to vaults
+ * @param skip_asset A cell representing an asset to be skipped during sending payout messages
+ * @param payload An optional cell containing additional fullfill payload or reject payload send to the recipient
+ * @param message If the user does not specify a payload, a default message will be included in the payload to inform the user of the operation result.
+ * @dev 
+ * - The function iterates through `assets_tuple` and `targets_tuple` to transfer the specified amounts of each asset.
+ * - If `skip_asset` is specified, it will not be sent back to the recipient.
+ *  - `skip_asset` is used in withdraw and withdraw operations. 
+ *  - During a meta pool withdrawal, the LP does not need to be sent back to the user because it must be transferred to the base pool for withdrawal.
+ * - For each valid asset, the `ask_vault_transfer` function is called to handle the actual transfer.
+ * - Remaining TON is evenly distributed among the assets being sent.
+ * - This function is typically used in scenarios like withdrawals or refunds.
+-}
+() send_assets(
+    int query_id, 
+    slice provider,
+    slice recipient, 
+    tuple targets_tuple, 
+    tuple assets_tuple,
+    slice factory,
+    int proof,
+    cell base_code,
+    int sending_ton_for_each_asset,
+    cell skip_asset,
+    cell foward_payload
+) impure inline {
+    ;; Send each asset back to recipient
+    int asset_len = assets_tuple.tlen();
+    int non_zero_count = cal_nonzeros(targets_tuple);
+
+    repeat asset_len {
+        cell send_asset = assets_tuple~tpop();
+        int send_asset_amount = targets_tuple~tpop();
+
+        ;; skip_asset is used in withdraw (remove lp asset is not empty which means is withdraw and withdraw, pool doesn't need to send lp asset back to recipient, so skip it)
+        if (send_asset_amount != 0) & (send_asset.cell_hash() != skip_asset.cell_hash()) {
+            ask_vault_transfer(
+                factory, 
+                proof, 
+                send_asset, 
+                base_code, 
+                query_id, 
+                provider, 
+                recipient, 
+                send_asset_amount, 
+                foward_payload, 
+                sending_ton_for_each_asset
+            );
+        }
+    }
+
+    return ();
+}
+
+{- Jetton operation -}
+
+{-
+ * @notice Sends a `take_wallet_address` message to the sender.
+ * @param ctx::sender The address of the sender requesting the wallet address.
+ * @param remaining_ton The amount of remaining TON to be included in the message.
+ * @param query_id The unique query identifier
+ * @param owner_address The owner's address whose wallet address is being requested.
+ * @param include_address? A flag indicating whether to include the `owner_address` in the message.
+ * @param wallet_address owner's jetton wallet address.
+-}
+() send_take_wallet_address(
+    slice ctx::sender,
+    int remaining_ton,
+    int query_id,
+    slice owner_address,
+    int include_address?,
+    slice wallet_address
+) impure inline {
+    cell included_address = include_address?
+    ? begin_cell().store_slice(owner_address).end_cell()
+    : null();
+
+    ;; build MessageRelaxed, see TL-B layout in stdlib.fc#L733
+    var msg = begin_cell()
+    .store_msg_flags_and_address_none(NON_BOUNCEABLE)
+    .store_slice(ctx::sender)
+    .store_coins(remaining_ton)
+    .store_prefix_only_body()
+    .store_op(op::take_wallet_address)
+    .store_query_id(query_id);
+
+    if (is_same_workchain(owner_address)) {
+        msg = msg.store_slice(wallet_address);
+    } else {
+        msg = msg.store_address_none();
+    }
+
+    cell msg_cell = msg.store_maybe_ref(included_address).end_cell();
+    send_raw_message(msg_cell, SEND_MODE_REGULAR);
+}
+
+slice int_convert_to_string(int n) inline {
+    builder string = begin_cell();
+    tuple chars = null();
+    do {
+        int r = n~divmod(10);
+        chars = cons(r + 48, chars);
+    } until (n == 0);
+    do {
+        int char = chars~list_next();
+        string~store_uint(char, 8);
+    } until (null?(chars));
+    slice result = string.end_cell().begin_parse();
+
+    return result;
+}
+
+slice address_to_hex_string(int value) inline {
+    if (value == 0) {
+        builder buffer = begin_cell();
+        int i = 0;
+        while (i < 64){
+            buffer = buffer.store_uint("0"u, 8);
+            i += 1;
+        }
+        return buffer.end_cell().begin_parse().preload_bits(i * 8);
+    } else {        
+        int mask = 15;
+        builder buffer = begin_cell();
+        int len = 0;
+
+        while (value != 0) {
+            int curr = (value & mask);
+            if(curr > 9){
+                buffer = buffer.store_uint(55 + curr, 8);
+            } else {
+                buffer = buffer.store_uint(48 + curr, 8);
+            }
+            value = value >> 4;
+            len = len + 1;
+        }
+
+        while (len < 64) {
+            buffer = buffer.store_uint(48, 8);
+            len += 1;
+        }
+
+        builder final_cell = begin_cell();
+
+        slice reversed_buffer = buffer.end_cell().begin_parse();
+        int i = 64;
+        while(i > 0){
+            i -= 1;
+            slice chr = reversed_buffer.preload_bits_offset(i * 8, 8);
+            final_cell = final_cell.store_slice(chr);
+        }
+        return final_cell.end_cell().begin_parse().preload_bits(512);
+    }
+}

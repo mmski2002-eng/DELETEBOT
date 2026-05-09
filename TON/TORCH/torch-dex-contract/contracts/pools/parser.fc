@@ -1,0 +1,203 @@
+(slice, tuple, cell, cell) parse_deposit_all(slice ctx::body, slice ctx::sender, int query_id) inline {
+    slice provider = ctx::body~load_msg_addr();
+    cell assets = ctx::body~load_ref();
+    cell targets = ctx::body~load_ref();
+
+    ;; Convert targets cell to targets tuple
+    tuple targets_tuple = convert_coins_cell_to_tuple(targets);
+
+    ;; Check assets is the same as pool::assets
+    slice lp_account_address = cal_lp_account_address(pool::factory, query_id, provider, my_address(), pool::assets, pool::base_code);
+
+    ;; Deposit all can only come from lp account or vault
+    if equal_slices_bits(ctx::sender, lp_account_address) {
+        ;; If is lp account, then it must provide more than one asset, and the assets must be the same as pool::assets
+        throw_unless(error::wrong_assets, assets.cell_hash() == pool::assets.cell_hash());
+    } else {
+        ;; if not lp account, then it must be vault and it's deposit one asset
+        ;; Check the sender is vault by asset (this asset is the deposit one asset)
+        throw_unless(error::invalid_deposit_sender, equal_slices_bits(ctx::sender, cal_vault_address(pool::factory, assets, pool::base_code)));
+
+        ;; Check asset is in pool::assets
+        int asset_index = find_asset_index(pool::assets_tuple, assets);
+        throw_unless(error::asset_not_found, asset_index != ASSET_NOT_FOUND);
+
+        ;; Check the deposit amount for the deposit one asset is greater than 0  (Vault already checked other amount is 0)
+        throw_unless(error::incorrect_deposit_target, targets_tuple.at(asset_index) > 0);
+    }
+
+    cell deposit_params = ctx::body~load_maybe_ref();
+    cell next = ctx::body~load_maybe_ref();
+    ctx::body.end_parse();
+
+    return (
+        provider, 
+        targets_tuple, 
+        deposit_params, 
+        next
+    );
+}
+
+(slice, cell, int, int, cell, int, cell, cell) parse_swap_internal(slice ctx::body, slice ctx::sender) inline {
+    slice provider = ctx::body~load_msg_addr();
+    cell asset_in = ctx::body~load_ref();
+    ;; Only vault can send swap_internal message to pool
+    throw_unless(error::not_vault, equal_slices_bits(ctx::sender, cal_vault_address(pool::factory, asset_in, pool::base_code)));
+
+    int amount = ctx::body~load_coins();
+    cell asset_out = ctx::body~load_ref();
+    cell swap_params = ctx::body~load_maybe_ref();
+    cell next = ctx::body~load_maybe_ref();
+    ctx::body.end_parse();
+
+    ;; Check asset_in and asset_out is in pool::assets
+    (int asset_in_index, int asset_out_index) = find_assets_in_out_indexes(pool::assets_tuple, asset_in, asset_out);
+    throw_unless(error::asset_not_found, (asset_in_index != ASSET_NOT_FOUND) & (asset_out_index != ASSET_NOT_FOUND));
+
+    return (
+        provider, 
+        asset_in, 
+        asset_in_index,
+        amount, 
+        asset_out, 
+        asset_out_index,
+        swap_params, 
+        next
+    );
+}
+
+(slice, slice, int, cell, cell, cell, int, cell) parse_withdraw_internal(slice ctx::body, slice ctx::sender) inline {
+    ;; Only pool lp vault can send withdraw_internal message to pool
+    throw_unless(error::not_vault, equal_slices_bits(ctx::sender, cal_pool_lp_vault_address(pool::factory, pool::base_code)));
+
+    slice provider = ctx::body~load_msg_addr();
+    slice recipient = ctx::body~load_msg_addr();
+    int remove_amount = ctx::body~load_coins();
+    cell signed_rates = ctx::body~load_maybe_ref(); 
+    cell asset_out = ctx::body~load_maybe_ref();
+    cell withdraw_params = ctx::body~load_maybe_ref();
+    cell next = ctx::body~load_maybe_ref(); ;; Not used in base pool when withdrawing
+    ctx::body.end_parse();
+
+    ;; If asset_out is not null, check asset_out is in pool::assets, else it is withdraw all
+
+    ;; If asset_out is null, set asset_out_index to -1
+    int asset_out_index = -1;
+    if ~ asset_out.cell_null?() {
+        asset_out_index = find_asset_index(pool::assets_tuple, asset_out);
+        throw_unless(error::asset_not_found, asset_out_index != ASSET_NOT_FOUND);
+    }
+
+    return (
+        provider,
+        recipient, 
+        remove_amount,
+        signed_rates,
+        asset_out, 
+        withdraw_params,
+        asset_out_index,
+        next
+    );
+
+}
+
+(slice, tuple, cell) parse_deposit_between(slice ctx::body, slice ctx::sender) inline {
+    slice provider = ctx::body~load_msg_addr();
+    cell assets_info = ctx::body~load_ref();
+    slice assets_info_slice = assets_info.begin_parse();
+    cell asset = assets_info_slice~load_ref();
+    cell meta_asset = assets_info_slice~load_ref();
+    assets_info_slice.end_parse();
+
+    ;; Check sender is base pool, deposit and deposit only happen in base pool -> meta pool
+    (_, slice base_pool_address) = get_base_init_and_address(pool::factory, get_pool_proof(asset, BASE_POOL_POOL_TYPE), pool::base_code);
+    throw_unless(error::wrong_base_pool, equal_slices_bits(base_pool_address, ctx::sender));
+
+    ;; Check asset is base lp asset
+    throw_unless(error::wrong_base_asset, pack_jetton_to_asset(base_pool_address).cell_hash() == pool::assets_tuple.at(pool::base_lp_index).cell_hash());
+
+    cell targets = ctx::body~load_ref();
+    cell deposit_params = ctx::body~load_maybe_ref();
+    cell next = ctx::body~load_maybe_ref();
+    ctx::body.end_parse();
+
+    ;; Check meta asset is same as pool's meta asset
+    int meta_asset_index = find_asset_index(pool::assets_tuple, meta_asset);
+    throw_unless(error::asset_not_found, meta_asset_index != ASSET_NOT_FOUND);
+
+    ;; Check meta asset is not base lp asset
+    throw_unless(error::wrong_meta_asset, meta_asset_index != pool::base_lp_index);
+
+    return (
+        provider, 
+        convert_coins_cell_to_tuple(targets), 
+        deposit_params
+    );
+}
+
+(slice, cell, int, int, cell, int, cell, cell) parse_swap_between(slice ctx::body, slice ctx::sender) inline {
+    slice provider = ctx::body~load_msg_addr();
+    int proof = ctx::body~load_uint(PROOF_SIZE);
+    cell asset_in = ctx::body~load_ref();
+    int amount = ctx::body~load_coins();
+    cell asset_out = ctx::body~load_ref();
+    cell swap_params = ctx::body~load_maybe_ref();
+    cell next = ctx::body~load_maybe_ref();
+    ctx::body.end_parse();
+
+    ;; Check ctx::sender is valid
+    (_, slice valid_sender) = get_base_init_and_address(pool::factory, proof, pool::base_code);
+    throw_unless(error::invalid_sender, equal_slices_bits(ctx::sender, valid_sender));
+
+    ;; Check asset_in and asset_out is in pool::assets
+    (int asset_in_index, int asset_out_index) = find_assets_in_out_indexes(pool::assets_tuple, asset_in, asset_out);
+    throw_unless(error::asset_not_found, (asset_in_index != ASSET_NOT_FOUND) & (asset_out_index != ASSET_NOT_FOUND));
+
+    return (
+        provider, 
+        asset_in,
+        asset_in_index,
+        amount, 
+        asset_out, 
+        asset_out_index,
+        swap_params, 
+        next
+    );
+}
+
+(slice, slice, int, cell, cell, cell, int) parse_withdraw_between(slice ctx::body, slice ctx::sender) inline {
+    slice withdrawer = ctx::body~load_msg_addr();
+    slice recipient = ctx::body~load_msg_addr();
+    int proof = ctx::body~load_uint(PROOF_SIZE);
+    int amount = ctx::body~load_coins();
+    cell asset_in = ctx::body~load_ref();
+    cell asset_out = ctx::body~load_maybe_ref();
+    cell withdraw_params = ctx::body~load_maybe_ref();
+
+    cell signed_rates = ctx::body~load_maybe_ref();
+    ctx::body.end_parse();
+
+    ;; Check ctx::sender is valid
+    (_, slice valid_sender) = get_base_init_and_address(pool::factory, proof, pool::base_code);
+    throw_unless(error::invalid_sender, equal_slices_bits(ctx::sender, valid_sender));
+
+    ;; Check asset_in is in pool lp asset
+    throw_unless(error::asset_not_found, asset_in.cell_hash() == get_pool_lp_asset().cell_hash());
+
+    ;; If asset_out is not null, check asset_out is in pool::assets, else it is withdraw all
+    int asset_out_index = -1;
+    if ~ asset_out.cell_null?() {
+        asset_out_index = find_asset_index(pool::assets_tuple, asset_out);
+        throw_unless(error::asset_not_found, asset_out_index != ASSET_NOT_FOUND);
+    }
+    
+    return (
+        withdrawer,
+        recipient, 
+        amount,
+        signed_rates,
+        asset_out, 
+        withdraw_params,
+        asset_out_index
+    );
+}

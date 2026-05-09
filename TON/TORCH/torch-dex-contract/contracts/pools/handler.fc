@@ -1,0 +1,392 @@
+() pool::handle_deposit_all(
+    int remaining_ton,
+    int query_id,
+    slice provider,
+    tuple targets_tuple,
+    cell deposit_params,
+    cell next,
+    int is_claim_fees?
+) impure inline {
+    ;; Unpack deposit params
+    (
+        int min_mint_amount, 
+        slice recipient, 
+        cell signed_rates, 
+        cell fulfill_payload, 
+        cell reject_payload, 
+        cell extra_payload
+    ) = unpack_deposit_params(deposit_params);
+    
+    ;; If recipient is none, set it to provider
+    recipient = recipient.is_address_none() ? provider : recipient;
+
+    ;; Get signed rates tuple
+    (int expired?, tuple rates_tuple, cell next_signed_rates) = handle_signed_rates(signed_rates, pool::use_rates?, pool::signer_key, pool::assets);
+
+
+    ;; If expired is true (expiration < now), refund all assets
+    if expired? {
+        reject_payload = pack_forward_payload(select_forward_payload(reject_payload, pack_message_payload("Price expired (Refund)")));
+
+        ;; Get meta asset and amount from next (If meta amount > 0, it should be refund)
+        (int next_meta_amount, cell next_meta_asset) = get_refund_meta_asset(next);
+
+        refund_deposit(reject_payload, query_id, provider, targets_tuple, next_meta_amount, next_meta_asset, remaining_ton);
+        commit();
+        throw(error::expired);
+    }
+
+    ;; If pool need to use rates, update rates_tuple
+    pool::rates_tuple = pool::use_rates? ? rates_tuple : pool::rates_tuple;
+
+    ;; Simulate deposit to get mint_lp_amount and fees
+    (int mint_lp_amount, tuple fees) = simulate::deposit(targets_tuple);
+
+    ;; Get pool lp asset
+    cell pool_lp_asset = pack_jetton_to_asset(my_address());
+    
+    ;; Parse and check next to get next_type, to and next_msg_body
+    (
+        int next_type, 
+        slice to, 
+        cell next_msg_body
+    ) = handle_next(
+        next, 
+        query_id, 
+        provider, 
+        pool::assets, 
+        mint_lp_amount, 
+        get_pool_proof(pool::assets, pool::pool_type), 
+        pool_lp_asset, ;; asset_out field, and in the deposit case, asset_out can only be the pool's LP asset
+        next_signed_rates,
+        recipient,
+        fulfill_payload,
+        reject_payload,
+        extra_payload
+    );
+
+    ;; Only can be deposit next or swap next
+    validate_next_of_deposit(next_type);
+
+    ;; If mint_lp_amount is less than min_mint_amount, refund assets
+    if mint_lp_amount < min_mint_amount {
+        ;; Only use default refund payload if provider not provide reject_payload
+        slice comment = "Min amount not reached (Refund)";
+        if mint_lp_amount == INVALID_INIT_DEPOSIT  {
+            comment = "First deposit must include all assets. (Refund)";
+        }
+
+        ;; Send all asset back to provider
+        reject_payload = pack_forward_payload(select_forward_payload(reject_payload, pack_message_payload(comment)));
+
+        ;; Get meta asset and amount from next (If meta amount > 0, it should be refund)
+        (int next_meta_amount, cell next_meta_asset) = get_refund_meta_asset(next);
+
+        refund_deposit(reject_payload, query_id, provider, targets_tuple, next_meta_amount, next_meta_asset, remaining_ton);
+
+        commit();
+        throw_unless(error::pool_in_stop_state, pool::is_stop != TRUE);
+        throw_unless(error::invalid_liquidity, mint_lp_amount != INVALID_INIT_DEPOSIT);
+        throw(error::min_amount_not_reached);
+    }
+
+    ;; Send meesage based on next_type
+    if next_type == NO_NEXT_TYPE {
+        ;; Send payout message to lp vault
+
+        fulfill_payload = pack_forward_payload(select_forward_payload(fulfill_payload, pack_message_payload("Send Lp")));
+
+        ;; Get pool proof
+        int pool_proof = get_pool_proof(pool::assets, pool::pool_type);
+
+        ;; Ask pool lp vault transfer lp to recipient
+        ask_vault_transfer(pool::factory, pool_proof, pool_lp_asset, pool::base_code, query_id, provider, recipient, mint_lp_amount, fulfill_payload, remaining_ton);
+    } else {
+        ;; Send next message
+        send_cell_msg(BOUNCEABLE, to, remaining_ton, next_msg_body, SEND_MODE_REGULAR);
+    }
+
+    if is_claim_fees? {
+        ;; Emit admin fee log
+        log_claim_fee(provider, recipient, mint_lp_amount, targets_tuple, fees);
+    } else {
+        ;; Emit deposit log
+        log_deposit(provider, recipient, mint_lp_amount, targets_tuple, fees);
+    }
+
+    pool::save_data();
+    return ();
+}
+
+() pool::handle_swap_internal(
+    int remaining_ton, 
+    int query_id, 
+    slice provider, 
+    cell asset_in, 
+    int asset_in_index,
+    int amount, 
+    cell asset_out, 
+    int asset_out_index,
+    cell swap_params, 
+    cell next
+) impure inline {
+    ;; Unpack swap params
+    (
+        int min_amount, 
+        slice recipient, 
+        cell signed_rates,
+        cell fulfill_payload, 
+        cell reject_payload, 
+        cell extra_payload
+    ) = unpack_swap_params(swap_params);
+
+    ;; Get signed rates tuple
+    (int expired?, tuple rates_tuple, cell next_signed_rates) = handle_signed_rates(signed_rates, pool::use_rates?, pool::signer_key, pool::assets);
+
+    ;; If refund is true (expiration < now), refund swap in asset
+    if expired? {
+        reject_payload = pack_forward_payload(select_forward_payload(reject_payload, pack_message_payload("Price expired (Refund)")));
+        ;; Send asset_in back to provider
+        refund_swap(reject_payload, query_id, provider, asset_in, amount, remaining_ton);
+        commit();
+        throw(error::expired);
+    }
+
+    ;; If pool need to use rates, update rates_tuple
+    pool::rates_tuple = pool::use_rates? ? rates_tuple : pool::rates_tuple;
+
+    ;; If recipient is none, set it to provider
+    recipient = recipient.is_address_none() ? provider : recipient;
+
+    ;; Get swap amount out and fees
+    (
+        int amount_out, 
+        tuple fees
+    ) = simulate::swap(asset_in_index, asset_out_index, amount);
+
+    ;; Parse and check next to get next_type, to and next_msg_body
+    (
+        int next_type, 
+        slice to, 
+        cell next_msg_body
+    ) = handle_next(
+        next, 
+        query_id, 
+        provider, 
+        pool::assets, 
+        amount_out, 
+        get_pool_proof(pool::assets, pool::pool_type), 
+        asset_out,
+        next_signed_rates,
+        recipient,
+        fulfill_payload,
+        reject_payload,
+        extra_payload
+    );
+
+    ;; Only can be swap next or withdraw next
+    validate_next_of_swap(next_type);
+
+    ;; If amount_out is less than min_amount, refund asset in
+    if (amount_out < min_amount) | (pool::is_stop)  {
+        ;; Only use default refund payload if provider not provide reject_payload
+        reject_payload = pack_forward_payload(select_forward_payload(reject_payload, pack_message_payload(amount_out < min_amount ? "Min amount not reached (Refund)" : "Pool in stop state (Refund)")));
+
+        ;; Send asset_in back to provider
+        refund_swap(reject_payload, query_id, provider, asset_in, amount, remaining_ton);
+        commit();
+        throw_unless(error::pool_in_stop_state, pool::is_stop != TRUE);
+        throw(error::min_amount_not_reached);
+    }
+
+    ;; Send meesage based on next_type
+    if next_type == NO_NEXT_TYPE {
+        ;; Send payout message to asset out vault
+
+        fulfill_payload = pack_forward_payload(select_forward_payload(fulfill_payload, pack_message_payload("Swap out asset")));
+
+        ;; Ask vault transfer swap asset_out to recipient
+        ask_vault_transfer(
+            pool::factory, 
+            get_pool_proof(pool::assets, pool::pool_type), 
+            asset_out, 
+            pool::base_code, 
+            query_id, 
+            provider, 
+            recipient, 
+            amount_out, 
+            fulfill_payload, 
+            remaining_ton
+        );
+    } else {
+        ;; Send next message
+        send_cell_msg(BOUNCEABLE, to, remaining_ton, next_msg_body, SEND_MODE_REGULAR);
+    }
+
+    ;; Emit swap log
+    log_swap(provider, recipient, asset_in_index, asset_out_index, amount, amount_out, fees);
+
+    pool::save_data();
+    return ();
+}
+
+() pool::handle_withdraw_internal(
+    int is_remove_all?,
+    int remaining_ton, 
+    int query_id, 
+    slice provider,
+    slice recipient, 
+    int remove_amount,
+    cell signed_rates,
+    cell asset_out, 
+    cell withdraw_params,
+    int asset_out_index,
+    cell next
+) impure inline {
+    int should_refund? = NO_REFUND;
+
+    tuple remove_amounts_tuple = empty_tuple();
+    tuple fees = empty_tuple();
+    int remove_one_amount = 0;
+    int remove_to_next_amount = 0;
+
+    ;; Unpack withdraw params
+    (
+        cell min_amounts, 
+        cell extra_payload
+    ) = unpack_withdraw_params(withdraw_params);
+
+    ;; Get signed rates tuple
+    (int expired?, tuple rates_tuple, cell next_signed_rates) = handle_signed_rates(signed_rates, pool::use_rates?, pool::signer_key, pool::assets);       
+
+    if is_remove_all? {
+        ;; Remove all liquidity
+        (remove_amounts_tuple, should_refund?) = simulate::withdraw_all(remove_amount, min_amounts);
+
+        if should_refund? {
+            cell reject_payload = pack_forward_payload(NO_NEED_FORWARD_TON, pack_message_payload("Min amount not reached (Refund)"));
+            refund_withdraw(reject_payload, query_id, provider, remove_amount, remaining_ton);
+            commit();
+            throw(error::min_amount_not_reached);
+        }
+
+        ;; Withdraw next can only be meta pool, and remove_to_next_amount can only be base lp index in remove_amounts_tuple
+        if pool::pool_type == META_POOL_POOL_TYPE {
+            remove_to_next_amount = remove_amounts_tuple.at(pool::base_lp_index);
+        }
+    } else { 
+        ;; If refund is true (expiration < now), refund lp back
+        if expired? {
+            cell reject_payload = pack_forward_payload(NO_NEED_FORWARD_TON, pack_message_payload("Price expired (Refund)"));
+            refund_withdraw(reject_payload, query_id, provider, remove_amount, remaining_ton);
+            commit();
+            throw(error::expired);
+        }
+
+        ;; If pool need to use rates, update rates_tuple
+        pool::rates_tuple = pool::use_rates? ? rates_tuple : pool::rates_tuple;
+
+        ;; Remove one liquidity
+        (remove_one_amount, fees, should_refund?) = simulate::withdraw_one(remove_amount, asset_out_index, min_amounts);
+
+        ;; If have next_type, remove_to_next_amount is used, else remove_one_amount is not used
+        remove_to_next_amount = remove_one_amount;
+
+        if should_refund? {
+            cell reject_payload = pack_forward_payload(NO_NEED_FORWARD_TON, pack_message_payload("Min amount not reached (Refund)"));
+            refund_withdraw(reject_payload, query_id, provider, remove_amount, remaining_ton);
+            commit();
+            throw(error::min_amount_not_reached);
+        }
+    }
+
+    ;; Update total supply of LP tokens
+    pool::lp_total_supply -= remove_amount;
+
+    ;; Parse and check next to get next_type, to and next_msg_body
+    (
+        int next_type, 
+        slice to, 
+        cell next_msg_body
+    ) = handle_next(
+        next, 
+        query_id, 
+        provider, 
+        pool::assets, 
+        remove_to_next_amount, 
+        get_pool_proof(pool::assets, pool::pool_type), 
+        is_remove_all? ? pool::assets_tuple.at(pool::base_lp_index) : asset_out,
+        next_signed_rates,
+        recipient,
+        null(),
+        null(),
+        extra_payload
+    );
+
+    ;; Only can be withdraw next
+    validate_next_of_withdraw(next_type);
+
+    if is_remove_all? {
+        (
+            cell remove_lp_asset, 
+            int sending_ton_for_each_asset,
+            remaining_ton
+        ) = next_type == NO_NEXT_TYPE ? 
+            (
+                no_skip_asset(), ;; Send all pool's assets back
+                remaining_ton / cal_nonzeros(remove_amounts_tuple), ;; Calculate the average amount of TON carried in a single asset transfer.
+                ZERO_TON ;; The `remaining_ton` has already been evenly distributed among each asset transfer, so its value is 0.
+            ) : 
+            (
+                pool::assets_tuple.at(pool::base_lp_index), ;; Send all assets back to the recipient except the base pool's LP asset, which is directly withdrawn to the base pool.
+                TRANSFER_ASSET_VALUE, ;; The amount of TON carried in a single asset transfer.
+                remaining_ton - TRANSFER_ASSET_VALUE * (pool::n_coins - 1) ;; After deducting the TON used for transfers, the remaining TON will be used to complete the `withdraw_between`.
+            );
+
+        ;; Send all assets to recipient besides remove_lp_asset if next_type is not NO_NEXT_TYPE
+        send_assets(
+            query_id,
+            provider,
+            recipient,
+            remove_amounts_tuple,
+            pool::assets_tuple,
+            pool::factory,
+            get_pool_proof(pool::assets, pool::pool_type),
+            pool::base_code,
+            sending_ton_for_each_asset,
+            remove_lp_asset,
+            pack_forward_payload(NO_NEED_FORWARD_TON, pack_message_payload("Withdraw asset"))
+        );
+
+        if next_type == WITHDRAW_NEXT_TYPE {
+            ;; Send next message
+            send_cell_msg(BOUNCEABLE, to, remaining_ton, next_msg_body, SEND_MODE_REGULAR);
+        }
+    } else {
+        if next_type == NO_NEXT_TYPE {
+            ;; Ask vault transfer asset_out back to recipient
+            ask_vault_transfer(
+                pool::factory, 
+                get_pool_proof(pool::assets, pool::pool_type), 
+                asset_out, 
+                pool::base_code, 
+                query_id, 
+                provider, 
+                recipient, 
+                remove_one_amount, 
+                pack_forward_payload(NO_NEED_FORWARD_TON, pack_message_payload("Withdraw asset")),
+                remaining_ton
+            );
+        } else {
+            ;; Send next message
+            send_cell_msg(BOUNCEABLE, to, remaining_ton, next_msg_body, SEND_MODE_REGULAR);
+        }
+    }
+
+    ;; Emit withdraw log
+    log_withdraw(provider, recipient, remove_amount, asset_out, remove_amounts_tuple, remove_one_amount, fees);
+
+    pool::save_data();
+    return ();
+}
+

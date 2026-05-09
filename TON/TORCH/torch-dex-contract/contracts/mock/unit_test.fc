@@ -1,0 +1,64 @@
+#include "../imports/stdlib.fc";
+#include "../common/opcode.fc";
+#include "../common/constants.fc";
+#include "../common/errors.fc";
+#include "../common/workchain.fc";
+#include "../common/deploy_contracts/utils.fc";
+#include "../common/utils.fc";
+#include "../common/gas.fc";
+
+() recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
+    return ();
+}
+
+tuple get_convert_coins_cell_to_tuple(cell assets_coins) method_id {
+    return convert_coins_cell_to_tuple(assets_coins);
+}
+
+tuple get_convert_assets_cell_to_tuple(cell assets_cell) method_id {
+    return convert_assets_cell_to_tuple(assets_cell);
+}
+
+(int, int) get_deposit_all_fee(cell next) method_id {
+    ;; Calculate Gas
+    int fwd_fee = 10000000;
+    int n_coins = 3;
+    int use_rates = TRUE;
+    (int total_fee, int gas_consume) = pool::deposit_all_fee(fwd_fee, n_coins, use_rates, IS_NOT_DEPOSIT_BETWEEN, ~ next.cell_null?());
+    return (total_fee, gas_consume);
+}
+
+(int, int) get_swap_internal_fee(int is_swap_between?, cell next) method_id {
+    ;; Calculate Gas
+    int fwd_fee = 10000000;
+    int use_rates = TRUE;
+    (int total_fee, int gas_consume) = pool::swap_internal_fee(fwd_fee, use_rates, is_swap_between?, next);
+    return (total_fee, gas_consume);
+} 
+
+(int, int) get_vault_swap_fee(int asset_type, cell next) method_id {
+    ;; Calculate Gas
+    int fwd_fee = 10000000;
+    (int total_fee, int gas_consume) = vault::swap_fee(fwd_fee, asset_type, next);
+    return (total_fee, gas_consume);
+}
+
+(int, int) get_meta_withdraw_fee(int is_remove_all?, cell next) method_id {
+    ;; Calculate Gas
+    int fwd_fee = 10000000;
+    int n_coins = 3;
+    (int total_fee, int gas_consume) = pool::meta_withdraw_fee(fwd_fee, is_remove_all? ? n_coins : 1, ~ next.cell_null?());
+    return (total_fee, gas_consume);
+}
+
+(int, int) get_jetton_vault_withdraw_fee(cell asset_out, cell next) method_id {
+    ;; Calculate Gas
+    int fwd_fee = 10000000;
+    (int total_fee, int gas_consume) = jetton_vault::withdraw_fee(fwd_fee, asset_out, ~ next.cell_null?());
+    return (total_fee, gas_consume);
+}
+
+slice get_address_to_hex_string(slice address) method_id {
+    (int wc, int hashpart) = parse_std_addr(address);
+    return address_to_hex_string(hashpart);
+}

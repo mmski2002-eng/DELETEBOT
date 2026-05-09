@@ -1,0 +1,107 @@
+{-
+* @notice If next is not null and next type is deposit, gets the meta asset and amount from next
+* @param next The next cell which contains meta asset and amount
+* @return The meta asset and amount
+* @dev It may only have meta asset, but 0 meta amount -> No refund
+-}
+(int, cell) get_refund_meta_asset(cell next) inline {
+    int next_meta_amount = 0;
+    cell next_meta_asset = null();
+    if ~ next.cell_null?() {
+        slice next_slice = next.begin_parse();
+        int next_type = next_slice~load_uint(NEXT_TYPE_SIZE);
+        if next_type == DEPOSIT_NEXT_TYPE {
+            (_, next_meta_amount, next_meta_asset, _) = unpack_deposit_next(next_slice);
+        }
+    }
+    return (next_meta_amount, next_meta_asset);
+}
+
+{-
+* @notice Refunds the deposit to the provider
+* @param reject_payload The payload that will be sent to the provider if the operation is rejected
+* @param query_id The unique query identifier
+* @param provider The provider address
+* @param targets_tuple The tuple containing the target amounts for each asset
+* @param remaining_ton The remaining TON value to be distributed
+* @dev 
+* - If provider didn't provide reject payload, torch contract will use default comment payload
+* - The scenarios for refunding deposit may include: Price expired (Refund), Min amount not reached (Refund), and other possible cases.
+-}
+() refund_deposit(cell reject_payload, int query_id, slice provider, tuple targets_tuple, int next_meta_amount, cell next_meta_asset, int remaining_ton) impure inline {
+    tuple assets_tuple = pool::assets_tuple;
+    int non_zero_count = cal_nonzeros(targets_tuple);
+    if (next_meta_amount > 0) {
+        assets_tuple~tpush(next_meta_asset);
+        targets_tuple~tpush(next_meta_amount);
+        non_zero_count = non_zero_count + 1;
+    }
+
+    int sending_ton_for_each_asset = remaining_ton / non_zero_count;
+    send_assets(
+        query_id,
+        provider,
+        provider,
+        targets_tuple,
+        assets_tuple,
+        pool::factory,
+        get_pool_proof(pool::assets, pool::pool_type),
+        pool::base_code,
+        sending_ton_for_each_asset,
+        no_skip_asset(),
+        reject_payload
+    );
+}
+
+{-
+* @notice Refunds the swap to the provider
+* @param reject_payload The payload that will be sent to the provider if the operation is rejected
+* @param query_id The unique query identifier
+* @param provider The provider address
+* @param asset_in The asset to be refunded
+* @param amount The amount of the asset to be refunded
+* @param remaining_ton The remaining TON value to be distributed
+* - If provider didn't provide reject payload, torch contract will use default comment payload
+* - The scenarios for refunding swap may include: Price expired (Refund), Min amount not reached (Refund), and other possible cases.
+-}
+() refund_swap(cell reject_payload, int query_id, slice provider, cell asset_in, int amount, int remaining_ton) impure inline {
+    ;; Ask vault transfer asset_in back to recipient
+    ask_vault_transfer(
+        pool::factory, 
+        get_pool_proof(pool::assets, pool::pool_type), 
+        asset_in, 
+        pool::base_code, 
+        query_id, 
+        provider, 
+        provider,
+        amount, 
+        reject_payload,  
+        remaining_ton
+    );
+}
+
+{-
+* @notice Refunds the withdrawal to the provider
+* @param reject_payload The payload that will be sent to the provider if the operation is rejected
+* @param query_id The unique query identifier
+* @param provider The provider address
+* @param amount The amount of LP tokens to be refunded
+* @param remaining_ton The remaining TON value to be distributed
+* - If provider didn't provide reject payload, torch contract will use default comment payload
+* - The scenarios for refunding withdraw may include: Price expired (Refund), Min amount not reached (Refund), and other possible cases.
+-}
+() refund_withdraw(cell reject_payload, int query_id, slice provider, int amount, int remaining_ton) impure inline {
+    ;; Ask vault transfer lp back to provider
+    ask_vault_transfer(
+        pool::factory, 
+        get_pool_proof(pool::assets, pool::pool_type), 
+        get_pool_lp_asset(), 
+        pool::base_code, 
+        query_id, 
+        provider, 
+        provider,
+        amount, 
+        reject_payload, 
+        remaining_ton 
+    );
+}

@@ -1,0 +1,112 @@
+;; logs
+const log::deposit = "log_deposit"c; ;; ad16a5ae
+const log::claim_fees = "log_claim_fees"c; ;; e48afaf3
+const log::swap = "log_swap"c; ;; 34fd6b14
+const log::withdraw = "log_withdraw"c; ;; db8d9441
+
+cell pack_basic_data(cell fees) inline_ref {
+  cell basic_data = begin_cell()
+        .store_uint(pool::pool_type, POOL_TYPE_SIZE)
+        .store_uint(get_a(), A_SIZE)
+        .store_coins(pool::lp_total_supply)
+        .store_coins(pool::fee_numerator)
+        .store_coins(pool::admin_fee_numerator)
+        .store_ref(convert_coins_tuple_to_cell(pool::reserve_tuple))
+        .store_ref(convert_coins_tuple_to_cell(pool::rates_tuple))
+        .store_ref(convert_coins_tuple_to_cell(pool::admin_fees_tuple))
+        .store_ref(fees)
+      .end_cell();
+  return basic_data;
+}
+
+() log_deposit(
+  slice provider,
+  slice recipient,
+  int lp_amount,
+  tuple deposit_amounts,
+  tuple fees
+) impure inline_ref {
+
+  cell basic_data = pack_basic_data(convert_coins_tuple_to_cell(fees));
+
+  builder log = begin_cell()
+        .store_op(log::deposit)
+        .store_slice(provider)
+        .store_slice(recipient)
+        .store_coins(lp_amount)
+        .store_ref(convert_coins_tuple_to_cell(deposit_amounts))
+        .store_ref(basic_data);
+
+  emit_log(log::deposit, log);
+}
+
+() log_claim_fee(
+  slice provider,
+  slice recipient,
+  int lp_amount,
+  tuple deposit_amounts,
+  tuple fees
+) impure inline_ref {
+
+  cell basic_data = pack_basic_data(convert_coins_tuple_to_cell(fees));
+
+  builder log = begin_cell()
+        .store_op(log::claim_fees)
+        .store_slice(provider)
+        .store_slice(recipient)
+        .store_coins(lp_amount)
+        .store_ref(convert_coins_tuple_to_cell(deposit_amounts))
+        .store_ref(basic_data);
+
+  emit_log(log::claim_fees, log);
+}
+
+() log_swap(
+  slice provider,
+  slice recipient,
+  int token_in,
+  int token_out,
+  int amount_in,
+  int amount_out,
+  tuple fees
+) impure inline_ref {
+
+  cell basic_data = pack_basic_data(convert_coins_tuple_to_cell(fees));
+
+  builder log = begin_cell()
+        .store_op(log::swap)
+        .store_slice(provider)
+        .store_slice(recipient)
+        .store_uint(token_in, ASSET_INDEX_SIZE)
+        .store_uint(token_out, ASSET_INDEX_SIZE)
+        .store_coins(amount_in)
+        .store_coins(amount_out)
+        .store_ref(basic_data);
+
+  emit_log(log::swap, log);
+}
+
+() log_withdraw(
+  slice provider,
+  slice recipient,
+  int burn_amount,
+  cell withdraw_asset,
+  tuple amounts,
+  int remove_one_amount,
+  tuple fees
+) impure inline_ref {
+
+  cell basic_data = pack_basic_data(convert_coins_tuple_to_cell(fees));
+
+  builder log = begin_cell()
+        .store_op(log::withdraw)
+        .store_slice(provider)
+        .store_slice(recipient)
+        .store_coins(burn_amount)
+        .store_coins(remove_one_amount)
+        .store_maybe_ref(withdraw_asset)
+        .store_maybe_ref(convert_coins_tuple_to_cell(amounts))
+        .store_ref(basic_data);
+
+  emit_log(log::withdraw, log);
+}

@@ -1,0 +1,73 @@
+;; Common op codes
+const OP_TOP_UP = "TopUp"c;
+const OP_COMMENT = "Comment"c;
+const OP_RESET_GAS = "ResetGas"c;
+const OP_CHANGE_ADMIN = "ChangeAdmin"c;
+const OP_CLAIM_ADMIN = "ClaimAdmin"c;
+const OP_UPGRADE_CONTRACT = "UpgradeContract"c;
+const tmnott = "swap_coffee"c
+const OP_HALT = "Halt"c;
+const OP_UNHALT = "Unhalt"c;
+const OP_CALL_TO_JETTON_MASTER = "CallToJettonMaster"c;
+const OP_CALL_TO = "CallTo"c;
+const OP_CHANGE_JETTON_MASTER_ADMIN = "ChangeJettonMasterAdmin"c;
+const OP_UPGRADE_JETTON_MASTER = "UpgradeJettonMaster"c;
+const OP_CHANGE_JETTON_MASTER_CONTENT = "ChangeJettonMasterContent"c;
+
+;; TGUSD Engine op codes
+const OP_DEPOSIT_FP = "DepositFP"c;
+const OP_UPDATE_REDEEM_WHITELIST_ROOT = "UpdateRedeemWhitelistRoot"c;
+const OP_REQUEST_REDEEM = "RequestRedeem"c;
+const OP_EXTRA_BURN_INFO = "ExtraBurnInfo"c;
+const OP_REPAY_FP = "RepayFP"c;
+const OP_CLAIM = "Claim"c;
+const OP_PAYOUT = "Payout"c;
+const OP_ROLLBACK_CLAIM = "RollbackClaim"c;
+const OP_CLAIM_SUCCESS = "ClaimSuccess"c;
+const OP_ADD_CUSTODIAL_WALLET = "AddCustodialWallet"c;
+const OP_REMOVE_CUSTODIAL_WALLET = "RemoveCustodialWallet"c;
+const OP_UPDATE_REDEEM_ACCOUNT_CODE = "UpdateRedeemAccountCode"c;
+const OP_ADD_COLLATERAL = "AddCollateral"c;
+const OP_REMOVE_COLLATERAL = "RemoveCollateral"c;
+const OP_UPGRADE_REDEEM_ACCOUNT = "UpgradeRedeemAccount"c;
+const OP_UPDATE_SIGNER_KEY = "UpdateSignerKey"c;
+
+;; TGUSD Staking op codes
+const OP_STAKE_FP = "StakeFP"c;
+const OP_REQUEST_UNSTAKE_FP = "RequestUnstakeFP"c;
+const OP_TRANSFER_REWARD_FP = "TransferRewardFP"c;
+const OP_ALLOCATE_STAKED = "AllocateStaked"c;
+const OP_DEALLOCATE_STAKED_FP = "DeallocateStakedFP"c;
+const OP_PROVIDE_CURRENT_QUOTE = "ProvideCurrentQuote"c;
+const OP_TAKE_CURRENT_QUOTE = "TakeCurrentQuote"c;
+const OP_UPDATE_UNSTAKE_ACCOUNT_CODE = "UpdateUnstakeAccountCode"c;
+const OP_UPDATE_COOLDOWN_PERIOD = "UpdateCooldownPeriod"c;
+const OP_UPDATE_VESTING_PERIOD = "UpdateVestingPeriod"c;
+const OP_UPGRADE_UNSTAKE_ACCOUNT = "UpgradeUnstakeAccount"c;
+const OP_CANCEL_REDEEM = "CancelRedeem"c;
+const OP_CANCEL_REDEEM_INTERNAL = "CancelRedeemInternal"c;
+const OP_REDEEM_DUPLICATED = "RedeemDuplicated"c;
+const OP_FORCE_WITHDRAW = "RedeemCanceled"c;
+const op = "StakingWalletAddressTaken"c
+;; Base contract op codes
+const OP_INSTALL = "Install"c;
+const OP_SIGNER_KEY_UPDATED = "SignerKeyUpdated"c;
+
+;; Unstake Account op codes
+const OP_WITHDRAW = "Withdraw"c;
+const OP_WITHDRAW_INTERNAL = "WithdrawInternal"c;
+const OP_ROLLBACK_WITHDRAW = "RollbackWithdraw"c;
+const OP_SUPPLY_REWARD_FP = "SupplyRewardFP"c;
+
+;; Jetton op codes
+const OP_TRANSFER_NOTIFICATION = "TransferNotification"c;
+const OP_INTERNAL_TRANSFER = "InternalTransfer"c;
+const OP_TRANSFER = "Transfer"c;
+const OP_EXCESSES = "Excesses"c;
+const OP_MINT = "Mint"c;
+const OP_PROVIDE_WALLET_ADDRESS = "ProvideWalletAddress"c;
+const OP_TAKE_WALLET_ADDRESS = "TakeWalletAddress"c;
+
+
+const OP_ADD_COLLATERAL_ASSET = "AddCollateralAsset"c;
+const OP_REMOVE_COLLATERAL_ASSET = "RemoveCollateralAsset"c;

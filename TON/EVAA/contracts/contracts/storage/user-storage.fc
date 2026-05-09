@@ -1,0 +1,82 @@
+;; This file is licensed under the Business Source License (BUSL).
+;; See the LICENSE.md file in the project root for more information.
+
+#include "../external/stdlib.fc";
+
+{-
+  user_principals = Dict
+    slice(256) jetton_address -> int(64) principal, ?int(64) origination_fee_taken_in_principal, ?uint(32) last_borrow_timestamp, ?uint(64) last_borrow_b_rate, 
+
+  user_rewards = Dict
+    slice(256) jetton_address -> int(64) tracking_index, int(64) tracking_accrued
+-}
+
+const user_state::free = 0; ;; Fully unlocked state
+const user_state::doing_supply_withdraw = - (2 << 50) + 1; ;; "Big" negative number - big enough such that in case of some theoretical weird subtraction-by-one errors, this number can't be reached regardless
+
+cell user::storage::pack_init(
+  int user_version,
+  slice master_address, slice owner_address,
+  cell user_principals, int state
+) inline method_id(0x13001) {
+  return begin_cell()
+    .store_coins(user_version)
+    .store_slice(master_address)
+    .store_slice(owner_address)
+    ;; The part above ^ MUST stay fixed,
+    ;; because User's "entry" (=upgrade handling) code expects these fields
+    .store_dict(user_principals)
+    .store_int(state, 64)
+  .end_cell();
+}
+
+cell user::storage::pack(
+  int user_version,
+  slice master_address, slice owner_address,
+  cell user_principals, int state,
+  cell user_rewards, cell backup_cell_1, cell backup_cell_2
+) inline method_id(0x130) {
+  return begin_cell()
+    .store_coins(user_version)
+    .store_slice(master_address)
+    .store_slice(owner_address)
+    ;; The part above ^ MUST stay fixed,
+    ;; because User's "entry" (=upgrade handling) code expects these fields
+    .store_dict(user_principals)
+    .store_int(state, 64)
+    .store_dict(user_rewards)
+    .store_maybe_ref(backup_cell_1)
+    .store_maybe_ref(backup_cell_2)
+  .end_cell();
+}
+
+() user::storage::save (
+  int user_version,
+  slice master_address, slice owner_address,
+  cell user_principals, int state,
+  cell user_rewards, cell backup_cell_1, cell backup_cell_2
+) impure method_id(0x133) {
+  set_data(user::storage::pack(
+    user_version, master_address, owner_address,
+    user_principals, state,
+    user_rewards, backup_cell_1, backup_cell_2
+  ));
+}
+
+(int, slice, slice, cell, int, cell, cell, cell) user::storage::load () {
+  slice ds = get_data().begin_parse();
+  int code_version = ds~load_coins();
+  slice master_address = ds~load_msg_addr();
+  slice owner_address = ds~load_msg_addr();
+  cell user_principals = ds~load_dict();
+  int state = ds~load_int(64);
+  cell user_rewards = ds~load_dict();
+  cell backup_cell_1 = ds~load_maybe_ref();
+  cell backup_cell_2 = ds~load_maybe_ref();
+  return (code_version, master_address, owner_address, user_principals, state, user_rewards, backup_cell_1, backup_cell_2);
+}
+
+cell user::storage::load_principals () inline {
+    (_, _, _, cell user_principals, _, _, _, _) = user::storage::load();
+    return user_principals;
+}

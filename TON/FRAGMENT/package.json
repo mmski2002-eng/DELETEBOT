@@ -1,0 +1,16 @@
+{
+  "name": "fragment",
+  "version": "1.0.0",
+  "description": "Local tooling for verifying Fragment/Telemint deploy payloads",
+  "main": "index.js",
+  "scripts": {
+    "inspect": "node scripts/inspect-telemint.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@ton/core": "^0.63.1"
+  }
+}

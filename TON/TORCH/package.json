@@ -1,0 +1,24 @@
+{
+  "name": "torch-poc",
+  "version": "1.0.0",
+  "description": "tgUSD staking critical vulnerability PoC",
+  "scripts": {
+    "test": "jest --verbose --runInBand",
+    "test:watch": "jest --watch"
+  },
+  "devDependencies": {
+    "@ton/blueprint": "^0.38.0",
+    "@ton/sandbox": "^0.35.1",
+    "@ton/test-utils": "^0.9.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.0.12",
+    "jest": "^30.0.4",
+    "ts-jest": "^29.4.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "peerDependencies": {
+    "@ton/core": ">=0.59.1",
+    "@ton/ton": ">=15.1.0"
+  }
+}
