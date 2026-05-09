@@ -1,0 +1,16 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+solc = "0.8.29"
+via_ir = true
+ffi = true
+optimizer = true
+optimizer_runs = 44444444
+gas_limit = "300000000"
+
+[rpc_endpoints]
+devnet = "https://devnet.dplabs-internal.com"
+testnet = "https://testnet.dplabs-internal.com"
+
+# See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
