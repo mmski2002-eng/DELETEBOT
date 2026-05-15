@@ -1,0 +1,9 @@
+{
+  "name": "Kepka #0",
+  "description": "Kepka Collection item #0. Exclusive digital art on TON blockchain.",
+  "image": "https://placehold.co/512x512/16213e/ffffff?text=Kepka+%230",
+  "attributes": [
+    { "trait_type": "Rarity", "value": "Legendary" },
+    { "trait_type": "Type", "value": "Art" }
+  ]
+}
