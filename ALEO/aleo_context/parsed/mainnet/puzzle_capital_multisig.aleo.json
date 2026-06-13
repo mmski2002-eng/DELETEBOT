@@ -1,0 +1,916 @@
+{
+  "program_id": "puzzle_capital_multisig.aleo",
+  "calls_24h_or_metric_window": 8,
+  "imports": [],
+  "mappings": {
+    "program_settings": {
+      "key": "u8.public",
+      "value": "ProgramSettings.public"
+    },
+    "wallets": {
+      "key": "field.public",
+      "value": "WalletSettings.public"
+    },
+    "signer_to_index": {
+      "key": "field.public",
+      "value": "u8.public"
+    },
+    "index_to_signer": {
+      "key": "field.public",
+      "value": "address.public"
+    },
+    "signing_ops": {
+      "key": "field.public",
+      "value": "SigningOp.public"
+    },
+    "completed_signing_ops": {
+      "key": "field.public",
+      "value": "boolean.public"
+    }
+  },
+  "structs": {
+    "ProgramSettings": [
+      {
+        "name": "initialized",
+        "type": "boolean"
+      },
+      {
+        "name": "allow_upgrades",
+        "type": "boolean"
+      },
+      {
+        "name": "upgrader_address",
+        "type": "address"
+      }
+    ],
+    "WalletSettings": [
+      {
+        "name": "threshold",
+        "type": "u8"
+      },
+      {
+        "name": "num_signers",
+        "type": "u8"
+      },
+      {
+        "name": "next_signer_index",
+        "type": "u8"
+      }
+    ],
+    "WalletSigner": [
+      {
+        "name": "wallet_id",
+        "type": "field"
+      },
+      {
+        "name": "signer",
+        "type": "address"
+      }
+    ],
+    "WalletSignerIndex": [
+      {
+        "name": "wallet_id",
+        "type": "field"
+      },
+      {
+        "name": "signer_index",
+        "type": "u8"
+      }
+    ],
+    "WalletSigningOpId": [
+      {
+        "name": "wallet_id",
+        "type": "field"
+      },
+      {
+        "name": "signing_op_id",
+        "type": "field"
+      }
+    ],
+    "SigningOp": [
+      {
+        "name": "action_hash",
+        "type": "field"
+      },
+      {
+        "name": "confirmations",
+        "type": "u64"
+      },
+      {
+        "name": "confirmation_count",
+        "type": "u8"
+      },
+      {
+        "name": "block_expiration",
+        "type": "u32"
+      },
+      {
+        "name": "is_upgrade",
+        "type": "boolean"
+      },
+      {
+        "name": "completed",
+        "type": "boolean"
+      }
+    ],
+    "AdminOp": [
+      {
+        "name": "op_type",
+        "type": "u8"
+      },
+      {
+        "name": "wallet_id",
+        "type": "field"
+      },
+      {
+        "name": "value_u8",
+        "type": "u8"
+      },
+      {
+        "name": "value_address",
+        "type": "address"
+      }
+    ]
+  },
+  "records": {},
+  "functions": {
+    "create_wallet": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u8.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "puzzle_capital_multisig.aleo/create_wallet.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u8.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "wallets"
+      ],
+      "finalize_state_writes": [
+        "index_to_signer",
+        "program_settings",
+        "signer_to_index",
+        "wallets"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte"
+      ],
+      "snark_verify": false
+    },
+    "add_signer": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "puzzle_capital_multisig.aleo/add_signer.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "completed_signing_ops",
+        "signer_to_index",
+        "signing_ops",
+        "wallets"
+      ],
+      "finalize_state_writes": [
+        "index_to_signer",
+        "signer_to_index",
+        "wallets"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "gt",
+        "lt"
+      ],
+      "snark_verify": false
+    },
+    "init_signing_op": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        },
+        {
+          "register": "r3",
+          "type": "boolean.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "puzzle_capital_multisig.aleo/init_signing_op.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        },
+        {
+          "register": "r3",
+          "type": "boolean.public"
+        },
+        {
+          "register": "r4",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "signer_to_index",
+        "signing_ops"
+      ],
+      "finalize_state_writes": [
+        "signing_ops"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "ternary"
+      ],
+      "snark_verify": false
+    },
+    "sign": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "puzzle_capital_multisig.aleo/sign.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "signer_to_index",
+        "signing_ops"
+      ],
+      "finalize_state_writes": [
+        "signing_ops"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq",
+        "is.eq",
+        "or"
+      ],
+      "snark_verify": false
+    },
+    "exec_signing_op": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "puzzle_capital_multisig.aleo/exec_signing_op.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "signing_ops",
+        "wallets"
+      ],
+      "finalize_state_writes": [
+        "completed_signing_ops",
+        "signing_ops"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "update_threshold": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "u8.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "puzzle_capital_multisig.aleo/update_threshold.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u8.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "completed_signing_ops",
+        "signing_ops",
+        "wallets"
+      ],
+      "finalize_state_writes": [
+        "completed_signing_ops",
+        "wallets"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "remove_signer": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "puzzle_capital_multisig.aleo/remove_signer.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "completed_signing_ops",
+        "signer_to_index",
+        "signing_ops",
+        "wallets"
+      ],
+      "finalize_state_writes": [
+        "completed_signing_ops",
+        "signer_to_index",
+        "wallets"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte"
+      ],
+      "snark_verify": false
+    },
+    "verify_completed_op": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "puzzle_capital_multisig.aleo/verify_completed_op.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "completed_signing_ops",
+        "signing_ops"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "consume_signing_op": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "puzzle_capital_multisig.aleo/consume_signing_op.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "completed_signing_ops"
+      ],
+      "finalize_state_writes": [
+        "completed_signing_ops"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "get_signing_op_hash": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "field.private"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "emergency_exec_signing_op": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "puzzle_capital_multisig.aleo/emergency_exec_signing_op.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        },
+        {
+          "register": "r3",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "signing_ops",
+        "wallets"
+      ],
+      "finalize_state_writes": [
+        "completed_signing_ops",
+        "signing_ops"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte"
+      ],
+      "snark_verify": false
+    },
+    "disallow_upgrades": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "puzzle_capital_multisig.aleo/disallow_upgrades.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "program_settings"
+      ],
+      "finalize_state_writes": [
+        "program_settings"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "set_upgrader_address": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "puzzle_capital_multisig.aleo/set_upgrader_address.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "program_settings"
+      ],
+      "finalize_state_writes": [
+        "program_settings"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "is.eq"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "add_signer",
+    "consume_signing_op",
+    "create_wallet",
+    "disallow_upgrades",
+    "emergency_exec_signing_op",
+    "exec_signing_op",
+    "init_signing_op",
+    "remove_signer",
+    "set_upgrader_address",
+    "sign",
+    "update_threshold",
+    "verify_completed_op"
+  ],
+  "cross_contract_refs": [],
+  "async_or_conditional_paths": [
+    "create_wallet",
+    "add_signer",
+    "init_signing_op",
+    "sign",
+    "exec_signing_op",
+    "update_threshold",
+    "remove_signer",
+    "verify_completed_op",
+    "consume_signing_op",
+    "emergency_exec_signing_op",
+    "disallow_upgrades",
+    "set_upgrader_address"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [
+      "completed_signing_ops",
+      "index_to_signer",
+      "program_settings",
+      "signer_to_index",
+      "signing_ops",
+      "wallets"
+    ],
+    "future_outputs": [
+      {
+        "function": "create_wallet",
+        "output": "puzzle_capital_multisig.aleo/create_wallet.future"
+      },
+      {
+        "function": "add_signer",
+        "output": "puzzle_capital_multisig.aleo/add_signer.future"
+      },
+      {
+        "function": "init_signing_op",
+        "output": "puzzle_capital_multisig.aleo/init_signing_op.future"
+      },
+      {
+        "function": "sign",
+        "output": "puzzle_capital_multisig.aleo/sign.future"
+      },
+      {
+        "function": "exec_signing_op",
+        "output": "puzzle_capital_multisig.aleo/exec_signing_op.future"
+      },
+      {
+        "function": "update_threshold",
+        "output": "puzzle_capital_multisig.aleo/update_threshold.future"
+      },
+      {
+        "function": "remove_signer",
+        "output": "puzzle_capital_multisig.aleo/remove_signer.future"
+      },
+      {
+        "function": "verify_completed_op",
+        "output": "puzzle_capital_multisig.aleo/verify_completed_op.future"
+      },
+      {
+        "function": "consume_signing_op",
+        "output": "puzzle_capital_multisig.aleo/consume_signing_op.future"
+      },
+      {
+        "function": "emergency_exec_signing_op",
+        "output": "puzzle_capital_multisig.aleo/emergency_exec_signing_op.future"
+      },
+      {
+        "function": "disallow_upgrades",
+        "output": "puzzle_capital_multisig.aleo/disallow_upgrades.future"
+      },
+      {
+        "function": "set_upgrader_address",
+        "output": "puzzle_capital_multisig.aleo/set_upgrader_address.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

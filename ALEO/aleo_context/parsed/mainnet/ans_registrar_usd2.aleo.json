@@ -1,0 +1,715 @@
+{
+  "program_id": "ans_registrar_usd2.aleo",
+  "calls_24h_or_metric_window": 13,
+  "imports": [
+    "aleo_name_service_registry.aleo",
+    "ans_coupon_card.aleo",
+    "ans_utils.aleo",
+    "credits.aleo"
+  ],
+  "mappings": {
+    "general_settings": {
+      "key": "u8.public",
+      "value": "u128.public"
+    },
+    "price_data": {
+      "key": "u64.public",
+      "value": "UnitPriceData.public"
+    }
+  },
+  "structs": {
+    "data": [
+      {
+        "name": "metadata",
+        "type": "[field"
+      }
+    ],
+    "NameStruct": [
+      {
+        "name": "name",
+        "type": "[u128"
+      },
+      {
+        "name": "parent",
+        "type": "field"
+      },
+      {
+        "name": "resolver",
+        "type": "field"
+      }
+    ],
+    "UnitPriceData": [
+      {
+        "name": "price",
+        "type": "u64"
+      },
+      {
+        "name": "timestamp",
+        "type": "u64"
+      }
+    ]
+  },
+  "records": {},
+  "functions": {
+    "transfer_public": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "data.private"
+        },
+        {
+          "register": "r1",
+          "type": "scalar.private"
+        },
+        {
+          "register": "r2",
+          "type": "address.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r6",
+          "type": "ans_registrar_usd2.aleo/transfer_public.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "aleo_name_service_registry.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u128.public"
+        },
+        {
+          "register": "r1",
+          "type": "aleo_name_service_registry.aleo/transfer_public.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "general_settings"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "initialize_registrar": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "ans_registrar_usd2.aleo/initialize_registrar.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u128.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "general_settings"
+      ],
+      "finalize_state_writes": [
+        "general_settings"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "update_setting": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u8.private"
+        },
+        {
+          "register": "r1",
+          "type": "u128.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "ans_registrar_usd2.aleo/update_setting.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u128.public"
+        },
+        {
+          "register": "r1",
+          "type": "u8.public"
+        },
+        {
+          "register": "r2",
+          "type": "u128.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "general_settings"
+      ],
+      "finalize_state_writes": [
+        "general_settings"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "set_unit_price": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "ans_registrar_usd2.aleo/set_unit_price.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u128.public"
+        },
+        {
+          "register": "r1",
+          "type": "UnitPriceData.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "general_settings"
+      ],
+      "finalize_state_writes": [
+        "price_data"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "change_admin": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "ans_registrar_usd2.aleo/change_admin.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u128.public"
+        },
+        {
+          "register": "r1",
+          "type": "u128.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "general_settings"
+      ],
+      "finalize_state_writes": [
+        "general_settings"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "register_free": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "[u128"
+        },
+        {
+          "register": "r1",
+          "type": "field.private"
+        },
+        {
+          "register": "r2",
+          "type": "address.private"
+        },
+        {
+          "register": "r3",
+          "type": "ans_coupon_card.aleo/CouponCard.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r12",
+          "type": "ans_registrar_usd2.aleo/register_free.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "aleo_name_service_registry.aleo",
+        "ans_coupon_card.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gte",
+        "is.eq",
+        "or"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "aleo_name_service_registry.aleo/register.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "general_settings"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "register_fld": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "[u128"
+        },
+        {
+          "register": "r1",
+          "type": "field.private"
+        },
+        {
+          "register": "r2",
+          "type": "address.private"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r4",
+          "type": "u64.private"
+        },
+        {
+          "register": "r5",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r12",
+          "type": "ans_registrar_usd2.aleo/register_fld.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "aleo_name_service_registry.aleo",
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_private_to_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "aleo_name_service_registry.aleo/register.future"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "general_settings",
+        "price_data"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "register_fld_public": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "[u128"
+        },
+        {
+          "register": "r1",
+          "type": "field.private"
+        },
+        {
+          "register": "r2",
+          "type": "address.private"
+        },
+        {
+          "register": "r3",
+          "type": "u64.private"
+        },
+        {
+          "register": "r4",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r10",
+          "type": "ans_registrar_usd2.aleo/register_fld_public.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "aleo_name_service_registry.aleo",
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_public_as_signer.future"
+        },
+        {
+          "register": "r1",
+          "type": "aleo_name_service_registry.aleo/register.future"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "general_settings",
+        "price_data"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "register_fld_with_coupon": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "[u128"
+        },
+        {
+          "register": "r1",
+          "type": "field.private"
+        },
+        {
+          "register": "r2",
+          "type": "address.private"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r4",
+          "type": "ans_coupon_card.aleo/CouponCard.record"
+        },
+        {
+          "register": "r5",
+          "type": "u64.private"
+        },
+        {
+          "register": "r6",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r21",
+          "type": "ans_registrar_usd2.aleo/register_fld_with_coupon.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "aleo_name_service_registry.aleo",
+        "ans_coupon_card.aleo",
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gte",
+        "is.eq",
+        "or"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_private_to_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "aleo_name_service_registry.aleo/register.future"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "general_settings",
+        "price_data"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "register_fld_with_coupon_public": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "[u128"
+        },
+        {
+          "register": "r1",
+          "type": "field.private"
+        },
+        {
+          "register": "r2",
+          "type": "address.private"
+        },
+        {
+          "register": "r3",
+          "type": "ans_coupon_card.aleo/CouponCard.record"
+        },
+        {
+          "register": "r4",
+          "type": "u64.private"
+        },
+        {
+          "register": "r5",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r19",
+          "type": "ans_registrar_usd2.aleo/register_fld_with_coupon_public.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "aleo_name_service_registry.aleo",
+        "ans_coupon_card.aleo",
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gte",
+        "is.eq",
+        "or"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_public_as_signer.future"
+        },
+        {
+          "register": "r1",
+          "type": "aleo_name_service_registry.aleo/register.future"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "general_settings",
+        "price_data"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "change_admin",
+    "initialize_registrar",
+    "register_fld",
+    "register_fld_public",
+    "register_fld_with_coupon",
+    "register_fld_with_coupon_public",
+    "register_free",
+    "set_unit_price",
+    "transfer_public",
+    "update_setting"
+  ],
+  "cross_contract_refs": [
+    "aleo_name_service_registry.aleo",
+    "ans_coupon_card.aleo",
+    "credits.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "transfer_public",
+    "initialize_registrar",
+    "update_setting",
+    "set_unit_price",
+    "change_admin",
+    "register_free",
+    "register_fld",
+    "register_fld_public",
+    "register_fld_with_coupon",
+    "register_fld_with_coupon_public"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [
+      "general_settings",
+      "price_data"
+    ],
+    "future_outputs": [
+      {
+        "function": "transfer_public",
+        "output": "ans_registrar_usd2.aleo/transfer_public.future"
+      },
+      {
+        "function": "initialize_registrar",
+        "output": "ans_registrar_usd2.aleo/initialize_registrar.future"
+      },
+      {
+        "function": "update_setting",
+        "output": "ans_registrar_usd2.aleo/update_setting.future"
+      },
+      {
+        "function": "set_unit_price",
+        "output": "ans_registrar_usd2.aleo/set_unit_price.future"
+      },
+      {
+        "function": "change_admin",
+        "output": "ans_registrar_usd2.aleo/change_admin.future"
+      },
+      {
+        "function": "register_free",
+        "output": "ans_registrar_usd2.aleo/register_free.future"
+      },
+      {
+        "function": "register_fld",
+        "output": "ans_registrar_usd2.aleo/register_fld.future"
+      },
+      {
+        "function": "register_fld_public",
+        "output": "ans_registrar_usd2.aleo/register_fld_public.future"
+      },
+      {
+        "function": "register_fld_with_coupon",
+        "output": "ans_registrar_usd2.aleo/register_fld_with_coupon.future"
+      },
+      {
+        "function": "register_fld_with_coupon_public",
+        "output": "ans_registrar_usd2.aleo/register_fld_with_coupon_public.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

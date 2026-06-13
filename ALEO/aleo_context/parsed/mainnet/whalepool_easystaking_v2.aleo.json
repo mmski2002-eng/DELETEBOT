@@ -1,0 +1,790 @@
+{
+  "program_id": "whalepool_easystaking_v2.aleo",
+  "calls_24h_or_metric_window": 831,
+  "imports": [
+    "credits.aleo"
+  ],
+  "mappings": {
+    "recharger": {
+      "key": "address.public",
+      "value": "boolean.public"
+    },
+    "scope_check": {
+      "key": "u8.public",
+      "value": "boolean.public"
+    },
+    "bonding_limit": {
+      "key": "u8.public",
+      "value": "u64.public"
+    },
+    "un_bonding_limit": {
+      "key": "u8.public",
+      "value": "u64.public"
+    },
+    "bonded": {
+      "key": "address.public",
+      "value": "u64.public"
+    },
+    "unbonding": {
+      "key": "address.public",
+      "value": "unbond_state.public"
+    },
+    "totals": {
+      "key": "u8.public",
+      "value": "u64.public"
+    },
+    "pool_info": {
+      "key": "u8.public",
+      "value": "PoolInfo.public"
+    }
+  },
+  "structs": {
+    "bond_state": [
+      {
+        "name": "validator",
+        "type": "address"
+      },
+      {
+        "name": "microcredits",
+        "type": "u64"
+      }
+    ],
+    "unbond_state": [
+      {
+        "name": "microcredits",
+        "type": "u64"
+      },
+      {
+        "name": "height",
+        "type": "u32"
+      }
+    ],
+    "PoolInfo": [
+      {
+        "name": "validator",
+        "type": "address"
+      },
+      {
+        "name": "is_open",
+        "type": "boolean"
+      }
+    ]
+  },
+  "records": {},
+  "functions": {
+    "initialize": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "whalepool_easystaking_v2.aleo/initialize.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/transfer_public_as_signer.future"
+        },
+        {
+          "register": "r4",
+          "type": "credits.aleo/bond_public.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "totals"
+      ],
+      "finalize_state_writes": [
+        "bonded",
+        "bonding_limit",
+        "pool_info",
+        "scope_check",
+        "totals",
+        "un_bonding_limit"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "is.eq"
+      ],
+      "snark_verify": false
+    },
+    "bond_recharger": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r5",
+          "type": "whalepool_easystaking_v2.aleo/bond_recharger.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        },
+        {
+          "register": "r4",
+          "type": "credits.aleo/transfer_public_as_signer.future"
+        },
+        {
+          "register": "r5",
+          "type": "credits.aleo/bond_public.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "bonded",
+        "recharger",
+        "totals"
+      ],
+      "finalize_state_writes": [
+        "bonded",
+        "totals"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "set_recharger": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "boolean.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "whalepool_easystaking_v2.aleo/set_recharger.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "boolean.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "recharger"
+      ],
+      "finalize_state_writes": [
+        "recharger"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "is.eq"
+      ],
+      "snark_verify": false
+    },
+    "set_scope_check": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "boolean.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "whalepool_easystaking_v2.aleo/set_scope_check.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "boolean.public"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [
+        "scope_check"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "is.eq"
+      ],
+      "snark_verify": false
+    },
+    "set_pool_state": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "boolean.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "whalepool_easystaking_v2.aleo/set_pool_state.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "boolean.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "bonded",
+        "pool_info"
+      ],
+      "finalize_state_writes": [
+        "pool_info"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "gte",
+        "is.eq"
+      ],
+      "snark_verify": false
+    },
+    "bond_public": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "whalepool_easystaking_v2.aleo/bond_public.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/transfer_public_as_signer.future"
+        },
+        {
+          "register": "r4",
+          "type": "credits.aleo/bond_public.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "bonded",
+        "bonding_limit",
+        "pool_info",
+        "totals"
+      ],
+      "finalize_state_writes": [
+        "bonded",
+        "totals"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte"
+      ],
+      "snark_verify": false
+    },
+    "unbond_public": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "whalepool_easystaking_v2.aleo/unbond_public.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/unbond_public.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "bonded",
+        "pool_info",
+        "scope_check",
+        "totals",
+        "un_bonding_limit",
+        "unbonding"
+      ],
+      "finalize_state_writes": [
+        "bonded",
+        "pool_info",
+        "totals",
+        "unbonding"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "gte",
+        "is.eq",
+        "lt",
+        "or",
+        "ternary"
+      ],
+      "snark_verify": false
+    },
+    "unbond_pos_rewards": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "whalepool_easystaking_v2.aleo/unbond_pos_rewards.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "credits.aleo/unbond_public.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "totals"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte",
+        "is.eq"
+      ],
+      "snark_verify": false
+    },
+    "claim_unbond_public": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "whalepool_easystaking_v2.aleo/claim_unbond_public.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/transfer_public.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "scope_check",
+        "totals",
+        "unbonding"
+      ],
+      "finalize_state_writes": [
+        "totals",
+        "unbonding"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq",
+        "branch.eq",
+        "gt",
+        "gte",
+        "is.eq"
+      ],
+      "snark_verify": false
+    },
+    "transfer_public": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "whalepool_easystaking_v2.aleo/transfer_public.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/transfer_public.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "totals"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte",
+        "is.eq"
+      ],
+      "snark_verify": false
+    },
+    "fallback_unbond_if_removed": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "whalepool_easystaking_v2.aleo/fallback_unbond_if_removed.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "bonded",
+        "pool_info",
+        "totals",
+        "unbonding"
+      ],
+      "finalize_state_writes": [
+        "bonded",
+        "pool_info",
+        "totals",
+        "unbonding"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "is.eq"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "bond_public",
+    "bond_recharger",
+    "claim_unbond_public",
+    "fallback_unbond_if_removed",
+    "initialize",
+    "set_pool_state",
+    "set_recharger",
+    "set_scope_check",
+    "transfer_public",
+    "unbond_pos_rewards",
+    "unbond_public"
+  ],
+  "cross_contract_refs": [
+    "credits.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "initialize",
+    "bond_recharger",
+    "set_recharger",
+    "set_scope_check",
+    "set_pool_state",
+    "bond_public",
+    "unbond_public",
+    "unbond_pos_rewards",
+    "claim_unbond_public",
+    "transfer_public",
+    "fallback_unbond_if_removed"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [
+      "bonded",
+      "bonding_limit",
+      "pool_info",
+      "recharger",
+      "scope_check",
+      "totals",
+      "un_bonding_limit",
+      "unbonding"
+    ],
+    "future_outputs": [
+      {
+        "function": "initialize",
+        "output": "whalepool_easystaking_v2.aleo/initialize.future"
+      },
+      {
+        "function": "bond_recharger",
+        "output": "whalepool_easystaking_v2.aleo/bond_recharger.future"
+      },
+      {
+        "function": "set_recharger",
+        "output": "whalepool_easystaking_v2.aleo/set_recharger.future"
+      },
+      {
+        "function": "set_scope_check",
+        "output": "whalepool_easystaking_v2.aleo/set_scope_check.future"
+      },
+      {
+        "function": "set_pool_state",
+        "output": "whalepool_easystaking_v2.aleo/set_pool_state.future"
+      },
+      {
+        "function": "bond_public",
+        "output": "whalepool_easystaking_v2.aleo/bond_public.future"
+      },
+      {
+        "function": "unbond_public",
+        "output": "whalepool_easystaking_v2.aleo/unbond_public.future"
+      },
+      {
+        "function": "unbond_pos_rewards",
+        "output": "whalepool_easystaking_v2.aleo/unbond_pos_rewards.future"
+      },
+      {
+        "function": "claim_unbond_public",
+        "output": "whalepool_easystaking_v2.aleo/claim_unbond_public.future"
+      },
+      {
+        "function": "transfer_public",
+        "output": "whalepool_easystaking_v2.aleo/transfer_public.future"
+      },
+      {
+        "function": "fallback_unbond_if_removed",
+        "output": "whalepool_easystaking_v2.aleo/fallback_unbond_if_removed.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

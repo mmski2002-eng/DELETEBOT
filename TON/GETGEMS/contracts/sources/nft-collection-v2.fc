@@ -1,0 +1,115 @@
+;; nft-collection-v2.fc
+;; Passes controller address to NFT item during deploy.
+
+int min_tons_for_storage() asm "50000000 PUSHINT";
+int builder_null?(builder b) asm "ISNULL";
+
+(cell, int, slice, cell) load_data() inline {
+  slice ds = get_data().begin_parse();
+  return (
+    ds~load_ref(),
+    ds~load_uint(64),
+    ds~load_msg_addr(),
+    ds~load_ref()
+  );
+}
+
+() save_data(cell collection_content, int next_item_index, slice owner_address, cell nft_item_code) impure inline {
+  set_data(begin_cell()
+    .store_ref(collection_content)
+    .store_uint(next_item_index, 64)
+    .store_slice(owner_address)
+    .store_ref(nft_item_code)
+    .end_cell());
+}
+
+cell calculate_nft_item_state_init(int item_index, cell nft_item_code) {
+  cell data = begin_cell()
+    .store_uint(item_index, 64)
+    .store_slice(my_address())
+    .end_cell();
+  return begin_cell()
+    .store_uint(0, 2)
+    .store_dict(nft_item_code)
+    .store_dict(data)
+    .store_uint(0, 1)
+    .end_cell();
+}
+
+slice calculate_nft_item_address(int wc, cell state_init) {
+  return begin_cell()
+    .store_uint(4, 3)
+    .store_int(wc, 8)
+    .store_uint(cell_hash(state_init), 256)
+    .end_cell()
+    .begin_parse();
+}
+
+;; Mint body: op(32) | query_id(64) | item_index(64) | nft_content(ref) | nft_owner(addr) | amount(coins) | controller(addr)
+;; Init message to NFT: nft_owner(addr) | content(ref) | controller(addr)
+() deploy_nft_item(int item_index, cell nft_item_code, int amount, slice nft_owner, cell nft_content, slice controller) impure {
+  cell state_init = calculate_nft_item_state_init(item_index, nft_item_code);
+  slice nft_address = calculate_nft_item_address(0, state_init);
+  var msg = begin_cell()
+    .store_uint(0x18, 6)
+    .store_slice(nft_address)
+    .store_coins(amount)
+    .store_uint(4 + 2 + 1, 1 + 4 + 4 + 64 + 32 + 1 + 1 + 1)
+    .store_ref(state_init)
+    .store_ref(begin_cell()
+      .store_slice(nft_owner)
+      .store_ref(nft_content)
+      .store_slice(controller)
+      .end_cell());
+  send_raw_message(msg.end_cell(), 1);
+}
+
+() recv_internal(int my_balance, int msg_value, cell in_msg_full, slice in_msg_body) impure {
+  if (in_msg_body.slice_empty?()) { return (); }
+  slice cs = in_msg_full.begin_parse();
+  int flags = cs~load_uint(4);
+  if (flags & 1) { return (); }
+  slice sender_address = cs~load_msg_addr();
+
+  (cell collection_content, int next_item_index, slice owner_address, cell nft_item_code) = load_data();
+
+  int op       = in_msg_body~load_uint(32);
+  int query_id = in_msg_body~load_uint(64);
+
+  if (op == 1) { ;; deploy nft item
+    throw_unless(401, equal_slices(sender_address, owner_address));
+    int   item_index  = in_msg_body~load_uint(64);
+    throw_unless(402, item_index <= next_item_index);
+    cell  nft_content = in_msg_body~load_ref();
+    slice nft_owner   = in_msg_body~load_msg_addr();
+    int   amount      = in_msg_body~load_coins();
+    slice controller  = in_msg_body~load_msg_addr();
+    deploy_nft_item(item_index, nft_item_code, amount, nft_owner, nft_content, controller);
+    if (item_index == next_item_index) { next_item_index += 1; }
+    save_data(collection_content, next_item_index, owner_address, nft_item_code);
+    return ();
+  }
+
+  if (op == 3) { ;; change owner
+    throw_unless(401, equal_slices(sender_address, owner_address));
+    save_data(collection_content, next_item_index, in_msg_body~load_msg_addr(), nft_item_code);
+    return ();
+  }
+
+  throw(0xffff);
+}
+
+(int, cell, slice) get_collection_data() method_id {
+  (cell collection_content, int next_item_index, slice owner_address, _) = load_data();
+  return (next_item_index, collection_content, owner_address);
+}
+
+slice get_nft_address_by_index(int index) method_id {
+  (_, _, _, cell nft_item_code) = load_data();
+  cell state_init = calculate_nft_item_state_init(index, nft_item_code);
+  return calculate_nft_item_address(0, state_init);
+}
+
+cell get_nft_content(int index, cell individual_content) method_id {
+  return individual_content;
+}

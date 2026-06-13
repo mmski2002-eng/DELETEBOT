@@ -1,0 +1,46 @@
+{
+  "title": "Proof: Simulation Does Not Protect Relayers from CallPermit Nonce Rollback",
+  "claim": "Moonbeam: 'relayers should simulate before submission'. This proves simulation is insufficient.",
+  "timestamp": "2026-05-14T14:55:35.924Z",
+  "network": "Moonbeam mainnet (chainId 1284)",
+  "evidence": {
+    "relayer": "0xceca2f8cf1983b4cf0c1ba51fd382c2bc37aba58",
+    "signer": "0xafbe621c3bca78437aa0299a6fc3cf893087e7fc",
+    "failedTx": "0xfd164de94ae08b91e83389dedfc60ba652180dd085fe943847d179925fe6e973",
+    "failedBlock": 15616976,
+    "target": "0xc4b466f63c0A31302Bc8A688A7c90e1199Bb6f84",
+    "innerSelector": "0xd9a04da6",
+    "deadline": "2026-05-14T14:18:12.000Z",
+    "nonceBefore": "3",
+    "nonceAfter": "3",
+    "nonceRollbackConfirmed": true,
+    "gasLostGLMR": "0.0013305875",
+    "simulations": {
+      "N-1": {
+        "block": 15616975,
+        "result": "FAIL",
+        "error": "execution reverted: \"Permit expired\" (action=\"call\", data=\"0x08c379a0000000000000000000000000000000000000000000000000000"
+      },
+      "N-2": {
+        "block": 15616974,
+        "result": "FAIL",
+        "error": "execution reverted: \"Permit expired\" (action=\"call\", data=\"0x08c379a0000000000000000000000000000000000000000000000000000"
+      },
+      "N-3": {
+        "block": 15616973,
+        "result": "FAIL",
+        "error": "execution reverted: \"Permit expired\" (action=\"call\", data=\"0x08c379a0000000000000000000000000000000000000000000000000000"
+      },
+      "N-5": {
+        "block": 15616971,
+        "result": "FAIL",
+        "error": "execution reverted: \"Permit expired\" (action=\"call\", data=\"0x08c379a0000000000000000000000000000000000000000000000000000"
+      }
+    },
+    "realTxStatus": "FAIL",
+    "txPositionInBlock": -1,
+    "blockTxCount": 21
+  },
+  "proofStrength": "NONE",
+  "conclusion": "All simulations failed — investigate revert reason and tx position."
+}

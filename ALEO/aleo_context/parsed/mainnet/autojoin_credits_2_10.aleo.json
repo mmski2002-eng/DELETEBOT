@@ -1,0 +1,492 @@
+{
+  "program_id": "autojoin_credits_2_10.aleo",
+  "calls_24h_or_metric_window": 97,
+  "imports": [
+    "credits.aleo"
+  ],
+  "mappings": {},
+  "structs": {},
+  "records": {},
+  "functions": {
+    "join_2": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/credits.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "credits.aleo/credits.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "join_3": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r2",
+          "type": "credits.aleo/credits.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "credits.aleo/credits.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "join_4": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r2",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/credits.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r6",
+          "type": "credits.aleo/credits.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "join_5": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r2",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r4",
+          "type": "credits.aleo/credits.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r8",
+          "type": "credits.aleo/credits.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "join_6": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r2",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r4",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r5",
+          "type": "credits.aleo/credits.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r10",
+          "type": "credits.aleo/credits.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "join_7": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r2",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r4",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r5",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r6",
+          "type": "credits.aleo/credits.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r12",
+          "type": "credits.aleo/credits.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "join_8": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r2",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r4",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r5",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r6",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r7",
+          "type": "credits.aleo/credits.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r14",
+          "type": "credits.aleo/credits.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "join_9": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r2",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r4",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r5",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r6",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r7",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r8",
+          "type": "credits.aleo/credits.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r16",
+          "type": "credits.aleo/credits.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "join_10": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r2",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r4",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r5",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r6",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r7",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r8",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r9",
+          "type": "credits.aleo/credits.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r18",
+          "type": "credits.aleo/credits.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [],
+  "cross_contract_refs": [
+    "credits.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "join_2",
+    "join_3",
+    "join_4",
+    "join_5",
+    "join_6",
+    "join_7",
+    "join_8",
+    "join_9",
+    "join_10"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [],
+    "future_outputs": []
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

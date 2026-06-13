@@ -1,0 +1,108 @@
+;; This file is licensed under the Business Source License (BUSL).
+;; See the LICENSE.md file in the project root for more information.
+
+#include "oracles-info.fc";
+#include "../external/stdlib.fc";
+#include "../constants/errors.fc";
+#include "../storage/master-storage.fc";
+#include "../plugins/pyth/constants.fc";
+#include "../plugins/pyth/parse_price_feeds.fc";
+
+const int max_timestamp_delta = 180;
+
+const int exotic_cell_type::merkle_proof = 3;
+
+const int int::max = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
+
+int prices_packed:get(cell prices_packed, int asset_id) inline {
+    (slice price_packed, _) = prices_packed.udict_get?(256, asset_id);
+    int result = price_packed~load_coins();
+    price_packed.end_parse();
+    return result;
+}
+
+int prices_packed:get?(cell prices_packed, int asset_id) inline {
+	(slice price_packed, int found) = prices_packed.udict_get?(256, asset_id);
+    ifnot (found) {
+        return -1;
+    }
+    int result = price_packed~load_coins();
+    price_packed.end_parse();
+    return result;
+}
+
+(int, int) unpack_pyth_price(slice price_item) impure inline {
+    int price = price_item~load_int(64);
+    int timestamp = price_item~load_uint(64);
+    price_item.end_parse();
+    return (price, timestamp);
+}
+
+slice pack_compressed_price(int price) impure inline {
+    return begin_cell().store_coins(price).end_cell().begin_parse();
+}
+
+;; Calling code MUST process prices_packed:error's result and check it for error
+;; the reason prices_packed:error doesn't throw exceptions itself is because:
+;; refunding Jettons requires manually sending a message
+;; (just throwing an exception can only refund TONs, but not Jettons)
+;; returned dict has prices in coins form
+
+(cell, int) packed_price:parse_check(cell price_feeds_cell, cell feeds_data, cell requested_ref_tokens, int price_ttl) impure {
+    cell evaa_prices_dict = new_dict();
+
+    ;; we need to parse all data first, to have ability to access any item later,
+    ;; because some of them require other arbitrary items
+    (cell pyth_feeds_dict, tuple pyth_ids_tuple) = parse_pyth_price_data(price_feeds_cell);
+
+    var (pyth_to_evaa_ids, allowed_ref_tokens) = feeds_data.parse_feeds_data();
+
+    int count = 0;
+    while (count < pyth_ids_tuple.tlen()) {
+        int pyth_original_id = pyth_ids_tuple.at(count);
+        count += 1;
+        (int error, int evaa_feed_id, int evaa_price, int timestamp) = pyth_feeds_dict.calculate_evaa_price(pyth_original_id, pyth_to_evaa_ids);
+        if (error) {
+            return (null(), error);
+        }
+        ifnot(evaa_price > 0) {
+            return (null(), error::prices_not_positive);
+        }
+
+        if (now() > timestamp + price_ttl) {
+            return (null(), error::prices_incorrect_timestamp);
+        }
+
+        evaa_prices_dict~udict_set(256, evaa_feed_id, pack_compressed_price(evaa_price));
+    }
+
+    ifnot (dict_empty?(requested_ref_tokens) | dict_empty?(allowed_ref_tokens)) {
+        ;; load first original token id from dict of requested token ids
+        (int ref_token_id, _, int success) = requested_ref_tokens.udict_get_min?(256);
+        while (success) {
+            ;; load token id which original token_id refers to
+            (slice referred_token_slice, int found?) = allowed_ref_tokens.udict_get?(256, ref_token_id);
+            ifnot (found?) {
+                return (null(), error::ref_token_not_allowed);
+            }
+
+            ;; slice contains only one uint256, which is referred_token_id
+            int referred_token_id = referred_token_slice~load_uint(256);
+            referred_token_slice.end_parse();
+
+            ;; referred_value is a slice containing referred evaa price
+            (slice referred_value, int found?) = evaa_prices_dict.udict_get?(256, referred_token_id);
+            ifnot (found?) {
+                return (null(), error::ref_token_no_referred_value);
+            }
+
+            ;; copy the found value to the requested token_id
+            evaa_prices_dict~udict_set(256, ref_token_id, referred_value);
+
+            ;; get next requested token id
+            (ref_token_id, _, success) = requested_ref_tokens.udict_get_next?(256, ref_token_id);
+        }
+    }
+
+    return (evaa_prices_dict, 0);
+}

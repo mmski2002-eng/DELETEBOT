@@ -1,0 +1,102 @@
+{
+  "program_id": "puzzle_arcade_coin_v002.aleo",
+  "calls_24h_or_metric_window": 12992,
+  "imports": [],
+  "mappings": {},
+  "structs": {},
+  "records": {
+    "PuzzleArcadeCoin": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "amount",
+        "type": "u64.private"
+      }
+    ]
+  },
+  "functions": {
+    "mint": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "PuzzleArcadeCoin.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "spend": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "PuzzleArcadeCoin.record"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "PuzzleArcadeCoin.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gte"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [],
+  "cross_contract_refs": [],
+  "async_or_conditional_paths": [
+    "mint",
+    "spend"
+  ],
+  "state_commitment_surfaces": {
+    "records": [
+      "PuzzleArcadeCoin"
+    ],
+    "mappings": [],
+    "future_outputs": []
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

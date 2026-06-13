@@ -1,0 +1,162 @@
+{
+  "program_id": "pubpriv_router_credits_v3.aleo",
+  "calls_24h_or_metric_window": 3,
+  "imports": [
+    "credits.aleo"
+  ],
+  "mappings": {},
+  "structs": {},
+  "records": {},
+  "functions": {
+    "transfer_pub_priv_to_pub": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r1",
+          "type": "address.private"
+        },
+        {
+          "register": "r2",
+          "type": "u64.private"
+        },
+        {
+          "register": "r3",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r7",
+          "type": "pubpriv_router_credits_v3.aleo/transfer_pub_priv_to_pub.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_private_to_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/transfer_public_as_signer.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "transfer_pub_priv_to_priv": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r1",
+          "type": "address.private"
+        },
+        {
+          "register": "r2",
+          "type": "u64.private"
+        },
+        {
+          "register": "r3",
+          "type": "u64.private"
+        },
+        {
+          "register": "r4",
+          "type": "address.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r12",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r6",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r13",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r14",
+          "type": "pubpriv_router_credits_v3.aleo/transfer_pub_priv_to_priv.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_public_as_signer.future"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/transfer_public_to_private.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "transfer_pub_priv_to_priv",
+    "transfer_pub_priv_to_pub"
+  ],
+  "cross_contract_refs": [
+    "credits.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "transfer_pub_priv_to_pub",
+    "transfer_pub_priv_to_priv"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [],
+    "future_outputs": [
+      {
+        "function": "transfer_pub_priv_to_pub",
+        "output": "pubpriv_router_credits_v3.aleo/transfer_pub_priv_to_pub.future"
+      },
+      {
+        "function": "transfer_pub_priv_to_priv",
+        "output": "pubpriv_router_credits_v3.aleo/transfer_pub_priv_to_priv.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

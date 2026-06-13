@@ -1,0 +1,1167 @@
+{
+  "program_id": "validator_oracle.aleo",
+  "calls_24h_or_metric_window": 10,
+  "imports": [
+    "credits.aleo"
+  ],
+  "mappings": {
+    "delegator_to_validator": {
+      "key": "address.public",
+      "value": "address.public"
+    },
+    "validator_data": {
+      "key": "address.public",
+      "value": "validator_datum.public"
+    },
+    "top_validators": {
+      "key": "u8.public",
+      "value": "[address"
+    },
+    "banned_validators": {
+      "key": "address.public",
+      "value": "boolean.public"
+    },
+    "pondo_tvl": {
+      "key": "u8.public",
+      "value": "u64.public"
+    },
+    "validator_boosting": {
+      "key": "address.public",
+      "value": "validator_boost.public"
+    },
+    "control_addresses": {
+      "key": "address.public",
+      "value": "boolean.public"
+    },
+    "delegator_allocation": {
+      "key": "u8.public",
+      "value": "[u128"
+    },
+    "admin_operations": {
+      "key": "u64.public",
+      "value": "admin_operation.public"
+    }
+  },
+  "structs": {
+    "committee_state": [
+      {
+        "name": "is_open",
+        "type": "boolean"
+      },
+      {
+        "name": "commission",
+        "type": "u8"
+      }
+    ],
+    "bond_state": [
+      {
+        "name": "validator",
+        "type": "address"
+      },
+      {
+        "name": "microcredits",
+        "type": "u64"
+      }
+    ],
+    "validator_datum": [
+      {
+        "name": "delegator",
+        "type": "address"
+      },
+      {
+        "name": "validator",
+        "type": "address"
+      },
+      {
+        "name": "block_height",
+        "type": "u32"
+      },
+      {
+        "name": "bonded_microcredits",
+        "type": "u64"
+      },
+      {
+        "name": "microcredits_yield_per_epoch",
+        "type": "u128"
+      },
+      {
+        "name": "commission",
+        "type": "u8"
+      },
+      {
+        "name": "boost",
+        "type": "u128"
+      }
+    ],
+    "validator_boost": [
+      {
+        "name": "epoch",
+        "type": "u32"
+      },
+      {
+        "name": "boost_amount",
+        "type": "u64"
+      }
+    ],
+    "admin_operation": [
+      {
+        "name": "arg",
+        "type": "field"
+      },
+      {
+        "name": "op_type",
+        "type": "u8"
+      },
+      {
+        "name": "request_id",
+        "type": "u64"
+      }
+    ]
+  },
+  "records": {},
+  "functions": {
+    "initialize": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "validator_oracle.aleo/initialize.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [],
+      "finalize_state_reads": [
+        "delegator_allocation",
+        "top_validators"
+      ],
+      "finalize_state_writes": [
+        "control_addresses",
+        "delegator_allocation",
+        "top_validators"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "add_control_address": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "signature.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "signature.public"
+        },
+        {
+          "register": "r4",
+          "type": "address.public"
+        },
+        {
+          "register": "r5",
+          "type": "signature.public"
+        },
+        {
+          "register": "r6",
+          "type": "address.public"
+        },
+        {
+          "register": "r7",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r16",
+          "type": "validator_oracle.aleo/add_control_address.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "and",
+        "assert.eq",
+        "assert.neq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "address.public"
+        },
+        {
+          "register": "r4",
+          "type": "admin_operation.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "admin_operations",
+        "control_addresses"
+      ],
+      "finalize_state_writes": [
+        "admin_operations",
+        "control_addresses"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "remove_control_address": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "signature.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "signature.public"
+        },
+        {
+          "register": "r4",
+          "type": "address.public"
+        },
+        {
+          "register": "r5",
+          "type": "signature.public"
+        },
+        {
+          "register": "r6",
+          "type": "address.public"
+        },
+        {
+          "register": "r7",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r16",
+          "type": "validator_oracle.aleo/remove_control_address.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "and",
+        "assert.eq",
+        "assert.neq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "address.public"
+        },
+        {
+          "register": "r4",
+          "type": "admin_operation.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "admin_operations",
+        "control_addresses"
+      ],
+      "finalize_state_writes": [
+        "admin_operations",
+        "control_addresses"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "update_admin": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "signature.public"
+        },
+        {
+          "register": "r3",
+          "type": "address.public"
+        },
+        {
+          "register": "r4",
+          "type": "signature.public"
+        },
+        {
+          "register": "r5",
+          "type": "address.public"
+        },
+        {
+          "register": "r6",
+          "type": "signature.public"
+        },
+        {
+          "register": "r7",
+          "type": "address.public"
+        },
+        {
+          "register": "r8",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r18",
+          "type": "validator_oracle.aleo/update_admin.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "and",
+        "assert.eq",
+        "assert.neq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "address.public"
+        },
+        {
+          "register": "r4",
+          "type": "address.public"
+        },
+        {
+          "register": "r5",
+          "type": "admin_operation.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "admin_operations",
+        "control_addresses"
+      ],
+      "finalize_state_writes": [
+        "admin_operations",
+        "control_addresses"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "update_delegator_allocations": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "[u128"
+        },
+        {
+          "register": "r1",
+          "type": "signature.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "signature.public"
+        },
+        {
+          "register": "r4",
+          "type": "address.public"
+        },
+        {
+          "register": "r5",
+          "type": "signature.public"
+        },
+        {
+          "register": "r6",
+          "type": "address.public"
+        },
+        {
+          "register": "r7",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r16",
+          "type": "validator_oracle.aleo/update_delegator_allocations.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "and",
+        "assert.eq",
+        "assert.neq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "[u128"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "address.public"
+        },
+        {
+          "register": "r4",
+          "type": "admin_operation.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "admin_operations",
+        "control_addresses"
+      ],
+      "finalize_state_writes": [
+        "admin_operations",
+        "delegator_allocation"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "propose_delegator": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "validator_oracle.aleo/propose_delegator.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.neq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "banned_validators",
+        "delegator_to_validator"
+      ],
+      "finalize_state_writes": [
+        "delegator_to_validator"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "add_delegator": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "signature.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "signature.public"
+        },
+        {
+          "register": "r4",
+          "type": "address.public"
+        },
+        {
+          "register": "r5",
+          "type": "signature.public"
+        },
+        {
+          "register": "r6",
+          "type": "address.public"
+        },
+        {
+          "register": "r7",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r16",
+          "type": "validator_oracle.aleo/add_delegator.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "and",
+        "assert.eq",
+        "assert.neq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "address.public"
+        },
+        {
+          "register": "r4",
+          "type": "admin_operation.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "admin_operations",
+        "banned_validators",
+        "control_addresses",
+        "delegator_to_validator",
+        "validator_data"
+      ],
+      "finalize_state_writes": [
+        "admin_operations",
+        "validator_data"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq",
+        "lt"
+      ],
+      "snark_verify": false
+    },
+    "update_data": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "validator_oracle.aleo/update_data.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "banned_validators",
+        "delegator_allocation",
+        "pondo_tvl",
+        "top_validators",
+        "validator_boosting",
+        "validator_data"
+      ],
+      "finalize_state_writes": [
+        "top_validators",
+        "validator_data"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gt",
+        "gte",
+        "is.eq",
+        "lt",
+        "or",
+        "ternary"
+      ],
+      "snark_verify": false
+    },
+    "remove_delegator": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "validator_oracle.aleo/remove_delegator.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "delegator_to_validator",
+        "top_validators",
+        "validator_data"
+      ],
+      "finalize_state_writes": [
+        "delegator_to_validator",
+        "top_validators",
+        "validator_data"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "is.eq",
+        "lt",
+        "ternary"
+      ],
+      "snark_verify": false
+    },
+    "pondo_ban_validator": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "validator_oracle.aleo/pondo_ban_validator.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.neq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "control_addresses"
+      ],
+      "finalize_state_writes": [
+        "banned_validators"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "ban_validator": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "validator_oracle.aleo/ban_validator.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "validator_data"
+      ],
+      "finalize_state_writes": [
+        "banned_validators"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gt",
+        "gte",
+        "or"
+      ],
+      "snark_verify": false
+    },
+    "unban_validator": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "signature.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "signature.public"
+        },
+        {
+          "register": "r4",
+          "type": "address.public"
+        },
+        {
+          "register": "r5",
+          "type": "signature.public"
+        },
+        {
+          "register": "r6",
+          "type": "address.public"
+        },
+        {
+          "register": "r7",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r16",
+          "type": "validator_oracle.aleo/unban_validator.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "and",
+        "assert.eq",
+        "assert.neq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "address.public"
+        },
+        {
+          "register": "r4",
+          "type": "admin_operation.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "admin_operations",
+        "control_addresses"
+      ],
+      "finalize_state_writes": [
+        "admin_operations",
+        "banned_validators"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "set_pondo_tvl": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "validator_oracle.aleo/set_pondo_tvl.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [
+        "pondo_tvl"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "ban_self": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "validator_oracle.aleo/ban_self.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [
+        "banned_validators"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "boost_validator": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "validator_oracle.aleo/boost_validator.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_public_as_signer.future"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "validator_boosting"
+      ],
+      "finalize_state_writes": [
+        "validator_boosting"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte",
+        "is.eq",
+        "ternary"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "add_control_address",
+    "add_delegator",
+    "ban_self",
+    "ban_validator",
+    "boost_validator",
+    "initialize",
+    "pondo_ban_validator",
+    "propose_delegator",
+    "remove_control_address",
+    "remove_delegator",
+    "set_pondo_tvl",
+    "unban_validator",
+    "update_admin",
+    "update_data",
+    "update_delegator_allocations"
+  ],
+  "cross_contract_refs": [
+    "credits.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "initialize",
+    "add_control_address",
+    "remove_control_address",
+    "update_admin",
+    "update_delegator_allocations",
+    "propose_delegator",
+    "add_delegator",
+    "update_data",
+    "remove_delegator",
+    "pondo_ban_validator",
+    "ban_validator",
+    "unban_validator",
+    "set_pondo_tvl",
+    "ban_self",
+    "boost_validator"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [
+      "admin_operations",
+      "banned_validators",
+      "control_addresses",
+      "delegator_allocation",
+      "delegator_to_validator",
+      "pondo_tvl",
+      "top_validators",
+      "validator_boosting",
+      "validator_data"
+    ],
+    "future_outputs": [
+      {
+        "function": "initialize",
+        "output": "validator_oracle.aleo/initialize.future"
+      },
+      {
+        "function": "add_control_address",
+        "output": "validator_oracle.aleo/add_control_address.future"
+      },
+      {
+        "function": "remove_control_address",
+        "output": "validator_oracle.aleo/remove_control_address.future"
+      },
+      {
+        "function": "update_admin",
+        "output": "validator_oracle.aleo/update_admin.future"
+      },
+      {
+        "function": "update_delegator_allocations",
+        "output": "validator_oracle.aleo/update_delegator_allocations.future"
+      },
+      {
+        "function": "propose_delegator",
+        "output": "validator_oracle.aleo/propose_delegator.future"
+      },
+      {
+        "function": "add_delegator",
+        "output": "validator_oracle.aleo/add_delegator.future"
+      },
+      {
+        "function": "update_data",
+        "output": "validator_oracle.aleo/update_data.future"
+      },
+      {
+        "function": "remove_delegator",
+        "output": "validator_oracle.aleo/remove_delegator.future"
+      },
+      {
+        "function": "pondo_ban_validator",
+        "output": "validator_oracle.aleo/pondo_ban_validator.future"
+      },
+      {
+        "function": "ban_validator",
+        "output": "validator_oracle.aleo/ban_validator.future"
+      },
+      {
+        "function": "unban_validator",
+        "output": "validator_oracle.aleo/unban_validator.future"
+      },
+      {
+        "function": "set_pondo_tvl",
+        "output": "validator_oracle.aleo/set_pondo_tvl.future"
+      },
+      {
+        "function": "ban_self",
+        "output": "validator_oracle.aleo/ban_self.future"
+      },
+      {
+        "function": "boost_validator",
+        "output": "validator_oracle.aleo/boost_validator.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

@@ -1,0 +1,21 @@
+{
+  "name": "sandbox-tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "analyze": "node analyze.js",
+    "round2": "node round2.js",
+    "scan-fragment": "node scan_fragment_collections.js",
+    "test": "node analyze.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@ton-community/func-js": "^0.11.0",
+    "@ton/core": "^0.63.1",
+    "@ton/sandbox": "^0.42.0"
+  }
+}

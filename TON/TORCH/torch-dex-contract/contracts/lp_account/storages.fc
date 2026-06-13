@@ -1,0 +1,81 @@
+global slice lp_account::admin;
+global int lp_account::query_id;    
+global slice lp_account::provider;
+global slice lp_account::pool_address;
+
+global cell lp_account::meta_asset;
+global int lp_account::meta_balance;
+global int lp_account::meta_amount;
+
+global cell lp_account::assets;
+global cell lp_account::balances;
+global cell lp_account::target;
+
+global cell lp_account::base_code;
+global slice lp_account::factory;
+
+global tuple lp_account::sorted_assets_tuple;
+global tuple lp_account::balances_tuple;
+
+() lp_account::load_data() impure inline_ref {
+    slice ds = get_data().begin_parse();
+    lp_account::admin = ds~load_msg_addr();
+    lp_account::query_id = ds~load_query_id();
+    lp_account::provider = ds~load_msg_addr();
+    lp_account::pool_address = ds~load_msg_addr();
+    
+    cell meta_cell = ds~load_ref();
+    slice meta_slice = meta_cell.begin_parse();
+    lp_account::meta_asset = meta_slice~load_maybe_ref();
+    lp_account::meta_amount = meta_slice~load_coins();
+    lp_account::meta_balance = meta_slice~load_coins();
+    meta_slice.end_parse();
+
+    cell base_cell = ds~load_ref();
+    slice base_slice = base_cell.begin_parse();
+    
+    lp_account::assets = base_slice~load_ref();
+    lp_account::target = base_slice~load_ref();
+    lp_account::balances = base_slice~load_ref();
+    base_slice.end_parse();
+
+    cell proof_cell = ds~load_ref();
+    slice proof_slice = proof_cell.begin_parse();
+    lp_account::base_code = proof_slice~load_ref();
+    lp_account::factory = proof_slice~load_msg_addr();
+    proof_slice.end_parse();
+
+    lp_account::sorted_assets_tuple = convert_assets_cell_to_tuple(lp_account::assets);
+    lp_account::balances_tuple = convert_coins_cell_to_tuple(lp_account::balances);
+    ds.end_parse();
+}
+
+() lp_account::save_data() impure inline_ref {
+    begin_cell()
+        .store_slice(lp_account::admin)
+        .store_query_id(lp_account::query_id)
+        .store_slice(lp_account::provider)
+        .store_slice(lp_account::pool_address)
+        .store_ref(
+            begin_cell()
+                .store_maybe_ref(lp_account::meta_asset)
+                .store_coins(lp_account::meta_amount)
+                .store_coins(lp_account::meta_balance)  
+            .end_cell()
+        )
+        .store_ref(
+            begin_cell()
+                .store_ref(lp_account::assets)
+                .store_ref(lp_account::target)
+                .store_ref(lp_account::balances)
+            .end_cell()
+        )
+        .store_ref(
+            begin_cell()
+                .store_ref(lp_account::base_code)
+                .store_slice(lp_account::factory)
+            .end_cell()
+        )
+    .end_cell()
+    .set_data();
+}

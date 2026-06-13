@@ -1,0 +1,318 @@
+{
+  "program_id": "asset_manager_core_v1.aleo",
+  "calls_24h_or_metric_window": 86,
+  "imports": [
+    "asset_manager_helper_v1.aleo",
+    "connection_v1.aleo",
+    "credits.aleo",
+    "gmp_checksum_v1.aleo",
+    "gmp_lib_v1.aleo",
+    "rate_limit_v1.aleo",
+    "token_registry.aleo"
+  ],
+  "mappings": {
+    "gmp_payload": {
+      "key": "[u8",
+      "value": "asset_manager_helper_v1.aleo/TransferMsg.public"
+    }
+  },
+  "structs": {},
+  "records": {},
+  "functions": {
+    "transfer_native_public": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "[u8"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u128.public"
+        },
+        {
+          "register": "r4",
+          "type": "[u8"
+        },
+        {
+          "register": "r5",
+          "type": "u64.public"
+        },
+        {
+          "register": "r6",
+          "type": "u128.public"
+        },
+        {
+          "register": "r7",
+          "type": "[u8"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r16",
+          "type": "asset_manager_core_v1.aleo/transfer_native_public.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "asset_manager_helper_v1.aleo",
+        "connection_v1.aleo",
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "asset_manager_helper_v1.aleo/TransferMsg.public"
+        },
+        {
+          "register": "r1",
+          "type": "[u8"
+        },
+        {
+          "register": "r2",
+          "type": "asset_manager_helper_v1.aleo/transfer_message_external.future"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/transfer_public_as_signer.future"
+        },
+        {
+          "register": "r4",
+          "type": "credits.aleo/transfer_public_as_signer.future"
+        },
+        {
+          "register": "r5",
+          "type": "connection_v1.aleo/send_message.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [
+        "gmp_payload"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "transfer_token_public": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "[u8"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u128.public"
+        },
+        {
+          "register": "r4",
+          "type": "[u8"
+        },
+        {
+          "register": "r5",
+          "type": "u64.public"
+        },
+        {
+          "register": "r6",
+          "type": "u128.public"
+        },
+        {
+          "register": "r7",
+          "type": "[u8"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r16",
+          "type": "asset_manager_core_v1.aleo/transfer_token_public.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "asset_manager_helper_v1.aleo",
+        "connection_v1.aleo",
+        "credits.aleo",
+        "token_registry.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "asset_manager_helper_v1.aleo/TransferMsg.public"
+        },
+        {
+          "register": "r1",
+          "type": "[u8"
+        },
+        {
+          "register": "r2",
+          "type": "asset_manager_helper_v1.aleo/transfer_message_external.future"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/transfer_public_as_signer.future"
+        },
+        {
+          "register": "r4",
+          "type": "token_registry.aleo/transfer_from_public.future"
+        },
+        {
+          "register": "r5",
+          "type": "connection_v1.aleo/send_message.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [
+        "gmp_payload"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "recv_message": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u128.public"
+        },
+        {
+          "register": "r1",
+          "type": "u128.public"
+        },
+        {
+          "register": "r2",
+          "type": "[u8"
+        },
+        {
+          "register": "r3",
+          "type": "u128.public"
+        },
+        {
+          "register": "r4",
+          "type": "gmp_lib_v1.aleo/Validators.public"
+        },
+        {
+          "register": "r5",
+          "type": "connection_v1.aleo/Signatures.public"
+        },
+        {
+          "register": "r6",
+          "type": "asset_manager_helper_v1.aleo/TransferMsg.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r17",
+          "type": "asset_manager_core_v1.aleo/recv_message.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "asset_manager_helper_v1.aleo",
+        "connection_v1.aleo",
+        "credits.aleo",
+        "gmp_lib_v1.aleo",
+        "rate_limit_v1.aleo",
+        "token_registry.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "asset_manager_helper_v1.aleo/recv_message_external.future"
+        },
+        {
+          "register": "r1",
+          "type": "connection_v1.aleo/verify_message.future"
+        },
+        {
+          "register": "r2",
+          "type": "rate_limit_v1.aleo/verify_withdraw.future"
+        },
+        {
+          "register": "r3",
+          "type": "token_registry.aleo/transfer_public.future"
+        },
+        {
+          "register": "r4",
+          "type": "credits.aleo/transfer_public.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "recv_message",
+    "transfer_native_public",
+    "transfer_token_public"
+  ],
+  "cross_contract_refs": [
+    "asset_manager_helper_v1.aleo",
+    "connection_v1.aleo",
+    "credits.aleo",
+    "gmp_checksum_v1.aleo",
+    "gmp_lib_v1.aleo",
+    "rate_limit_v1.aleo",
+    "token_registry.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "transfer_native_public",
+    "transfer_token_public",
+    "recv_message"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [
+      "gmp_payload"
+    ],
+    "future_outputs": [
+      {
+        "function": "transfer_native_public",
+        "output": "asset_manager_core_v1.aleo/transfer_native_public.future"
+      },
+      {
+        "function": "transfer_token_public",
+        "output": "asset_manager_core_v1.aleo/transfer_token_public.future"
+      },
+      {
+        "function": "recv_message",
+        "output": "asset_manager_core_v1.aleo/recv_message.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

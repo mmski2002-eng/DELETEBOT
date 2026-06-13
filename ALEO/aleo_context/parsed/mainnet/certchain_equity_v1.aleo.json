@@ -1,0 +1,566 @@
+{
+  "program_id": "certchain_equity_v1.aleo",
+  "calls_24h_or_metric_window": 5,
+  "imports": [],
+  "mappings": {
+    "cert_exists": {
+      "key": "field.public",
+      "value": "boolean.public"
+    },
+    "asset_total_shares": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "asset_admin": {
+      "key": "field.public",
+      "value": "address.public"
+    },
+    "dividend_per_share": {
+      "key": "DividendKey.public",
+      "value": "u64.public"
+    },
+    "dividend_claimed": {
+      "key": "ClaimKey.public",
+      "value": "boolean.public"
+    },
+    "has_voted": {
+      "key": "VoteKey.public",
+      "value": "boolean.public"
+    },
+    "votes_yes": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "votes_no": {
+      "key": "field.public",
+      "value": "u64.public"
+    }
+  },
+  "structs": {
+    "DividendKey": [
+      {
+        "name": "asset_id",
+        "type": "field"
+      },
+      {
+        "name": "epoch",
+        "type": "u32"
+      }
+    ],
+    "ClaimKey": [
+      {
+        "name": "cert_id",
+        "type": "field"
+      },
+      {
+        "name": "epoch",
+        "type": "u32"
+      }
+    ],
+    "VoteKey": [
+      {
+        "name": "cert_id",
+        "type": "field"
+      },
+      {
+        "name": "proposal_id",
+        "type": "field"
+      }
+    ]
+  },
+  "records": {
+    "EquityNFT": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "asset_id",
+        "type": "field.private"
+      },
+      {
+        "name": "cert_id",
+        "type": "field.private"
+      },
+      {
+        "name": "shares",
+        "type": "u64.private"
+      },
+      {
+        "name": "epoch_in",
+        "type": "u32.private"
+      }
+    ]
+  },
+  "functions": {
+    "register_admin": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "certchain_equity_v1.aleo/register_admin.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "asset_admin"
+      ],
+      "finalize_state_writes": [
+        "asset_admin"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "mint": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        },
+        {
+          "register": "r4",
+          "type": "u32.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r6",
+          "type": "EquityNFT.record"
+        },
+        {
+          "register": "r7",
+          "type": "certchain_equity_v1.aleo/mint.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "asset_admin",
+        "asset_total_shares",
+        "cert_exists"
+      ],
+      "finalize_state_writes": [
+        "asset_total_shares",
+        "cert_exists"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "split": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "EquityNFT.record"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        },
+        {
+          "register": "r3",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r9",
+          "type": "EquityNFT.record"
+        },
+        {
+          "register": "r10",
+          "type": "EquityNFT.record"
+        },
+        {
+          "register": "r11",
+          "type": "certchain_equity_v1.aleo/split.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "lt"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "cert_exists"
+      ],
+      "finalize_state_writes": [
+        "cert_exists"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "transfer": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "EquityNFT.record"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "EquityNFT.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "is.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "declare_dividend": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u32.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "certchain_equity_v1.aleo/declare_dividend.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u32.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "asset_admin",
+        "dividend_per_share"
+      ],
+      "finalize_state_writes": [
+        "dividend_per_share"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "claim_dividend": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "EquityNFT.record"
+        },
+        {
+          "register": "r1",
+          "type": "u32.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "EquityNFT.record"
+        },
+        {
+          "register": "r5",
+          "type": "certchain_equity_v1.aleo/claim_dividend.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "is.eq",
+        "lt"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u32.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "dividend_claimed",
+        "dividend_per_share"
+      ],
+      "finalize_state_writes": [
+        "dividend_claimed"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gt"
+      ],
+      "snark_verify": false
+    },
+    "vote": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "EquityNFT.record"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "u8.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r5",
+          "type": "EquityNFT.record"
+        },
+        {
+          "register": "r6",
+          "type": "certchain_equity_v1.aleo/vote.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "is.eq",
+        "lte"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u8.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "has_voted",
+        "votes_no",
+        "votes_yes"
+      ],
+      "finalize_state_writes": [
+        "has_voted",
+        "votes_no",
+        "votes_yes"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "is.eq"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "claim_dividend",
+    "declare_dividend",
+    "mint",
+    "register_admin",
+    "split",
+    "vote"
+  ],
+  "cross_contract_refs": [],
+  "async_or_conditional_paths": [
+    "register_admin",
+    "mint",
+    "split",
+    "transfer",
+    "declare_dividend",
+    "claim_dividend",
+    "vote"
+  ],
+  "state_commitment_surfaces": {
+    "records": [
+      "EquityNFT"
+    ],
+    "mappings": [
+      "asset_admin",
+      "asset_total_shares",
+      "cert_exists",
+      "dividend_claimed",
+      "dividend_per_share",
+      "has_voted",
+      "votes_no",
+      "votes_yes"
+    ],
+    "future_outputs": [
+      {
+        "function": "register_admin",
+        "output": "certchain_equity_v1.aleo/register_admin.future"
+      },
+      {
+        "function": "mint",
+        "output": "certchain_equity_v1.aleo/mint.future"
+      },
+      {
+        "function": "split",
+        "output": "certchain_equity_v1.aleo/split.future"
+      },
+      {
+        "function": "declare_dividend",
+        "output": "certchain_equity_v1.aleo/declare_dividend.future"
+      },
+      {
+        "function": "claim_dividend",
+        "output": "certchain_equity_v1.aleo/claim_dividend.future"
+      },
+      {
+        "function": "vote",
+        "output": "certchain_equity_v1.aleo/vote.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

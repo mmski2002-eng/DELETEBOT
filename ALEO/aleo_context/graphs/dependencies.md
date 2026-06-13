@@ -1,0 +1,104 @@
+# Aleo dependency graph
+
+## mainnet
+- `par_giveaways_v1.aleo` -> `par_store_inventory_v1.aleo`, `puzzle_arcade_ticket_v002.aleo`
+- `puzzle_spinner_v003.aleo` -> `puzzle_arcade_coin_v002.aleo`, `puzzle_arcade_ticket_v002.aleo`
+- `mystery_city_v001.aleo` -> `puzzle_arcade_coin_v002.aleo`, `puzzle_arcade_ticket_v002.aleo`
+- `token_registry.aleo` -> `credits.aleo`
+- `whalepool_easystaking_v2.aleo` -> `credits.aleo`
+- `arcn_pool_v2_2_2.aleo` -> `arcn_access_manager_v1.aleo`, `arcn_whitelist.aleo`, `credits.aleo`, `token_registry.aleo`
+- `whalepool_easystaking_v3.aleo` -> `credits.aleo`
+- `betastaking.aleo` -> `credits.aleo`
+- `arcn_whitelist.aleo` -> `arcn_access_manager_v1.aleo`
+- `zkwork_staker_v1.aleo` -> `credits.aleo`, `withdrawaler.aleo`, `zkwork_staking.aleo`
+- `pondo_protocol.aleo` -> `credits.aleo`, `delegator1.aleo`, `delegator2.aleo`, `delegator3.aleo`, `delegator4.aleo`, `delegator5.aleo`, `paleo_token.aleo`, `pondo_protocol_token.aleo`, `token_registry.aleo`, `validator_oracle.aleo`, `wrapped_credits.aleo`
+- `zkwork_staking.aleo` -> `credits.aleo`
+- `squash_v4.aleo` -> `puzzle_arcade_coin_v002.aleo`, `puzzle_arcade_ticket_v002.aleo`, `squash_timestamp.aleo`, `squash_v001.aleo`, `squash_v2.aleo`, `squash_v3.aleo`
+- `autojoin_credits_2_10.aleo` -> `credits.aleo`
+- `connection_v1.aleo` -> `credits.aleo`, `gmp_checksum_v1.aleo`, `gmp_lib_v1.aleo`
+- `asset_manager_helper_v1.aleo` -> `gmp_checksum_v1.aleo`, `gmp_lib_v1.aleo`
+- `asset_manager_core_v1.aleo` -> `asset_manager_helper_v1.aleo`, `connection_v1.aleo`, `credits.aleo`, `gmp_checksum_v1.aleo`, `gmp_lib_v1.aleo`, `rate_limit_v1.aleo`, `token_registry.aleo`
+- `wrapped_credits.aleo` -> `credits.aleo`, `token_registry.aleo`
+- `arcn_pub_v2_2_3.aleo` -> `arcn_access_manager_v1.aleo`, `arcn_compliance_v1.aleo`, `arcn_pool_v2_2_2.aleo`, `arcn_whitelist.aleo`, `credits.aleo`, `token_registry.aleo`
+- `arcn_priv_v2_2_3.aleo` -> `arcn_access_manager_v1.aleo`, `arcn_compliance_v1.aleo`, `arcn_pool_v2_2_2.aleo`, `arcn_whitelist.aleo`, `credits.aleo`, `token_registry.aleo`
+- `usdcx_stablecoin.aleo` -> `merkle_tree.aleo`, `usdcx_freezelist.aleo`, `usdcx_multisig_core.aleo`
+- `usad_stablecoin.aleo` -> `merkle_tree.aleo`, `usad_freezelist.aleo`, `usad_multisig_core.aleo`
+- `rate_limit_v1.aleo` -> `gmp_checksum_v1.aleo`
+- `mining_jouny_test_v2.aleo` -> `credits.aleo`
+- `arcn_puc_out_helper_swap_v2_2_6.aleo` -> `arcn_access_manager_v1.aleo`, `arcn_pool_v2_2_2.aleo`, `arcn_whitelist.aleo`, `credits.aleo`, `token_registry.aleo`, `wrapped_credits.aleo`
+- `withdrawaler.aleo` -> `credits.aleo`, `zkwork_staking.aleo`
+- `betastaker_1.aleo` -> `betastaking.aleo`, `credits.aleo`
+- `betastaker_3.aleo` -> `betastaking.aleo`, `credits.aleo`
+- `betastaker_2.aleo` -> `betastaking.aleo`, `credits.aleo`
+- `betastaker_4.aleo` -> `betastaking.aleo`, `credits.aleo`
+- `aj_usdcx_stablecoin_2_10.aleo` -> `merkle_tree.aleo`, `usdcx_freezelist.aleo`, `usdcx_multisig_core.aleo`, `usdcx_stablecoin.aleo`
+- `ans_registrar_usd2.aleo` -> `aleo_name_service_registry.aleo`, `ans_coupon_card.aleo`, `ans_utils.aleo`, `credits.aleo`
+- `delegator3.aleo` -> `credits.aleo`, `validator_oracle.aleo`
+- `delegator4.aleo` -> `credits.aleo`, `validator_oracle.aleo`
+- `vlink_token_service_cd_v3.aleo` -> `credits.aleo`, `vlink_holding_cd_v3.aleo`, `vlink_token_bridge_v3.aleo`
+- `delegator2.aleo` -> `credits.aleo`, `validator_oracle.aleo`
+- `delegator1.aleo` -> `credits.aleo`, `validator_oracle.aleo`
+- `delegator5.aleo` -> `credits.aleo`, `validator_oracle.aleo`
+- `aj_usad_stablecoin_2_10.aleo` -> `merkle_tree.aleo`, `usad_freezelist.aleo`, `usad_multisig_core.aleo`, `usad_stablecoin.aleo`
+- `betastaking_ext.aleo` -> `betastaking.aleo`, `credits.aleo`
+- `hyp_mailbox.aleo` -> `hyp_ism_manager.aleo`, `hyp_multisig_core.aleo`
+- `validator_oracle.aleo` -> `credits.aleo`
+- `arcn_puc_in_helper_swap_v2_2_5.aleo` -> `arcn_access_manager_v1.aleo`, `arcn_pool_v2_2_2.aleo`, `arcn_whitelist.aleo`, `credits.aleo`, `token_registry.aleo`, `wrapped_credits.aleo`
+- `hyp_ism_manager.aleo` -> `hyp_multisig_core.aleo`
+- `vlink_token_service_v3.aleo` -> `credits.aleo`, `token_registry.aleo`, `vlink_holding_v3.aleo`, `vlink_token_bridge_v3.aleo`
+- `usdcx_bridge.aleo` -> `merkle_tree.aleo`, `usdcx_freezelist.aleo`, `usdcx_multisig_core.aleo`, `usdcx_stablecoin.aleo`
+- `vlink_holding_cd_v3.aleo` -> `credits.aleo`
+- `puzzle_capital_pool.aleo` -> `credits.aleo`, `puzzle_capital_multisig.aleo`
+- `vlink_holding_v3.aleo` -> `credits.aleo`, `token_registry.aleo`
+- `pubpriv_router_credits_v3.aleo` -> `credits.aleo`
+- `shield_wallet_promo_ethdenver.aleo` -> `credits.aleo`
+- `hyp_warp_token_sol.aleo` -> `credits.aleo`, `hyp_dispatch_proxy.aleo`, `hyp_hook_manager.aleo`, `hyp_ism_manager.aleo`, `hyp_mailbox.aleo`, `hyp_multisig_core.aleo`, `token_registry.aleo`
+- `hyp_hook_manager.aleo` -> `credits.aleo`, `hyp_ism_manager.aleo`, `hyp_mailbox.aleo`, `hyp_multisig_core.aleo`
+- `lsp_host_ui_v1.aleo` -> `credits.aleo`, `lsp_host_bank_v1.aleo`
+- `hyp_warp_token_usdt.aleo` -> `credits.aleo`, `hyp_dispatch_proxy.aleo`, `hyp_hook_manager.aleo`, `hyp_ism_manager.aleo`, `hyp_mailbox.aleo`, `hyp_multisig_core.aleo`, `token_registry.aleo`
+- `arcn_puc_in_helper_v2_2_4.aleo` -> `arcn_access_manager_v1.aleo`, `arcn_compliance_v1.aleo`, `arcn_pool_v2_2_2.aleo`, `arcn_whitelist.aleo`, `credits.aleo`, `token_registry.aleo`, `wrapped_credits.aleo`
+- `hyp_warp_token_usdc.aleo` -> `credits.aleo`, `hyp_dispatch_proxy.aleo`, `hyp_hook_manager.aleo`, `hyp_ism_manager.aleo`, `hyp_mailbox.aleo`, `hyp_multisig_core.aleo`, `token_registry.aleo`
+- `hyp_warp_token_usad.aleo` -> `credits.aleo`, `hyp_dispatch_proxy.aleo`, `hyp_hook_manager.aleo`, `hyp_ism_manager.aleo`, `hyp_mailbox.aleo`, `hyp_multisig_core.aleo`, `merkle_tree.aleo`, `usad_freezelist.aleo`, `usad_multisig_core.aleo`, `usad_stablecoin.aleo`
+- `lsp_host_bank_v1.aleo` -> `credits.aleo`
+- `puzzle_proving_partner.aleo` -> `credits.aleo`, `puzzle_capital_multisig.aleo`
+- `hyp_warp_token_wbtc.aleo` -> `credits.aleo`, `hyp_dispatch_proxy.aleo`, `hyp_hook_manager.aleo`, `hyp_ism_manager.aleo`, `hyp_mailbox.aleo`, `hyp_multisig_core.aleo`, `token_registry.aleo`
+- `hyp_warp_token_eth.aleo` -> `credits.aleo`, `hyp_dispatch_proxy.aleo`, `hyp_hook_manager.aleo`, `hyp_ism_manager.aleo`, `hyp_mailbox.aleo`, `hyp_multisig_core.aleo`, `token_registry.aleo`
+- `arcn_credits_in_helper_v2_2_3.aleo` -> `arcn_access_manager_v1.aleo`, `arcn_compliance_v1.aleo`, `arcn_pool_v2_2_2.aleo`, `arcn_whitelist.aleo`, `credits.aleo`, `token_registry.aleo`, `wrapped_credits.aleo`
+- `victim_vault.aleo` -> `credits.aleo`
+- `hyp_dispatch_proxy.aleo` -> `credits.aleo`, `hyp_hook_manager.aleo`, `hyp_ism_manager.aleo`, `hyp_mailbox.aleo`, `hyp_multisig_core.aleo`
+- `whalepool_puzzlecapital.aleo` -> `credits.aleo`, `puzzle_capital_multisig.aleo`
+- `autojoin_token_registry_2_9.aleo` -> `credits.aleo`, `token_registry.aleo`
+- `par_store_v1.aleo` -> `par_store_inventory_v1.aleo`, `puzzle_arcade_ticket_v002.aleo`
+
+## testnet
+- `dara_dp_credit_v5.aleo` -> `credits.aleo`, `merkle_tree.aleo`, `test_usdcx_freezelist.aleo`, `test_usdcx_multisig_core.aleo`, `test_usdcx_stablecoin.aleo`
+- `dara_dp_sol_v5.aleo` -> `merkle_tree.aleo`, `test_sol_v1.aleo`, `test_usdcx_freezelist.aleo`, `test_usdcx_multisig_core.aleo`, `test_usdcx_stablecoin.aleo`
+- `dara_dp_eth_v5.aleo` -> `merkle_tree.aleo`, `test_eth_v1.aleo`, `test_usdcx_freezelist.aleo`, `test_usdcx_multisig_core.aleo`, `test_usdcx_stablecoin.aleo`
+- `dara_dp_btc_v5.aleo` -> `merkle_tree.aleo`, `test_btc_v1.aleo`, `test_usdcx_freezelist.aleo`, `test_usdcx_multisig_core.aleo`, `test_usdcx_stablecoin.aleo`
+- `dara_lend_v8.aleo` -> `credits.aleo`, `merkle_tree.aleo`, `test_usad_freezelist.aleo`, `test_usad_multisig_core.aleo`, `test_usad_stablecoin.aleo`, `test_usdcx_freezelist.aleo`, `test_usdcx_multisig_core.aleo`, `test_usdcx_stablecoin.aleo`
+- `dara_lend_v8_credits.aleo` -> `credits.aleo`, `merkle_tree.aleo`, `test_usad_freezelist.aleo`, `test_usad_multisig_core.aleo`, `test_usad_stablecoin.aleo`, `test_usdcx_freezelist.aleo`, `test_usdcx_multisig_core.aleo`, `test_usdcx_stablecoin.aleo`
+- `dara_flash_v1.aleo` -> `credits.aleo`, `merkle_tree.aleo`, `test_usad_freezelist.aleo`, `test_usad_multisig_core.aleo`, `test_usad_stablecoin.aleo`, `test_usdcx_freezelist.aleo`, `test_usdcx_multisig_core.aleo`, `test_usdcx_stablecoin.aleo`
+- `autojoin_credits_2_10.aleo` -> `credits.aleo`
+- `test_usdcx_stablecoin.aleo` -> `merkle_tree.aleo`, `test_usdcx_freezelist.aleo`, `test_usdcx_multisig_core.aleo`
+- `loyalty_rewards.aleo` -> `loyalty_token.aleo`
+- `autojoin_credits_15_16.aleo` -> `credits.aleo`
+- `test_usad_stablecoin.aleo` -> `merkle_tree.aleo`, `test_usad_freezelist.aleo`, `test_usad_multisig_core.aleo`
+- `test_usdcx_bridge.aleo` -> `merkle_tree.aleo`, `test_usdcx_freezelist.aleo`, `test_usdcx_multisig_core.aleo`, `test_usdcx_stablecoin.aleo`
+- `token_registry.aleo` -> `credits.aleo`
+- `ldgbatcher_ppub_28.aleo` -> `credits.aleo`
+- `aj_test_usdcx_stablecoin_2_10.aleo` -> `merkle_tree.aleo`, `test_usdcx_freezelist.aleo`, `test_usdcx_multisig_core.aleo`, `test_usdcx_stablecoin.aleo`
+- `ldgbatcher_p28.aleo` -> `credits.aleo`
+- `ldgbatcher_ppub_1114.aleo` -> `credits.aleo`
+- `xyra_lending_v32.aleo` -> `credits.aleo`, `merkle_tree.aleo`, `test_usad_freezelist.aleo`, `test_usad_multisig_core.aleo`, `test_usad_stablecoin.aleo`, `test_usdcx_freezelist.aleo`, `test_usdcx_multisig_core.aleo`, `test_usdcx_stablecoin.aleo`
+- `humanity_link_aid_v9d.aleo` -> `merkle_tree.aleo`, `test_usdcx_freezelist.aleo`, `test_usdcx_multisig_core.aleo`, `test_usdcx_stablecoin.aleo`
+- `zk_pay_proofs_privacy_v29.aleo` -> `credits.aleo`, `merkle_tree.aleo`, `test_usad_freezelist.aleo`, `test_usad_multisig_core.aleo`, `test_usad_stablecoin.aleo`, `test_usdcx_freezelist.aleo`, `test_usdcx_multisig_core.aleo`, `test_usdcx_stablecoin.aleo`
+- `aj_test_usad_stablecoin_2_10.aleo` -> `merkle_tree.aleo`, `test_usad_freezelist.aleo`, `test_usad_multisig_core.aleo`, `test_usad_stablecoin.aleo`
+- `zk_pay_proofs_privacy_wallet_v6.aleo` -> `credits.aleo`, `merkle_tree.aleo`, `test_usad_freezelist.aleo`, `test_usad_multisig_core.aleo`, `test_usad_stablecoin.aleo`, `test_usdcx_freezelist.aleo`, `test_usdcx_multisig_core.aleo`, `test_usdcx_stablecoin.aleo`
+- `test_hyp_ism_manager.aleo` -> `test_hyp_multisig_core.aleo`
+- `test_hyp_mailbox.aleo` -> `test_hyp_ism_manager.aleo`, `test_hyp_multisig_core.aleo`
+- `test_hyp_warp_token_usad.aleo` -> `credits.aleo`, `merkle_tree.aleo`, `test_hyp_dispatch_proxy.aleo`, `test_hyp_hook_manager.aleo`, `test_hyp_ism_manager.aleo`, `test_hyp_mailbox.aleo`, `test_hyp_multisig_core.aleo`, `test_usad_freezelist.aleo`, `test_usad_multisig_core.aleo`, `test_usad_stablecoin.aleo`
+- `woo_genesis_1988.aleo` -> `credits.aleo`
+- `wrapped_credits.aleo` -> `credits.aleo`, `token_registry.aleo`
+- `autojoin_token_registry_2_9.aleo` -> `credits.aleo`, `token_registry.aleo`
+- `ldgbatcher_p910.aleo` -> `credits.aleo`
+- `ldgbatcher_p1114.aleo` -> `credits.aleo`

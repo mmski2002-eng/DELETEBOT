@@ -1,0 +1,614 @@
+{
+  "program_id": "connection_v1.aleo",
+  "calls_24h_or_metric_window": 90,
+  "imports": [
+    "credits.aleo",
+    "gmp_checksum_v1.aleo",
+    "gmp_lib_v1.aleo"
+  ],
+  "mappings": {
+    "already_processed": {
+      "key": "Receipts.public",
+      "value": "boolean.public"
+    },
+    "chain_id": {
+      "key": "boolean.public",
+      "value": "u128.public"
+    },
+    "owner_conn": {
+      "key": "boolean.public",
+      "value": "address.public"
+    },
+    "total_validators": {
+      "key": "boolean.public",
+      "value": "u8.public"
+    },
+    "validators": {
+      "key": "boolean.public",
+      "value": "gmp_lib_v1.aleo/Validators.public"
+    },
+    "threshold": {
+      "key": "boolean.public",
+      "value": "u8.public"
+    },
+    "messages": {
+      "key": "u128.public",
+      "value": "Message.public"
+    }
+  },
+  "structs": {
+    "Message": [
+      {
+        "name": "src_chain_id",
+        "type": "u128"
+      },
+      {
+        "name": "src_address",
+        "type": "[u8"
+      },
+      {
+        "name": "conn_sn",
+        "type": "u128"
+      },
+      {
+        "name": "dst_chain_id",
+        "type": "u128"
+      },
+      {
+        "name": "dst_address",
+        "type": "[u8"
+      },
+      {
+        "name": "payload",
+        "type": "[u8"
+      }
+    ],
+    "Receipts": [
+      {
+        "name": "src_chain_id",
+        "type": "u128"
+      },
+      {
+        "name": "conn_sn",
+        "type": "u128"
+      }
+    ],
+    "Signatures": [
+      {
+        "name": "signature_1",
+        "type": "[u8"
+      },
+      {
+        "name": "signature_2",
+        "type": "[u8"
+      },
+      {
+        "name": "signature_3",
+        "type": "[u8"
+      },
+      {
+        "name": "signature_4",
+        "type": "[u8"
+      },
+      {
+        "name": "signature_5",
+        "type": "[u8"
+      }
+    ]
+  },
+  "records": {},
+  "functions": {
+    "initialize": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u128.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "gmp_lib_v1.aleo/Validators.public"
+        },
+        {
+          "register": "r3",
+          "type": "u8.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r9",
+          "type": "connection_v1.aleo/initialize.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "gmp_lib_v1.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "and",
+        "assert.eq",
+        "gt",
+        "lte"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u128.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "gmp_lib_v1.aleo/Validators.public"
+        },
+        {
+          "register": "r3",
+          "type": "u8.public"
+        },
+        {
+          "register": "r4",
+          "type": "u8.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owner_conn"
+      ],
+      "finalize_state_writes": [
+        "chain_id",
+        "owner_conn",
+        "threshold",
+        "total_validators",
+        "validators"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "send_message": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u128.public"
+        },
+        {
+          "register": "r1",
+          "type": "[u8"
+        },
+        {
+          "register": "r2",
+          "type": "u128.public"
+        },
+        {
+          "register": "r3",
+          "type": "[u8"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r7",
+          "type": "connection_v1.aleo/send_message.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "gmp_lib_v1.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "[u8"
+        },
+        {
+          "register": "r1",
+          "type": "u128.public"
+        },
+        {
+          "register": "r2",
+          "type": "[u8"
+        },
+        {
+          "register": "r3",
+          "type": "u128.public"
+        },
+        {
+          "register": "r4",
+          "type": "[u8"
+        }
+      ],
+      "finalize_state_reads": [
+        "chain_id",
+        "messages"
+      ],
+      "finalize_state_writes": [
+        "messages"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "verify_message": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u128.public"
+        },
+        {
+          "register": "r1",
+          "type": "[u8"
+        },
+        {
+          "register": "r2",
+          "type": "u128.public"
+        },
+        {
+          "register": "r3",
+          "type": "u128.public"
+        },
+        {
+          "register": "r4",
+          "type": "[u8"
+        },
+        {
+          "register": "r5",
+          "type": "gmp_lib_v1.aleo/Validators.public"
+        },
+        {
+          "register": "r6",
+          "type": "Signatures.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r19",
+          "type": "connection_v1.aleo/verify_message.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "gmp_lib_v1.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u128.public"
+        },
+        {
+          "register": "r1",
+          "type": "u128.public"
+        },
+        {
+          "register": "r2",
+          "type": "u128.public"
+        },
+        {
+          "register": "r3",
+          "type": "gmp_lib_v1.aleo/Validators.public"
+        },
+        {
+          "register": "r4",
+          "type": "Signatures.public"
+        },
+        {
+          "register": "r5",
+          "type": "[u8"
+        },
+        {
+          "register": "r6",
+          "type": "u8.public"
+        },
+        {
+          "register": "r7",
+          "type": "gmp_lib_v1.aleo/u128_to_bytes32.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "already_processed",
+        "chain_id",
+        "threshold",
+        "validators"
+      ],
+      "finalize_state_writes": [
+        "already_processed"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq",
+        "gte",
+        "is.eq",
+        "or",
+        "ternary"
+      ],
+      "snark_verify": false
+    },
+    "update_validators": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "gmp_lib_v1.aleo/Validators.public"
+        },
+        {
+          "register": "r1",
+          "type": "u8.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r7",
+          "type": "connection_v1.aleo/update_validators.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "gmp_lib_v1.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "and",
+        "assert.eq",
+        "gt",
+        "lte"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "gmp_lib_v1.aleo/Validators.public"
+        },
+        {
+          "register": "r2",
+          "type": "u8.public"
+        },
+        {
+          "register": "r3",
+          "type": "u8.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owner_conn"
+      ],
+      "finalize_state_writes": [
+        "threshold",
+        "total_validators",
+        "validators"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "update_threshold": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u8.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "connection_v1.aleo/update_threshold.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u8.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owner_conn",
+        "total_validators"
+      ],
+      "finalize_state_writes": [
+        "threshold"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte"
+      ],
+      "snark_verify": false
+    },
+    "transfer_ownership": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "connection_v1.aleo/transfer_ownership.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.neq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owner_conn"
+      ],
+      "finalize_state_writes": [
+        "owner_conn"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "withdraw": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "connection_v1.aleo/withdraw.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/transfer_public.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "owner_conn"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "initialize",
+    "send_message",
+    "transfer_ownership",
+    "update_threshold",
+    "update_validators",
+    "verify_message",
+    "withdraw"
+  ],
+  "cross_contract_refs": [
+    "credits.aleo",
+    "gmp_checksum_v1.aleo",
+    "gmp_lib_v1.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "initialize",
+    "send_message",
+    "verify_message",
+    "update_validators",
+    "update_threshold",
+    "transfer_ownership",
+    "withdraw"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [
+      "already_processed",
+      "chain_id",
+      "messages",
+      "owner_conn",
+      "threshold",
+      "total_validators",
+      "validators"
+    ],
+    "future_outputs": [
+      {
+        "function": "initialize",
+        "output": "connection_v1.aleo/initialize.future"
+      },
+      {
+        "function": "send_message",
+        "output": "connection_v1.aleo/send_message.future"
+      },
+      {
+        "function": "verify_message",
+        "output": "connection_v1.aleo/verify_message.future"
+      },
+      {
+        "function": "update_validators",
+        "output": "connection_v1.aleo/update_validators.future"
+      },
+      {
+        "function": "update_threshold",
+        "output": "connection_v1.aleo/update_threshold.future"
+      },
+      {
+        "function": "transfer_ownership",
+        "output": "connection_v1.aleo/transfer_ownership.future"
+      },
+      {
+        "function": "withdraw",
+        "output": "connection_v1.aleo/withdraw.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

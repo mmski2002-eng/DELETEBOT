@@ -1,0 +1,1066 @@
+{
+  "program_id": "woo_genesis_1988.aleo",
+  "calls_24h_or_metric_window": 2,
+  "imports": [
+    "credits.aleo"
+  ],
+  "mappings": {
+    "authorized_relayers": {
+      "key": "address.public",
+      "value": "boolean.public"
+    },
+    "authorized_vaults": {
+      "key": "address.public",
+      "value": "boolean.public"
+    },
+    "is_initialized": {
+      "key": "u8.public",
+      "value": "boolean.public"
+    },
+    "roles": {
+      "key": "u8.public",
+      "value": "address.public"
+    },
+    "bridge_stats": {
+      "key": "u8.public",
+      "value": "u64.public"
+    },
+    "slashed_validators": {
+      "key": "address.public",
+      "value": "boolean.public"
+    },
+    "validator_stakes": {
+      "key": "address.public",
+      "value": "u64.public"
+    },
+    "supported_chains": {
+      "key": "u64.public",
+      "value": "boolean.public"
+    }
+  },
+  "structs": {},
+  "records": {
+    "NetworkState": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "chain_id",
+        "type": "u64.private"
+      },
+      {
+        "name": "gas_token_id",
+        "type": "u64.private"
+      },
+      {
+        "name": "sequencer",
+        "type": "address.private"
+      },
+      {
+        "name": "last_batch_id",
+        "type": "u64.private"
+      },
+      {
+        "name": "last_state_root",
+        "type": "field.private"
+      },
+      {
+        "name": "is_paused",
+        "type": "boolean.private"
+      }
+    ],
+    "GasToken": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "amount",
+        "type": "u64.private"
+      },
+      {
+        "name": "chain_id",
+        "type": "u64.private"
+      }
+    ],
+    "ValidatorTicket": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "staked_amount",
+        "type": "u64.private"
+      },
+      {
+        "name": "chain_id",
+        "type": "u64.private"
+      }
+    ],
+    "BridgeReceipt": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "amount",
+        "type": "u64.private"
+      },
+      {
+        "name": "token_id",
+        "type": "u64.private"
+      },
+      {
+        "name": "chain_id",
+        "type": "u64.private"
+      }
+    ],
+    "BridgeOutReceipt": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "amount",
+        "type": "u64.private"
+      },
+      {
+        "name": "fee_retained",
+        "type": "u64.private"
+      },
+      {
+        "name": "token_id",
+        "type": "u64.private"
+      },
+      {
+        "name": "chain_id",
+        "type": "u64.private"
+      }
+    ],
+    "RollupBatch": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "chain_id",
+        "type": "u64.private"
+      },
+      {
+        "name": "batch_id",
+        "type": "u64.private"
+      },
+      {
+        "name": "state_root",
+        "type": "field.private"
+      },
+      {
+        "name": "txs_hash",
+        "type": "field.private"
+      }
+    ]
+  },
+  "functions": {
+    "transfer_admin": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "woo_genesis_1988.aleo/transfer_admin.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "roles"
+      ],
+      "finalize_state_writes": [
+        "roles"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "accept_admin": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "woo_genesis_1988.aleo/accept_admin.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "roles"
+      ],
+      "finalize_state_writes": [
+        "roles"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "initialize_bridge": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "woo_genesis_1988.aleo/initialize_bridge.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "is_initialized",
+        "roles"
+      ],
+      "finalize_state_writes": [
+        "authorized_vaults",
+        "is_initialized"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "spawn_chain": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "NetworkState.record"
+        },
+        {
+          "register": "r4",
+          "type": "woo_genesis_1988.aleo/spawn_chain.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "roles"
+      ],
+      "finalize_state_writes": [
+        "supported_chains"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "pause_network": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "NetworkState.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "NetworkState.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "unpause_network": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "NetworkState.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "NetworkState.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "emergency_drain": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "woo_genesis_1988.aleo/emergency_drain.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "lte"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "credits.aleo/transfer_public_as_signer.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "authorized_vaults",
+        "roles"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "commit_rollup": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "NetworkState.record"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "field.public"
+        },
+        {
+          "register": "r4",
+          "type": "field.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r6",
+          "type": "NetworkState.record"
+        },
+        {
+          "register": "r7",
+          "type": "RollupBatch.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "mint_gas": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "GasToken.record"
+        },
+        {
+          "register": "r4",
+          "type": "woo_genesis_1988.aleo/mint_gas.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "roles"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "stake_validator": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "ValidatorTicket.record"
+        },
+        {
+          "register": "r5",
+          "type": "woo_genesis_1988.aleo/stake_validator.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/transfer_public_as_signer.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "authorized_vaults",
+        "validator_stakes"
+      ],
+      "finalize_state_writes": [
+        "validator_stakes"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "slash_validator": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "NetworkState.record"
+        },
+        {
+          "register": "r1",
+          "type": "ValidatorTicket.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "NetworkState.record"
+        },
+        {
+          "register": "r2",
+          "type": "woo_genesis_1988.aleo/slash_validator.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [
+        "slashed_validators"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "slash_and_seize": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "woo_genesis_1988.aleo/slash_and_seize.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "authorized_vaults",
+        "roles",
+        "slashed_validators",
+        "validator_stakes"
+      ],
+      "finalize_state_writes": [
+        "validator_stakes"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gt"
+      ],
+      "snark_verify": false
+    },
+    "authorize_relayer": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "woo_genesis_1988.aleo/authorize_relayer.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "roles"
+      ],
+      "finalize_state_writes": [
+        "authorized_relayers"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "revoke_relayer": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "woo_genesis_1988.aleo/revoke_relayer.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "roles"
+      ],
+      "finalize_state_writes": [
+        "authorized_relayers"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "bridge_in": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "address.public"
+        },
+        {
+          "register": "r4",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r6",
+          "type": "BridgeReceipt.record"
+        },
+        {
+          "register": "r8",
+          "type": "woo_genesis_1988.aleo/bridge_in.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/transfer_public_as_signer.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "authorized_vaults",
+        "bridge_stats",
+        "supported_chains"
+      ],
+      "finalize_state_writes": [
+        "bridge_stats"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte"
+      ],
+      "snark_verify": false
+    },
+    "bridge_out": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        },
+        {
+          "register": "r4",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r7",
+          "type": "BridgeOutReceipt.record"
+        },
+        {
+          "register": "r9",
+          "type": "woo_genesis_1988.aleo/bridge_out.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/transfer_public_as_signer.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "authorized_vaults",
+        "bridge_stats",
+        "supported_chains"
+      ],
+      "finalize_state_writes": [
+        "bridge_stats"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "accept_admin",
+    "authorize_relayer",
+    "bridge_in",
+    "bridge_out",
+    "emergency_drain",
+    "initialize_bridge",
+    "mint_gas",
+    "revoke_relayer",
+    "slash_and_seize",
+    "slash_validator",
+    "spawn_chain",
+    "stake_validator",
+    "transfer_admin"
+  ],
+  "cross_contract_refs": [
+    "credits.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "transfer_admin",
+    "accept_admin",
+    "initialize_bridge",
+    "spawn_chain",
+    "pause_network",
+    "unpause_network",
+    "emergency_drain",
+    "commit_rollup",
+    "mint_gas",
+    "stake_validator",
+    "slash_validator",
+    "slash_and_seize",
+    "authorize_relayer",
+    "revoke_relayer",
+    "bridge_in",
+    "bridge_out"
+  ],
+  "state_commitment_surfaces": {
+    "records": [
+      "BridgeOutReceipt",
+      "BridgeReceipt",
+      "GasToken",
+      "NetworkState",
+      "RollupBatch",
+      "ValidatorTicket"
+    ],
+    "mappings": [
+      "authorized_relayers",
+      "authorized_vaults",
+      "bridge_stats",
+      "is_initialized",
+      "roles",
+      "slashed_validators",
+      "supported_chains",
+      "validator_stakes"
+    ],
+    "future_outputs": [
+      {
+        "function": "transfer_admin",
+        "output": "woo_genesis_1988.aleo/transfer_admin.future"
+      },
+      {
+        "function": "accept_admin",
+        "output": "woo_genesis_1988.aleo/accept_admin.future"
+      },
+      {
+        "function": "initialize_bridge",
+        "output": "woo_genesis_1988.aleo/initialize_bridge.future"
+      },
+      {
+        "function": "spawn_chain",
+        "output": "woo_genesis_1988.aleo/spawn_chain.future"
+      },
+      {
+        "function": "emergency_drain",
+        "output": "woo_genesis_1988.aleo/emergency_drain.future"
+      },
+      {
+        "function": "mint_gas",
+        "output": "woo_genesis_1988.aleo/mint_gas.future"
+      },
+      {
+        "function": "stake_validator",
+        "output": "woo_genesis_1988.aleo/stake_validator.future"
+      },
+      {
+        "function": "slash_validator",
+        "output": "woo_genesis_1988.aleo/slash_validator.future"
+      },
+      {
+        "function": "slash_and_seize",
+        "output": "woo_genesis_1988.aleo/slash_and_seize.future"
+      },
+      {
+        "function": "authorize_relayer",
+        "output": "woo_genesis_1988.aleo/authorize_relayer.future"
+      },
+      {
+        "function": "revoke_relayer",
+        "output": "woo_genesis_1988.aleo/revoke_relayer.future"
+      },
+      {
+        "function": "bridge_in",
+        "output": "woo_genesis_1988.aleo/bridge_in.future"
+      },
+      {
+        "function": "bridge_out",
+        "output": "woo_genesis_1988.aleo/bridge_out.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

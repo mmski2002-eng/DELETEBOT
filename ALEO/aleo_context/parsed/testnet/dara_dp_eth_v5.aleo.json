@@ -1,0 +1,1460 @@
+{
+  "program_id": "dara_dp_eth_v5.aleo",
+  "calls_24h_or_metric_window": 4367,
+  "imports": [
+    "merkle_tree.aleo",
+    "test_eth_v1.aleo",
+    "test_usdcx_freezelist.aleo",
+    "test_usdcx_multisig_core.aleo",
+    "test_usdcx_stablecoin.aleo"
+  ],
+  "mappings": {
+    "initialized": {
+      "key": "u8.public",
+      "value": "boolean.public"
+    },
+    "operators": {
+      "key": "u8.public",
+      "value": "address.public"
+    },
+    "pool_paused": {
+      "key": "u8.public",
+      "value": "boolean.public"
+    },
+    "order_consumed": {
+      "key": "field.public",
+      "value": "boolean.public"
+    },
+    "fee_vault": {
+      "key": "u8.public",
+      "value": "u128.public"
+    },
+    "fee_bps": {
+      "key": "u8.public",
+      "value": "u64.public"
+    },
+    "total_trades": {
+      "key": "u8.public",
+      "value": "u64.public"
+    },
+    "total_volume": {
+      "key": "u8.public",
+      "value": "u128.public"
+    },
+    "oracle_price": {
+      "key": "u8.public",
+      "value": "u64.public"
+    },
+    "oracle_round": {
+      "key": "u8.public",
+      "value": "u64.public"
+    },
+    "twap_cum_price": {
+      "key": "u8.public",
+      "value": "u128.public"
+    },
+    "twap_cum_count": {
+      "key": "u8.public",
+      "value": "u64.public"
+    },
+    "twap_last_reset": {
+      "key": "u8.public",
+      "value": "u32.public"
+    },
+    "twap_window_blocks": {
+      "key": "u8.public",
+      "value": "u32.public"
+    },
+    "twap_max_deviation_bps": {
+      "key": "u8.public",
+      "value": "u64.public"
+    },
+    "current_batch": {
+      "key": "u8.public",
+      "value": "u64.public"
+    },
+    "batch_approved": {
+      "key": "u64.public",
+      "value": "boolean.public"
+    },
+    "batch_proposed_price": {
+      "key": "u64.public",
+      "value": "u64.public"
+    },
+    "batch_proposer": {
+      "key": "u64.public",
+      "value": "address.public"
+    },
+    "batch_approval_count": {
+      "key": "u64.public",
+      "value": "u8.public"
+    },
+    "operator_approved_batch": {
+      "key": "field.public",
+      "value": "boolean.public"
+    },
+    "batch_start_block": {
+      "key": "u64.public",
+      "value": "u32.public"
+    },
+    "min_batch_blocks": {
+      "key": "u8.public",
+      "value": "u32.public"
+    }
+  },
+  "structs": {},
+  "records": {
+    "OrderCommitment": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "order_id",
+        "type": "field.private"
+      },
+      {
+        "name": "direction",
+        "type": "u8.private"
+      },
+      {
+        "name": "size",
+        "type": "u128.private"
+      },
+      {
+        "name": "limit_price",
+        "type": "u64.private"
+      },
+      {
+        "name": "expiry_block",
+        "type": "u32.private"
+      },
+      {
+        "name": "batch_id",
+        "type": "u64.private"
+      }
+    ],
+    "OrderAuth": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "trader",
+        "type": "address.private"
+      },
+      {
+        "name": "order_id",
+        "type": "field.private"
+      },
+      {
+        "name": "direction",
+        "type": "u8.private"
+      },
+      {
+        "name": "size",
+        "type": "u128.private"
+      },
+      {
+        "name": "limit_price",
+        "type": "u64.private"
+      },
+      {
+        "name": "expiry_block",
+        "type": "u32.private"
+      }
+    ],
+    "FillReceipt": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "order_id",
+        "type": "field.private"
+      },
+      {
+        "name": "direction",
+        "type": "u8.private"
+      },
+      {
+        "name": "filled_size",
+        "type": "u128.private"
+      },
+      {
+        "name": "clearing_price",
+        "type": "u64.private"
+      },
+      {
+        "name": "fee_paid",
+        "type": "u128.private"
+      },
+      {
+        "name": "batch_id",
+        "type": "u64.private"
+      }
+    ],
+    "ResidualOrder": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "order_id",
+        "type": "field.private"
+      },
+      {
+        "name": "parent_order_id",
+        "type": "field.private"
+      },
+      {
+        "name": "direction",
+        "type": "u8.private"
+      },
+      {
+        "name": "remaining_size",
+        "type": "u128.private"
+      },
+      {
+        "name": "limit_price",
+        "type": "u64.private"
+      },
+      {
+        "name": "expiry_block",
+        "type": "u32.private"
+      }
+    ],
+    "ResidualAuth": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "trader",
+        "type": "address.private"
+      },
+      {
+        "name": "order_id",
+        "type": "field.private"
+      },
+      {
+        "name": "direction",
+        "type": "u8.private"
+      },
+      {
+        "name": "remaining_size",
+        "type": "u128.private"
+      },
+      {
+        "name": "limit_price",
+        "type": "u64.private"
+      },
+      {
+        "name": "expiry_block",
+        "type": "u32.private"
+      }
+    ]
+  },
+  "functions": {
+    "initialize": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "dara_dp_eth_v5.aleo/initialize.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "initialized"
+      ],
+      "finalize_state_writes": [
+        "initialized",
+        "operators"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "is.eq"
+      ],
+      "snark_verify": false
+    },
+    "set_operators": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "address.private"
+        },
+        {
+          "register": "r2",
+          "type": "address.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "dara_dp_eth_v5.aleo/set_operators.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "operators"
+      ],
+      "finalize_state_writes": [
+        "operators"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "update_oracle_price": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.private"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "dara_dp_eth_v5.aleo/update_oracle_price.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "lte"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "operators",
+        "oracle_price",
+        "oracle_round",
+        "pool_paused",
+        "twap_cum_count",
+        "twap_cum_price",
+        "twap_last_reset",
+        "twap_window_blocks"
+      ],
+      "finalize_state_writes": [
+        "oracle_price",
+        "oracle_round",
+        "twap_cum_count",
+        "twap_cum_price",
+        "twap_last_reset"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "gt",
+        "gte",
+        "is.eq",
+        "lt",
+        "lte",
+        "or",
+        "ternary"
+      ],
+      "snark_verify": false
+    },
+    "submit_buy_order": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "test_usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r1",
+          "type": "[test_usdcx_stablecoin.aleo/MerkleProof"
+        },
+        {
+          "register": "r2",
+          "type": "u128.private"
+        },
+        {
+          "register": "r3",
+          "type": "u64.private"
+        },
+        {
+          "register": "r4",
+          "type": "u32.private"
+        },
+        {
+          "register": "r5",
+          "type": "address.private"
+        },
+        {
+          "register": "r6",
+          "type": "field.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r17",
+          "type": "OrderCommitment.record"
+        },
+        {
+          "register": "r18",
+          "type": "OrderAuth.record"
+        },
+        {
+          "register": "r22",
+          "type": "dara_dp_eth_v5.aleo/submit_buy_order.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "test_usdcx_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "gte",
+        "lte"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "test_usdcx_stablecoin.aleo/transfer_private_to_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "u32.public"
+        },
+        {
+          "register": "r3",
+          "type": "u128.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "order_consumed",
+        "pool_paused",
+        "total_trades",
+        "total_volume"
+      ],
+      "finalize_state_writes": [
+        "total_trades",
+        "total_volume"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gt"
+      ],
+      "snark_verify": false
+    },
+    "submit_sell_order": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "test_eth_v1.aleo/Token.record"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        },
+        {
+          "register": "r2",
+          "type": "u64.private"
+        },
+        {
+          "register": "r3",
+          "type": "u32.private"
+        },
+        {
+          "register": "r4",
+          "type": "address.private"
+        },
+        {
+          "register": "r5",
+          "type": "field.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r13",
+          "type": "OrderCommitment.record"
+        },
+        {
+          "register": "r14",
+          "type": "OrderAuth.record"
+        },
+        {
+          "register": "r17",
+          "type": "dara_dp_eth_v5.aleo/submit_sell_order.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "test_eth_v1.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "gte",
+        "lte"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "test_eth_v1.aleo/transfer_private_to_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "u32.public"
+        },
+        {
+          "register": "r3",
+          "type": "u128.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "order_consumed",
+        "pool_paused",
+        "total_trades",
+        "total_volume"
+      ],
+      "finalize_state_writes": [
+        "total_trades",
+        "total_volume"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gt"
+      ],
+      "snark_verify": false
+    },
+    "propose_settlement": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.private"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "dara_dp_eth_v5.aleo/propose_settlement.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "lte"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "batch_approved",
+        "batch_start_block",
+        "current_batch",
+        "min_batch_blocks",
+        "operators",
+        "pool_paused",
+        "twap_cum_count",
+        "twap_cum_price",
+        "twap_max_deviation_bps"
+      ],
+      "finalize_state_writes": [
+        "batch_approval_count",
+        "batch_proposed_price",
+        "batch_proposer",
+        "operator_approved_batch"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "gt",
+        "gte",
+        "is.eq",
+        "lt",
+        "lte",
+        "or",
+        "ternary"
+      ],
+      "snark_verify": false
+    },
+    "approve_settlement": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.private"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "dara_dp_eth_v5.aleo/approve_settlement.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "batch_approval_count",
+        "batch_approved",
+        "batch_proposed_price",
+        "current_batch",
+        "operator_approved_batch",
+        "operators",
+        "pool_paused"
+      ],
+      "finalize_state_writes": [
+        "batch_approval_count",
+        "batch_approved",
+        "operator_approved_batch"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "gte",
+        "is.eq",
+        "or"
+      ],
+      "snark_verify": false
+    },
+    "execute_match": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "OrderAuth.record"
+        },
+        {
+          "register": "r1",
+          "type": "OrderAuth.record"
+        },
+        {
+          "register": "r2",
+          "type": "u64.private"
+        },
+        {
+          "register": "r3",
+          "type": "u64.private"
+        },
+        {
+          "register": "r4",
+          "type": "address.private"
+        },
+        {
+          "register": "r5",
+          "type": "address.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r23",
+          "type": "FillReceipt.record"
+        },
+        {
+          "register": "r24",
+          "type": "FillReceipt.record"
+        },
+        {
+          "register": "r30",
+          "type": "dara_dp_eth_v5.aleo/execute_match.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "test_eth_v1.aleo",
+        "test_usdcx_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "gte",
+        "is.eq",
+        "lte",
+        "ternary"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "test_usdcx_stablecoin.aleo/transfer_public_to_private.future"
+        },
+        {
+          "register": "r1",
+          "type": "test_eth_v1.aleo/transfer_public_to_private.future"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "field.public"
+        },
+        {
+          "register": "r4",
+          "type": "field.public"
+        },
+        {
+          "register": "r5",
+          "type": "u128.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "batch_approved",
+        "fee_bps",
+        "fee_vault",
+        "order_consumed",
+        "pool_paused"
+      ],
+      "finalize_state_writes": [
+        "fee_vault",
+        "order_consumed"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "execute_partial_fill": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "OrderAuth.record"
+        },
+        {
+          "register": "r1",
+          "type": "OrderAuth.record"
+        },
+        {
+          "register": "r2",
+          "type": "u64.private"
+        },
+        {
+          "register": "r3",
+          "type": "u128.private"
+        },
+        {
+          "register": "r4",
+          "type": "u64.private"
+        },
+        {
+          "register": "r5",
+          "type": "address.private"
+        },
+        {
+          "register": "r6",
+          "type": "address.private"
+        },
+        {
+          "register": "r7",
+          "type": "field.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r41",
+          "type": "FillReceipt.record"
+        },
+        {
+          "register": "r42",
+          "type": "FillReceipt.record"
+        },
+        {
+          "register": "r43",
+          "type": "ResidualOrder.record"
+        },
+        {
+          "register": "r44",
+          "type": "ResidualAuth.record"
+        },
+        {
+          "register": "r50",
+          "type": "dara_dp_eth_v5.aleo/execute_partial_fill.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "test_eth_v1.aleo",
+        "test_usdcx_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "gte",
+        "is.eq",
+        "lt",
+        "lte",
+        "or",
+        "ternary"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "test_usdcx_stablecoin.aleo/transfer_public_to_private.future"
+        },
+        {
+          "register": "r1",
+          "type": "test_eth_v1.aleo/transfer_public_to_private.future"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "field.public"
+        },
+        {
+          "register": "r4",
+          "type": "field.public"
+        },
+        {
+          "register": "r5",
+          "type": "u128.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "batch_approved",
+        "fee_bps",
+        "fee_vault",
+        "order_consumed",
+        "pool_paused"
+      ],
+      "finalize_state_writes": [
+        "fee_vault",
+        "order_consumed"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "resubmit_residual": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "ResidualOrder.record"
+        },
+        {
+          "register": "r1",
+          "type": "ResidualAuth.record"
+        },
+        {
+          "register": "r2",
+          "type": "address.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "OrderCommitment.record"
+        },
+        {
+          "register": "r4",
+          "type": "OrderAuth.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "cancel_buy_order": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "OrderCommitment.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r8",
+          "type": "dara_dp_eth_v5.aleo/cancel_buy_order.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "test_usdcx_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "is.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "test_usdcx_stablecoin.aleo/transfer_public_to_private.future"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "order_consumed",
+        "pool_paused"
+      ],
+      "finalize_state_writes": [
+        "order_consumed"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "cancel_sell_order": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "OrderCommitment.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r5",
+          "type": "dara_dp_eth_v5.aleo/cancel_sell_order.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "test_eth_v1.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "is.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "test_eth_v1.aleo/transfer_public_to_private.future"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "order_consumed"
+      ],
+      "finalize_state_writes": [
+        "order_consumed"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "advance_batch": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "dara_dp_eth_v5.aleo/advance_batch.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "current_batch",
+        "operators"
+      ],
+      "finalize_state_writes": [
+        "batch_start_block",
+        "current_batch"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "is.eq",
+        "or"
+      ],
+      "snark_verify": false
+    },
+    "withdraw_fees": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u128.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r5",
+          "type": "dara_dp_eth_v5.aleo/withdraw_fees.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "test_usdcx_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "test_usdcx_stablecoin.aleo/transfer_public_to_private.future"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u128.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "fee_vault",
+        "operators"
+      ],
+      "finalize_state_writes": [
+        "fee_vault"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "set_fee_bps": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "dara_dp_eth_v5.aleo/set_fee_bps.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gte",
+        "lte"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "operators"
+      ],
+      "finalize_state_writes": [
+        "fee_bps"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "pause_darkpool": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "dara_dp_eth_v5.aleo/pause_darkpool.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "operators"
+      ],
+      "finalize_state_writes": [
+        "pool_paused"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "resume_darkpool": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "dara_dp_eth_v5.aleo/resume_darkpool.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "operators"
+      ],
+      "finalize_state_writes": [
+        "pool_paused"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "advance_batch",
+    "approve_settlement",
+    "cancel_buy_order",
+    "cancel_sell_order",
+    "execute_match",
+    "execute_partial_fill",
+    "initialize",
+    "pause_darkpool",
+    "propose_settlement",
+    "resume_darkpool",
+    "set_fee_bps",
+    "set_operators",
+    "submit_buy_order",
+    "submit_sell_order",
+    "update_oracle_price",
+    "withdraw_fees"
+  ],
+  "cross_contract_refs": [
+    "test_eth_v1.aleo",
+    "test_usdcx_stablecoin.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "initialize",
+    "set_operators",
+    "update_oracle_price",
+    "submit_buy_order",
+    "submit_sell_order",
+    "propose_settlement",
+    "approve_settlement",
+    "execute_match",
+    "execute_partial_fill",
+    "cancel_buy_order",
+    "cancel_sell_order",
+    "advance_batch",
+    "withdraw_fees",
+    "set_fee_bps",
+    "pause_darkpool",
+    "resume_darkpool"
+  ],
+  "state_commitment_surfaces": {
+    "records": [
+      "FillReceipt",
+      "OrderAuth",
+      "OrderCommitment",
+      "ResidualAuth",
+      "ResidualOrder"
+    ],
+    "mappings": [
+      "batch_approval_count",
+      "batch_approved",
+      "batch_proposed_price",
+      "batch_proposer",
+      "batch_start_block",
+      "current_batch",
+      "fee_bps",
+      "fee_vault",
+      "initialized",
+      "min_batch_blocks",
+      "operator_approved_batch",
+      "operators",
+      "oracle_price",
+      "oracle_round",
+      "order_consumed",
+      "pool_paused",
+      "total_trades",
+      "total_volume",
+      "twap_cum_count",
+      "twap_cum_price",
+      "twap_last_reset",
+      "twap_max_deviation_bps",
+      "twap_window_blocks"
+    ],
+    "future_outputs": [
+      {
+        "function": "initialize",
+        "output": "dara_dp_eth_v5.aleo/initialize.future"
+      },
+      {
+        "function": "set_operators",
+        "output": "dara_dp_eth_v5.aleo/set_operators.future"
+      },
+      {
+        "function": "update_oracle_price",
+        "output": "dara_dp_eth_v5.aleo/update_oracle_price.future"
+      },
+      {
+        "function": "submit_buy_order",
+        "output": "dara_dp_eth_v5.aleo/submit_buy_order.future"
+      },
+      {
+        "function": "submit_sell_order",
+        "output": "dara_dp_eth_v5.aleo/submit_sell_order.future"
+      },
+      {
+        "function": "propose_settlement",
+        "output": "dara_dp_eth_v5.aleo/propose_settlement.future"
+      },
+      {
+        "function": "approve_settlement",
+        "output": "dara_dp_eth_v5.aleo/approve_settlement.future"
+      },
+      {
+        "function": "execute_match",
+        "output": "dara_dp_eth_v5.aleo/execute_match.future"
+      },
+      {
+        "function": "execute_partial_fill",
+        "output": "dara_dp_eth_v5.aleo/execute_partial_fill.future"
+      },
+      {
+        "function": "cancel_buy_order",
+        "output": "dara_dp_eth_v5.aleo/cancel_buy_order.future"
+      },
+      {
+        "function": "cancel_sell_order",
+        "output": "dara_dp_eth_v5.aleo/cancel_sell_order.future"
+      },
+      {
+        "function": "advance_batch",
+        "output": "dara_dp_eth_v5.aleo/advance_batch.future"
+      },
+      {
+        "function": "withdraw_fees",
+        "output": "dara_dp_eth_v5.aleo/withdraw_fees.future"
+      },
+      {
+        "function": "set_fee_bps",
+        "output": "dara_dp_eth_v5.aleo/set_fee_bps.future"
+      },
+      {
+        "function": "pause_darkpool",
+        "output": "dara_dp_eth_v5.aleo/pause_darkpool.future"
+      },
+      {
+        "function": "resume_darkpool",
+        "output": "dara_dp_eth_v5.aleo/resume_darkpool.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

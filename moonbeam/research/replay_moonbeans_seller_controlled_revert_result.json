@@ -1,0 +1,261 @@
+{
+  "result": "SELLER_CONTROLLED_REPLAY_SUCCEEDED",
+  "accounts": {
+    "seller": "0xE2823B3C9Eef89520617589c2056Fde633B61C53",
+    "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+    "failedDispatchSenderSeller": "0xE2823B3C9Eef89520617589c2056Fde633B61C53",
+    "replayDispatcher": "0x387d113949a1a2D5Df01B869aa992e94Bd062035",
+    "replayDispatcherUnrelatedToSellerAndBuyer": true,
+    "forkAdmin": "0x48a9817eD1cF863600b2d570C5bB59A7873847c4"
+  },
+  "contracts": {
+    "callPermit": "0x000000000000000000000000000000000000080a",
+    "marketplaceV9": "0x683724817a7d526d6256Aec0D6f8ddF541b924de",
+    "paymentToken": "0xAcc15dC74880C9944775448304B263D191c6077F",
+    "erc721Collection": "0x104b904e19fBDa76bb864731A2C9E01E6b41f855",
+    "tokenId": "1549"
+  },
+  "signedAction": {
+    "function": "acceptOffer(address,uint256,uint256,address,bool)",
+    "args": {
+      "ca": "0x104b904e19fBDa76bb864731A2C9E01E6b41f855",
+      "tokenId": "1549",
+      "price": "100000000000000000000",
+      "from": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+      "escrowedBid": false
+    },
+    "calldata": "0x273499f0000000000000000000000000104b904e19fbda76bb864731a2c9e01e6b41f855000000000000000000000000000000000000000000000000000000000000060d0000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000d0e74c0f8c790c89945b852fa8a5708516641d40000000000000000000000000000000000000000000000000000000000000000",
+    "calldataHash": "0x676f2cec04dc4d8d554ca1c253af4451c3a2d3a78faf7d00e76c559c344878bb"
+  },
+  "callPermit": {
+    "signedNonce": "0",
+    "deadline": "1778598582",
+    "gaslimit": "5000000",
+    "dispatchCalldata": "0xb5ea0966000000000000000000000000e2823b3c9eef89520617589c2056fde633b61c53000000000000000000000000683724817a7d526d6256aec0d6f8ddf541b924de0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000004c4b40000000000000000000000000000000000000000000000000000000006a0342b6000000000000000000000000000000000000000000000000000000000000001c940aba34d582721c4addb492830ebb58c5b2cc80fcca9f94bada5f5900508be8500c6381f91e90e7c7b8a8a80f1108a15499b881f8e6fd0e3fa6506a967efcf000000000000000000000000000000000000000000000000000000000000000a4273499f0000000000000000000000000104b904e19fbda76bb864731a2c9e01e6b41f855000000000000000000000000000000000000000000000000000000000000060d0000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000d0e74c0f8c790c89945b852fa8a5708516641d4000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "dispatchCalldataHash": "0x945b4388c1e237e74b6cf9706be59c608adc324224be66edc3e2ab97ed2fe0b5",
+    "v": 28,
+    "r": "0x940aba34d582721c4addb492830ebb58c5b2cc80fcca9f94bada5f5900508be8",
+    "s": "0x500c6381f91e90e7c7b8a8a80f1108a15499b881f8e6fd0e3fa6506a967efcf0"
+  },
+  "setupTxs": {
+    "makeOffer": {
+      "txHash": "0xfa271e6337dd395f2f10fe9c5dc9765ce482fa432e6c4ae68acb8985124912b2",
+      "ethereumExecuted": [
+        {
+          "from": "0x0d0e74c0f8c790c89945b852fa8a5708516641d4",
+          "to": "0x683724817a7d526d6256aec0d6f8ddf541b924de",
+          "transactionHash": "0xfa271e6337dd395f2f10fe9c5dc9765ce482fa432e6c4ae68acb8985124912b2",
+          "exitReason": {
+            "Succeed": "Stopped"
+          },
+          "extraData": "",
+          "decodedRevert": ""
+        }
+      ]
+    },
+    "sellerRevokeApproval": {
+      "txHash": "0xa5f50208251ec512d8ad4a8c08e74bd8ad4e8d34efaf65a23b73b82702fc4aa1",
+      "ethereumExecuted": [
+        {
+          "from": "0xe2823b3c9eef89520617589c2056fde633b61c53",
+          "to": "0x104b904e19fbda76bb864731a2c9e01e6b41f855",
+          "transactionHash": "0xa5f50208251ec512d8ad4a8c08e74bd8ad4e8d34efaf65a23b73b82702fc4aa1",
+          "exitReason": {
+            "Succeed": "Stopped"
+          },
+          "extraData": "",
+          "decodedRevert": ""
+        }
+      ]
+    },
+    "sellerRestoreApproval": {
+      "txHash": "0xc8502546e235b9583880d16da4e280fb5f6eb158291294ae0aa5f90089afd56e",
+      "ethereumExecuted": [
+        {
+          "from": "0xe2823b3c9eef89520617589c2056fde633b61c53",
+          "to": "0x104b904e19fbda76bb864731a2c9e01e6b41f855",
+          "transactionHash": "0xc8502546e235b9583880d16da4e280fb5f6eb158291294ae0aa5f90089afd56e",
+          "exitReason": {
+            "Succeed": "Stopped"
+          },
+          "extraData": "",
+          "decodedRevert": ""
+        }
+      ]
+    }
+  },
+  "failedPublish": {
+    "reason": "seller revoked ERC721 setApprovalForAll(marketplace,false), so acceptOffer reverts on marketplace approval check",
+    "expectedTargetRevert": "Marketplace not approved to transfer this NFT.",
+    "txHash": "0x0c9c7e359eb469fbc12c4dc99bf9789d32547c274ba4510f484c7d37056929f7",
+    "txInputHash": "0x945b4388c1e237e74b6cf9706be59c608adc324224be66edc3e2ab97ed2fe0b5",
+    "ethereumExecuted": [
+      {
+        "from": "0xe2823b3c9eef89520617589c2056fde633b61c53",
+        "to": "0x000000000000000000000000000000000000080a",
+        "transactionHash": "0x0c9c7e359eb469fbc12c4dc99bf9789d32547c274ba4510f484c7d37056929f7",
+        "exitReason": {
+          "Revert": "Reverted"
+        },
+        "extraData": "Marketplace not approved to tr",
+        "decodedRevert": "Marketplace not approved to tr"
+      }
+    ],
+    "nonceBefore": "0",
+    "nonceAfter": "0"
+  },
+  "replay": {
+    "txHash": "0x581ed5619e0bc525c9b1ecec68d1f462ba2224513130adb70d6e0a2a7d0ec6c7",
+    "txInputHash": "0x945b4388c1e237e74b6cf9706be59c608adc324224be66edc3e2ab97ed2fe0b5",
+    "exactSameDispatchCalldataReused": true,
+    "replayDispatcher": "0x387d113949a1a2D5Df01B869aa992e94Bd062035",
+    "ethereumExecuted": [
+      {
+        "from": "0x387d113949a1a2d5df01b869aa992e94bd062035",
+        "to": "0x000000000000000000000000000000000000080a",
+        "transactionHash": "0x581ed5619e0bc525c9b1ecec68d1f462ba2224513130adb70d6e0a2a7d0ec6c7",
+        "exitReason": {
+          "Succeed": "Returned"
+        },
+        "extraData": "",
+        "decodedRevert": ""
+      }
+    ],
+    "nonceBefore": "0",
+    "nonceAfter": "1",
+    "sellerPaymentAmount": "100000000000000000000",
+    "buyerPaymentAmount": "100000000000000000000"
+  },
+  "atomicity": {
+    "nonceRolledBack": true,
+    "wglmrTransferRolledBack": true,
+    "offerAcceptedRolledBack": true,
+    "nftTransferRolledBack": true
+  },
+  "snapshots": {
+    "afterOffer": {
+      "label": "after offer and initial approval",
+      "block": "15592073",
+      "timestampMs": "1778594982000",
+      "callPermitNonce": "0",
+      "nftOwner": "0xE2823B3C9Eef89520617589c2056Fde633B61C53",
+      "sellerNftBalance": "1",
+      "buyerNftBalance": "0",
+      "sellerApprovedForMarketplace": true,
+      "sellerWglmrBalance": "100000000000000000000",
+      "buyerWglmrBalance": "100000000000000000000",
+      "buyerMarketplaceAllowance": "100000000000000000000",
+      "offers": [
+        {
+          "price": "100000000000000000000",
+          "timestamp": "1778594982",
+          "accepted": false,
+          "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+          "escrowed": false
+        }
+      ]
+    },
+    "beforeFailed": {
+      "label": "seller revoked marketplace approval / before failed dispatch",
+      "block": "15592074",
+      "timestampMs": "1778594988000",
+      "callPermitNonce": "0",
+      "nftOwner": "0xE2823B3C9Eef89520617589c2056Fde633B61C53",
+      "sellerNftBalance": "1",
+      "buyerNftBalance": "0",
+      "sellerApprovedForMarketplace": false,
+      "sellerWglmrBalance": "100000000000000000000",
+      "buyerWglmrBalance": "100000000000000000000",
+      "buyerMarketplaceAllowance": "100000000000000000000",
+      "offers": [
+        {
+          "price": "100000000000000000000",
+          "timestamp": "1778594982",
+          "accepted": false,
+          "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+          "escrowed": false
+        }
+      ]
+    },
+    "afterFailed": {
+      "label": "after seller-published failed dispatch",
+      "block": "15592075",
+      "timestampMs": "1778594994000",
+      "callPermitNonce": "0",
+      "nftOwner": "0xE2823B3C9Eef89520617589c2056Fde633B61C53",
+      "sellerNftBalance": "1",
+      "buyerNftBalance": "0",
+      "sellerApprovedForMarketplace": false,
+      "sellerWglmrBalance": "100000000000000000000",
+      "buyerWglmrBalance": "100000000000000000000",
+      "buyerMarketplaceAllowance": "100000000000000000000",
+      "offers": [
+        {
+          "price": "100000000000000000000",
+          "timestamp": "1778594982",
+          "accepted": false,
+          "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+          "escrowed": false
+        }
+      ]
+    },
+    "beforeReplay": {
+      "label": "seller restored approval / before unrelated replay",
+      "block": "15592076",
+      "timestampMs": "1778595000000",
+      "callPermitNonce": "0",
+      "nftOwner": "0xE2823B3C9Eef89520617589c2056Fde633B61C53",
+      "sellerNftBalance": "1",
+      "buyerNftBalance": "0",
+      "sellerApprovedForMarketplace": true,
+      "sellerWglmrBalance": "100000000000000000000",
+      "buyerWglmrBalance": "100000000000000000000",
+      "buyerMarketplaceAllowance": "100000000000000000000",
+      "offers": [
+        {
+          "price": "100000000000000000000",
+          "timestamp": "1778594982",
+          "accepted": false,
+          "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+          "escrowed": false
+        }
+      ]
+    },
+    "afterReplay": {
+      "label": "after unrelated exact calldata replay",
+      "block": "15592077",
+      "timestampMs": "1778595006000",
+      "callPermitNonce": "1",
+      "nftOwner": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+      "sellerNftBalance": "0",
+      "buyerNftBalance": "1",
+      "sellerApprovedForMarketplace": true,
+      "sellerWglmrBalance": "200000000000000000000",
+      "buyerWglmrBalance": "0",
+      "buyerMarketplaceAllowance": "0",
+      "offers": [
+        {
+          "price": "100000000000000000000",
+          "timestamp": "1778594982",
+          "accepted": true,
+          "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+          "escrowed": false
+        }
+      ]
+    }
+  },
+  "assertions": {
+    "permitValidationPassedAndTargetReverted": true,
+    "sellerControlsRevertByApproval": true,
+    "leakedReusableSignature": true,
+    "exactSameCalldataReusable": true,
+    "unrelatedReplayDispatcherWorks": true,
+    "replaySucceeded": true,
+    "nonceUnchangedAfterFail": true,
+    "nonceConsumedAfterReplay": true,
+    "paymentAndNftMovedOnlyOnReplay": true,
+    "wglmrRolledBackOnFail": true,
+    "offerAcceptedRolledBackOnFail": true,
+    "nftRolledBackOnFail": true
+  }
+}

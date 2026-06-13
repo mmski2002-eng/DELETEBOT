@@ -1,0 +1,11 @@
+#include "../../contracts/imports/utils.fc";
+
+() recv_internal() {
+}
+
+(int, int, int) get_storage_cost(int main?, int duration, cell c) method_id {
+    ( int cells, int bits, _ ) = compute_data_size(c, 10000);
+
+    int cost = get_storage_fee(cells, bits, duration, main?);
+    return ( bits, cells, cost );
+}

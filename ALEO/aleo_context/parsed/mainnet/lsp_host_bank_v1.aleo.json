@@ -1,0 +1,396 @@
+{
+  "program_id": "lsp_host_bank_v1.aleo",
+  "calls_24h_or_metric_window": 1,
+  "imports": [
+    "credits.aleo"
+  ],
+  "mappings": {
+    "owned": {
+      "key": "boolean.public",
+      "value": "address.public"
+    },
+    "withdrawal": {
+      "key": "boolean.public",
+      "value": "address.public"
+    }
+  },
+  "structs": {},
+  "records": {
+    "PendingOwner": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "pre",
+        "type": "address.private"
+      }
+    ]
+  },
+  "functions": {
+    "unbond_public": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "lsp_host_bank_v1.aleo/unbond_public.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/unbond_public.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "transfer_public": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "lsp_host_bank_v1.aleo/transfer_public.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/transfer_public.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "owned"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "initialize": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "PendingOwner.record"
+        },
+        {
+          "register": "r1",
+          "type": "lsp_host_bank_v1.aleo/initialize.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owned"
+      ],
+      "finalize_state_writes": [
+        "owned"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "withdraw": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "lsp_host_bank_v1.aleo/withdraw.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/transfer_public.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "withdrawal"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "set_withdrawal": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "lsp_host_bank_v1.aleo/set_withdrawal.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owned"
+      ],
+      "finalize_state_writes": [
+        "withdrawal"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "transfer_ownership": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "PendingOwner.record"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "PendingOwner.record"
+        },
+        {
+          "register": "r3",
+          "type": "lsp_host_bank_v1.aleo/transfer_ownership.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owned"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "accept_ownership": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "PendingOwner.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "PendingOwner.record"
+        },
+        {
+          "register": "r2",
+          "type": "lsp_host_bank_v1.aleo/accept_ownership.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.neq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owned"
+      ],
+      "finalize_state_writes": [
+        "owned"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "accept_ownership",
+    "initialize",
+    "set_withdrawal",
+    "transfer_ownership",
+    "transfer_public",
+    "unbond_public",
+    "withdraw"
+  ],
+  "cross_contract_refs": [
+    "credits.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "unbond_public",
+    "transfer_public",
+    "initialize",
+    "withdraw",
+    "set_withdrawal",
+    "transfer_ownership",
+    "accept_ownership"
+  ],
+  "state_commitment_surfaces": {
+    "records": [
+      "PendingOwner"
+    ],
+    "mappings": [
+      "owned",
+      "withdrawal"
+    ],
+    "future_outputs": [
+      {
+        "function": "unbond_public",
+        "output": "lsp_host_bank_v1.aleo/unbond_public.future"
+      },
+      {
+        "function": "transfer_public",
+        "output": "lsp_host_bank_v1.aleo/transfer_public.future"
+      },
+      {
+        "function": "initialize",
+        "output": "lsp_host_bank_v1.aleo/initialize.future"
+      },
+      {
+        "function": "withdraw",
+        "output": "lsp_host_bank_v1.aleo/withdraw.future"
+      },
+      {
+        "function": "set_withdrawal",
+        "output": "lsp_host_bank_v1.aleo/set_withdrawal.future"
+      },
+      {
+        "function": "transfer_ownership",
+        "output": "lsp_host_bank_v1.aleo/transfer_ownership.future"
+      },
+      {
+        "function": "accept_ownership",
+        "output": "lsp_host_bank_v1.aleo/accept_ownership.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

@@ -1,0 +1,62 @@
+{
+  "program_id": "cryptsign_v4.aleo",
+  "calls_24h_or_metric_window": 2,
+  "imports": [],
+  "mappings": {},
+  "structs": {},
+  "records": {},
+  "functions": {
+    "record_contract": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.private"
+        },
+        {
+          "register": "r1",
+          "type": "field.private"
+        },
+        {
+          "register": "r2",
+          "type": "u8.private"
+        },
+        {
+          "register": "r3",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r5",
+          "type": "field.public"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [],
+  "cross_contract_refs": [],
+  "async_or_conditional_paths": [
+    "record_contract"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [],
+    "future_outputs": []
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

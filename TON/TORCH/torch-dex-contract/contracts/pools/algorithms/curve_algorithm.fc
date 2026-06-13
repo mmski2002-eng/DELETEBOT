@@ -1,0 +1,430 @@
+{- Curve Formula -}
+
+;; Source: https://github.com/curvefi/curve-contract/blob/b0bbf77f8f93c9c5f4e415bce9cd71f0cdee960e/contracts/pool-templates/base/SwapTemplateBase.vy#L154
+int get_a() inline {
+    int t1 = pool::future_A_time;
+    int A1 = pool::future_A;
+
+    if now() < t1 {
+        int A0 = pool::init_A;
+        int t0 = pool::init_A_time;
+
+        if A1 > A0 {
+            return A0 + (A1 - A0) * (now() - t0) / (t1 - t0);
+        } else {
+            return A0 - (A0 - A1) * (now() - t0) / (t1 - t0);
+        }
+    }
+    return A1;
+}
+
+;; Source: https://github.com/curvefi/curve-contract/blob/b0bbf77f8f93c9c5f4e415bce9cd71f0cdee960e/contracts/pool-templates/base/SwapTemplateBase.vy#L188
+(tuple) xp() inline {
+    tuple result = pool::rates_tuple;
+    int i = 0;
+    while i < pool::n_coins {
+        int balance = pool::reserve_tuple.at(i);
+        result~tset(muldiv(result.at(i), balance, PRECISION), i);
+        i += 1;
+    }
+    return result;
+}
+
+;; Source: https://github.com/curvefi/curve-contract/blob/b0bbf77f8f93c9c5f4e415bce9cd71f0cdee960e/contracts/pool-templates/base/SwapTemplateBase.vy#L197
+(tuple) xp_mem(tuple _balances) inline {
+    tuple result = pool::rates_tuple;
+    int i = 0;
+    while i < pool::n_coins {
+        result~tset(muldiv(result.at(i), _balances.at(i), PRECISION), i);
+        i += 1;
+    }
+    return result;
+}
+
+;; Source: https://github.com/curvefi/curve-stablecoin/blob/176e637a4b82874c49c90883ee1afc7e317ca051/contracts/Stableswap.vy#L387
+int get_d(tuple _xp, int _amp) inline_ref {
+    int sum = 0;
+    int d_prev = 0;
+
+    int i = 0;
+    while i < pool::n_coins {
+        sum += _xp.at(i);
+        i += 1;
+    }
+
+    if (sum == 0) {
+        return 0;
+    }
+
+    int d = sum;
+    int ann = _amp * pool::n_coins;
+
+    repeat(255) {
+        int d_p = d;
+        int i = 0;
+        while i < pool::n_coins {
+            ;; D_P = D_P * D / (_x * N_COINS)
+            d_p = muldiv(d_p, d, (_xp.at(i) * pool::n_coins));
+            i += 1;
+        }
+
+        d_prev = d;
+        ;; D = (Ann * S / A_PRECISION + D_P * N_COINS) * D / ((Ann - A_PRECISION) * D / A_PRECISION + (N_COINS + 1) * D_P)
+        int numerator = muldiv(ann, sum, A_PRECISION) + d_p * pool::n_coins;
+        int denominator = muldiv((ann - A_PRECISION), d, A_PRECISION) + (pool::n_coins + 1) * d_p;
+        d = muldiv(numerator, d, denominator);
+
+        ;; Equality with the precision of 1
+        if (d > d_prev) {
+            if (d - d_prev <= 1) {
+                return d;
+            }
+        } else {
+            if (d_prev - d <= 1){
+                return d;
+            }
+        }
+    }
+
+    throw(error::no_suitable_D);
+    return -1;
+}
+
+;; Source: https://github.com/curvefi/curve-stablecoin/blob/176e637a4b82874c49c90883ee1afc7e317ca051/contracts/Stableswap.vy#L423
+int get_d_mem(tuple _balances, int _amp) inline {
+    tuple xp = xp_mem(_balances);
+    return get_d(xp, _amp);
+}
+
+;; Source: https://github.com/curvefi/curve-contract/blob/master/contracts/pool-templates/base/SwapTemplateBase.vy#L252
+;; The current virtual price of the pool LP token
+;; return LP token virtual price normalized to 1e18
+int get_vp() inline {
+    int d = get_d(xp(), get_a());
+    return pool::lp_total_supply == 0 ? 0 : muldiv(d, PRECISION, pool::lp_total_supply);
+}
+
+;; Source: https://github.com/curvefi/curve-stablecoin/blob/176e637a4b82874c49c90883ee1afc7e317ca051/contracts/Stableswap.vy#L677
+int get_y(int i, int j, int x, tuple _xp) inline_ref {
+    int amp = get_a();
+    int d = get_d(_xp, amp);
+    int ann = amp * pool::n_coins; 
+    int c = d; 
+    int sum = 0;
+    int _x = 0;
+    int y_prev = 0; 
+
+    int k = 0;
+    repeat(pool::n_coins) {
+        if (k != j) {
+            if (k == i) {
+                _x = x; 
+            } else {
+                _x = _xp.at(k);
+            }
+            sum += _x;
+            c = muldiv(c, d, (_x * pool::n_coins));
+        }
+        k += 1;
+    }
+    c = muldiv(c, d * A_PRECISION, (ann * pool::n_coins));
+    int b = sum + muldiv(d, A_PRECISION, ann); 
+    int y = d; 
+    repeat (255) {
+        y_prev = y;
+        y = (y * y + c) / (2 * y + b - d); 
+        if (y > y_prev) {
+            if (y - y_prev <= 1) {
+                return y;
+            }
+        } else {
+            if (y_prev - y <= 1) {
+                return y;
+            }
+        }
+    }
+
+    throw(error::no_suitable_Y);
+    return -1;
+}
+
+;; Source: https://github.com/curvefi/curve-contract/blob/master/contracts/pool-templates/base/SwapTemplateBase.vy#L614
+int get_y_d(int amp, int i, tuple _xp, int d) inline {
+    int ann = amp * pool::n_coins; 
+    int c = d; 
+    int sum = 0;
+    int _x = 0;
+    int y_prev = 0; 
+
+    int k = 0;
+    repeat(pool::n_coins) {
+        if (k != i) {
+            _x = _xp.at(k);
+            sum += _x;
+            c = muldiv(c, d, (_x * pool::n_coins));
+        }
+        k += 1;
+    }
+    c = muldiv(c, d * A_PRECISION, (ann * pool::n_coins));
+    int b = sum + muldiv(d, A_PRECISION, ann); 
+    int y = d; 
+    repeat (255) {
+        y_prev = y;
+        y = (y * y + c) / (2 * y + b - d); 
+        if (y > y_prev) {
+            if (y - y_prev <= 1) {
+                return y;
+            }
+        } else {
+            if (y_prev - y <= 1) {
+                return y;
+            }
+        }
+    }
+
+    throw(error::no_suitable_Y_D);
+    return -1;
+}
+
+;; Add the amount of liquidity provided by the user (in the add_amount tuple) to the pool's reserves, and return the updated result.
+tuple add_reserve_amount(tuple reserve_old_tuple, tuple add_amount_tuple) inline {
+    int i = 0;
+    tuple new_tmp_reserves = empty_tuple();
+    while i < pool::n_coins {
+        ;; Deposit amount of each asset
+        int add_amount = add_amount_tuple.at(i);
+
+        ;; Get the old reserve of the asset
+        int reserve_old_amount = reserve_old_tuple.at(i);
+
+        ;; Calculate the new reserve
+        int new_reserve = reserve_old_amount + add_amount;
+        new_tmp_reserves~tpush(new_reserve);
+
+        i += 1;
+    }
+    return new_tmp_reserves;
+}
+
+;; We will separate the calculation of fees. The original implementation can be referenced from the fee calculation in the add liquidity function (https://github.com/curvefi/curve-stablecoin/blob/176e637a4b82874c49c90883ee1afc7e317ca051/contracts/Stableswap.vy#L642).
+(int, tuple) get_fee(int d_1, int d_0, tuple new_reserves, tuple targets_tuple, int fee, int amp) inline {
+    int i = 0;
+    tuple fees = empty_tuple();
+
+    ;; Get the rates from the pool and calculate the total inverse rate 
+    ;; (scaled by MUL_PRECISION for precision)
+    tuple rates = pool::rates_tuple;
+    tuple decimals = pool::decimal_tuple;
+
+    int inv_rate_sum = 0;
+    int j = 0;
+    while j < pool::n_coins {
+        int inv_rate = muldiv(MUL_PRECISION, PRECISION, (rates.at(j) * decimals.at(j)));
+        inv_rate_sum += inv_rate;
+        j += 1;
+    }
+
+    while i < pool::n_coins {
+        ;; Admin Balance
+        int admin_balance = pool::admin_fees_tuple.at(i);
+        
+        ;; Deposit amount of each asset
+        int decimals_i = decimals.at(i);
+        int deposit_i = targets_tuple.at(i);
+        int new_reserve_amount = new_reserves.at(i);
+        int old_reserve_amount = pool::reserve_tuple.at(i);
+        
+        ;; Compute the ideal balance for coin i using inverse rate weighting:
+        ;; ideal_balance = d_1 * (MUL_PRECISION * PRECISION / (rate_i * decimals_i)) / inv_rate_sum
+        ;; If users try to balance the reserve, we won't charge any fee
+        ;; If users try to add more of coin i, we will charge difference (over the ideal balance)
+        int inv_rate_i = muldiv(MUL_PRECISION, PRECISION, (rates.at(i) * decimals_i));
+        int ideal_balance = muldiv(d_1, inv_rate_i, muldiv(inv_rate_sum, PRECISION, decimals_i));
+        int needed = max(ideal_balance - old_reserve_amount, 0);
+        int difference = deposit_i - min(deposit_i, needed);
+        int fee_for_reserve = muldiv(difference, fee, FEE_DENOMINATOR);
+        int fee_for_admin = muldiv(fee_for_reserve, pool::admin_fee_numerator, FEE_DENOMINATOR);
+
+        ;; Update reserve balance
+        pool::reserve_tuple~tset(new_reserve_amount - fee_for_admin, i);
+
+        ;; Update admin balance
+        pool::admin_fees_tuple~tset(admin_balance + fee_for_admin, i);
+
+        ;; Update fee
+        fees~tpush(fee_for_reserve);
+
+        ;; Calculate new_reserve with fee
+        new_reserves~tset(new_reserve_amount - fee_for_reserve, i);
+
+        i += 1;
+    }
+
+    int d_2 = get_d_mem(new_reserves, amp);
+    int mint_lp_amount = muldiv(pool::lp_total_supply, (d_2 - d_0), d_0);
+
+    return (mint_lp_amount, fees);
+}
+
+;; Source: https://github.com/curvefi/curve-stablecoin/blob/176e637a4b82874c49c90883ee1afc7e317ca051/contracts/Stableswap.vy#L601
+(int, tuple) simulate::deposit(tuple targets_tuple) impure inline {
+    ;; If it is the first time to add liquidity, must provide all assets
+    if(pool::lp_total_supply == 0) & (cal_nonzeros(targets_tuple) != pool::n_coins) {
+        return (INVALID_INIT_DEPOSIT, empty_tuple());
+    }
+    int amp = get_a();
+    tuple old_reserves = pool::reserve_tuple;
+    ;; Initial invariant
+    int d_0 = get_d_mem(old_reserves, amp);
+
+    tuple new_reserves = add_reserve_amount(pool::reserve_tuple, targets_tuple);
+
+    ;; Calculate d_1
+    int d_1 = get_d_mem(new_reserves, amp);
+
+    throw_unless(error::invalid_liquidity, d_1 > d_0);
+
+    int d_2 = d_1;
+    tuple fees = empty_tuple();
+    int mint_lp_amount = 0;
+    if(pool::lp_total_supply == 0) {
+        mint_lp_amount = d_1;
+        pool::lp_total_supply = d_1;
+        pool::reserve_tuple = new_reserves;
+    } else {
+        int fee_deposit = pool::fee_numerator * pool::n_coins / (4 * (pool::n_coins - 1));
+
+        (mint_lp_amount, fees) = get_fee(d_1, d_0, new_reserves, targets_tuple, fee_deposit, amp);
+        pool::lp_total_supply += mint_lp_amount;
+    }
+    return (mint_lp_amount, fees);
+}
+
+;; Source: https://github.com/curvefi/curve-contract/blob/b0bbf77f8f93c9c5f4e415bce9cd71f0cdee960e/contracts/pool-templates/base/SwapTemplateBase.vy#L447
+(int, tuple) simulate::swap(int i, int j, int amount_in) impure inline {
+    tuple new_reserves = pool::reserve_tuple;
+    tuple xp = xp_mem(pool::reserve_tuple);
+
+    tuple rates = pool::rates_tuple;
+    int amp = get_a();
+    int x = xp.at(i) + muldiv(amount_in, rates.at(i), PRECISION);
+    int y = get_y(i, j, x, xp);
+
+    int dy = xp.at(j) - y - 1; ;; -1 just in case there were some rounding errors
+    int dy_fee = muldiv(dy, pool::fee_numerator, FEE_DENOMINATOR);
+    int dy_admin_fee = muldiv(dy_fee, pool::admin_fee_numerator, FEE_DENOMINATOR);
+
+    ;; Convert all to real units
+    dy = muldiv((dy - dy_fee), PRECISION, rates.at(j));
+    dy_fee = muldiv(dy_fee, PRECISION, rates.at(j));
+    dy_admin_fee = muldiv(dy_admin_fee, PRECISION, rates.at(j));
+
+    new_reserves~tset(pool::reserve_tuple.at(i) + amount_in, i);
+    new_reserves~tset(pool::reserve_tuple.at(j) - dy - dy_admin_fee, j);
+
+    ;; Update reserves
+    pool::reserve_tuple = new_reserves;
+
+    ;; Update admin fees
+    pool::admin_fees_tuple~tset(pool::admin_fees_tuple.at(j) + dy_admin_fee, j);
+    tuple fees = empty_tuple(); 
+    fees~tpush(dy_fee);
+    return (
+        dy,
+        fees
+    );
+}
+
+;; Source: https://github.com/curvefi/curve-stablecoin/blob/176e637a4b82874c49c90883ee1afc7e317ca051/contracts/Stableswap.vy#L834
+(tuple, int) simulate::withdraw_all(int remove_lp_amount, cell min_amounts) impure inline {   
+    tuple remove_amounts_tuple = empty_tuple();
+    int check_min_amount? = ~ min_amounts.cell_null?();
+    tuple min_amounts_tuple = check_min_amount? ? convert_coins_cell_to_tuple(min_amounts) : empty_tuple();
+    int i = 0;
+
+    while i < pool::n_coins {
+        ;; Get reserve
+        int old_reserve = pool::reserve_tuple.at(i);
+
+        ;; Calculate remove amount
+        int value = muldiv(old_reserve, remove_lp_amount, pool::lp_total_supply);
+
+        ;; Get min_amount for each asset
+        int min_amount = check_min_amount? ? min_amounts_tuple.at(i) : 0;
+        if (~ ((min_amount >= 0) & (value >= min_amount))) {
+            return (empty_tuple(), NEED_REFUND);
+        }
+
+        ;; Add remove amount to remove_amounts_tuple
+        remove_amounts_tuple~tpush(value);
+
+        ;; Update reserve
+        pool::reserve_tuple~tset(old_reserve - value, i);
+        i += 1;
+    }
+
+    return (remove_amounts_tuple, NO_REFUND);
+}
+
+;; Source: https://github.com/curvefi/curve-stablecoin/blob/176e637a4b82874c49c90883ee1afc7e317ca051/contracts/Stableswap.vy#L1029
+(int, tuple, int) simulate::withdraw_one(int remove_lp_amount, int token_out, cell min_amounts) impure inline {
+    ;; Calculate with one coin
+    int amp = get_a();
+    tuple xp = xp();
+    int d_0 = get_d(xp, amp);
+
+    int d_1 = d_0 - muldiv(remove_lp_amount, d_0, pool::lp_total_supply);
+
+    int new_y = get_y_d(amp, token_out, xp, d_1);
+    tuple xp_reduced = xp;
+    int remove_fee = pool::fee_numerator * pool::n_coins / (4 * (pool::n_coins - 1));
+
+    int i = 0;
+    while i < pool::n_coins {
+        int dx_expected = 0;
+        int reserve_amount = xp.at(i);
+        if(i == token_out) {
+            dx_expected = muldiv(reserve_amount, d_1, d_0) - new_y;
+        }
+        else {
+            dx_expected = reserve_amount - muldiv(reserve_amount, d_1, d_0);
+        }
+        int xp_fee = muldiv(dx_expected, remove_fee, FEE_DENOMINATOR);
+        xp_reduced~tset(reserve_amount - xp_fee, i);
+        i += 1;
+    }
+
+    int d_y = xp_reduced.at(token_out) - get_y_d(amp, token_out, xp_reduced, d_1);
+    d_y = muldiv(d_y - 1, PRECISION, pool::rates_tuple.at(token_out));
+    int d_y_0 = muldiv(xp.at(token_out) - new_y, PRECISION, pool::rates_tuple.at(token_out));
+    int d_y_fee = d_y_0 - d_y;
+
+    tuple fees = empty_tuple();
+    fees~tpush(d_y_fee);
+
+    int dy_admin_fee = muldiv(d_y_fee, pool::admin_fee_numerator, FEE_DENOMINATOR);
+    int old_reserve = pool::reserve_tuple.at(token_out);
+    pool::reserve_tuple~tset(old_reserve - (d_y + dy_admin_fee), token_out);
+
+    ;; Update admin balance
+    int old_admin_fee = pool::admin_fees_tuple.at(token_out);
+    pool::admin_fees_tuple~tset(old_admin_fee + dy_admin_fee, token_out);
+
+    ;; Check min amount, if not reached, refund asset_out
+    int should_refund? = NO_REFUND;
+    if ~ min_amounts.cell_null?() {
+        slice min_amounts_slice = min_amounts.begin_parse();
+        int min_amount_out = min_amounts_slice~load_coins();
+        should_refund? = d_y < min_amount_out;
+    }
+    return (d_y, fees, should_refund?);
+}
+
+int simulate::swap_exact_out(int asset_in_index, int asset_out_index, int amount_out) impure inline {
+    tuple xp = xp_mem(pool::reserve_tuple);
+    int y_after_trade = xp.at(asset_out_index) - muldiv((muldiv(amount_out, pool::rates_tuple.at(asset_out_index), PRECISION)), FEE_DENOMINATOR, (FEE_DENOMINATOR - pool::fee_numerator));
+    int x = get_y(asset_out_index, asset_in_index, y_after_trade, xp);
+    int amount_in = muldiv((x - xp.at(asset_in_index)), PRECISION, pool::rates_tuple.at(asset_in_index));
+
+    return amount_in;
+}

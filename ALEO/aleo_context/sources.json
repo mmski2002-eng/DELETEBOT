@@ -1,0 +1,11 @@
+{
+  "provable_v2_program_metrics": "https://api.explorer.provable.com/v2/{network}/metrics/programs",
+  "provable_v2_program_source": "https://api.explorer.provable.com/v2/{network}/program/{program_id}",
+  "provable_v2_program_mappings": "https://api.explorer.provable.com/v2/{network}/program/{program_id}/mappings",
+  "provable_v1_latest_height": "https://api.explorer.provable.com/v1/{network}/latest/height",
+  "aleo_docs_programs": "https://developer.aleo.org/apis/v2/programs/",
+  "aleo_docs_program_metrics": "https://developer.aleo.org/apis/v2/program-metrics/",
+  "aleo_docs_defi": "https://developer.aleo.org/apis/v2/de-fi/",
+  "aleo_docs_staking": "https://developer.aleo.org/apis/v2/staking/",
+  "aleoscan_registry_reference": "https://aleoscan.io/programs and https://testnet.aleoscan.io/programs"
+}

@@ -1,0 +1,476 @@
+{
+  "program_id": "ldgbatcher_ppub_28.aleo",
+  "calls_24h_or_metric_window": 11,
+  "imports": [
+    "credits.aleo"
+  ],
+  "mappings": {},
+  "structs": {},
+  "records": {},
+  "functions": {
+    "transfer_private_to_public_2": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r6",
+          "type": "ldgbatcher_ppub_28.aleo/transfer_private_to_public_2.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_private_to_public.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "transfer_private_to_public_3": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r2",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r6",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r8",
+          "type": "ldgbatcher_ppub_28.aleo/transfer_private_to_public_3.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_private_to_public.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "transfer_private_to_public_4": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r2",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r4",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r8",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r10",
+          "type": "ldgbatcher_ppub_28.aleo/transfer_private_to_public_4.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_private_to_public.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "transfer_private_to_public_5": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r2",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r4",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r5",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r10",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r12",
+          "type": "ldgbatcher_ppub_28.aleo/transfer_private_to_public_5.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_private_to_public.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "transfer_private_to_public_6": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r2",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r4",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r5",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r6",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r12",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r14",
+          "type": "ldgbatcher_ppub_28.aleo/transfer_private_to_public_6.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_private_to_public.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "transfer_private_to_public_7": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r2",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r4",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r5",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r6",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r7",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r14",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r16",
+          "type": "ldgbatcher_ppub_28.aleo/transfer_private_to_public_7.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_private_to_public.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "transfer_private_to_public_8": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r2",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r4",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r5",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r6",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r7",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r8",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r16",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r18",
+          "type": "ldgbatcher_ppub_28.aleo/transfer_private_to_public_8.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_private_to_public.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "transfer_private_to_public_2",
+    "transfer_private_to_public_3",
+    "transfer_private_to_public_4",
+    "transfer_private_to_public_5",
+    "transfer_private_to_public_6",
+    "transfer_private_to_public_7",
+    "transfer_private_to_public_8"
+  ],
+  "cross_contract_refs": [
+    "credits.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "transfer_private_to_public_2",
+    "transfer_private_to_public_3",
+    "transfer_private_to_public_4",
+    "transfer_private_to_public_5",
+    "transfer_private_to_public_6",
+    "transfer_private_to_public_7",
+    "transfer_private_to_public_8"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [],
+    "future_outputs": [
+      {
+        "function": "transfer_private_to_public_2",
+        "output": "ldgbatcher_ppub_28.aleo/transfer_private_to_public_2.future"
+      },
+      {
+        "function": "transfer_private_to_public_3",
+        "output": "ldgbatcher_ppub_28.aleo/transfer_private_to_public_3.future"
+      },
+      {
+        "function": "transfer_private_to_public_4",
+        "output": "ldgbatcher_ppub_28.aleo/transfer_private_to_public_4.future"
+      },
+      {
+        "function": "transfer_private_to_public_5",
+        "output": "ldgbatcher_ppub_28.aleo/transfer_private_to_public_5.future"
+      },
+      {
+        "function": "transfer_private_to_public_6",
+        "output": "ldgbatcher_ppub_28.aleo/transfer_private_to_public_6.future"
+      },
+      {
+        "function": "transfer_private_to_public_7",
+        "output": "ldgbatcher_ppub_28.aleo/transfer_private_to_public_7.future"
+      },
+      {
+        "function": "transfer_private_to_public_8",
+        "output": "ldgbatcher_ppub_28.aleo/transfer_private_to_public_8.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

@@ -1,0 +1,452 @@
+{
+  "program_id": "note_server_messagingv4.aleo",
+  "calls_24h_or_metric_window": 83,
+  "imports": [],
+  "mappings": {},
+  "structs": {
+    "ChunkInput": [
+      {
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "name": "receiver",
+        "type": "address"
+      },
+      {
+        "name": "msg_id",
+        "type": "field"
+      },
+      {
+        "name": "chunk_index",
+        "type": "u32"
+      },
+      {
+        "name": "total_chunks",
+        "type": "u32"
+      },
+      {
+        "name": "header0",
+        "type": "field"
+      },
+      {
+        "name": "header1",
+        "type": "field"
+      },
+      {
+        "name": "parts",
+        "type": "[field"
+      }
+    ]
+  },
+  "records": {
+    "MessageChunk": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "sender",
+        "type": "address.private"
+      },
+      {
+        "name": "receiver",
+        "type": "address.private"
+      },
+      {
+        "name": "msg_id",
+        "type": "field.private"
+      },
+      {
+        "name": "chunk_index",
+        "type": "u32.private"
+      },
+      {
+        "name": "total_chunks",
+        "type": "u32.private"
+      },
+      {
+        "name": "header0",
+        "type": "field.private"
+      },
+      {
+        "name": "header1",
+        "type": "field.private"
+      },
+      {
+        "name": "p0",
+        "type": "field.private"
+      },
+      {
+        "name": "p1",
+        "type": "field.private"
+      },
+      {
+        "name": "p2",
+        "type": "field.private"
+      },
+      {
+        "name": "p3",
+        "type": "field.private"
+      },
+      {
+        "name": "p4",
+        "type": "field.private"
+      },
+      {
+        "name": "p5",
+        "type": "field.private"
+      },
+      {
+        "name": "p6",
+        "type": "field.private"
+      },
+      {
+        "name": "p7",
+        "type": "field.private"
+      },
+      {
+        "name": "p8",
+        "type": "field.private"
+      }
+    ]
+  },
+  "functions": {
+    "send_message_chunk": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "ChunkInput.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r9",
+          "type": "MessageChunk.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "lt",
+        "or"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "send_message_chunk_batch_2": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "ChunkInput.private"
+        },
+        {
+          "register": "r1",
+          "type": "ChunkInput.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r18",
+          "type": "MessageChunk.record"
+        },
+        {
+          "register": "r19",
+          "type": "MessageChunk.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "lt",
+        "or"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "send_message_chunk_batch_3": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "ChunkInput.private"
+        },
+        {
+          "register": "r1",
+          "type": "ChunkInput.private"
+        },
+        {
+          "register": "r2",
+          "type": "ChunkInput.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r27",
+          "type": "MessageChunk.record"
+        },
+        {
+          "register": "r28",
+          "type": "MessageChunk.record"
+        },
+        {
+          "register": "r29",
+          "type": "MessageChunk.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "lt",
+        "or"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "send_message_chunk_batch_4": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "ChunkInput.private"
+        },
+        {
+          "register": "r1",
+          "type": "ChunkInput.private"
+        },
+        {
+          "register": "r2",
+          "type": "ChunkInput.private"
+        },
+        {
+          "register": "r3",
+          "type": "ChunkInput.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r36",
+          "type": "MessageChunk.record"
+        },
+        {
+          "register": "r37",
+          "type": "MessageChunk.record"
+        },
+        {
+          "register": "r38",
+          "type": "MessageChunk.record"
+        },
+        {
+          "register": "r39",
+          "type": "MessageChunk.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "lt",
+        "or"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "send_message_chunk_batch_5": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "ChunkInput.private"
+        },
+        {
+          "register": "r1",
+          "type": "ChunkInput.private"
+        },
+        {
+          "register": "r2",
+          "type": "ChunkInput.private"
+        },
+        {
+          "register": "r3",
+          "type": "ChunkInput.private"
+        },
+        {
+          "register": "r4",
+          "type": "ChunkInput.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r45",
+          "type": "MessageChunk.record"
+        },
+        {
+          "register": "r46",
+          "type": "MessageChunk.record"
+        },
+        {
+          "register": "r47",
+          "type": "MessageChunk.record"
+        },
+        {
+          "register": "r48",
+          "type": "MessageChunk.record"
+        },
+        {
+          "register": "r49",
+          "type": "MessageChunk.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "lt",
+        "or"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "send_message_chunk_batch_6": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "ChunkInput.private"
+        },
+        {
+          "register": "r1",
+          "type": "ChunkInput.private"
+        },
+        {
+          "register": "r2",
+          "type": "ChunkInput.private"
+        },
+        {
+          "register": "r3",
+          "type": "ChunkInput.private"
+        },
+        {
+          "register": "r4",
+          "type": "ChunkInput.private"
+        },
+        {
+          "register": "r5",
+          "type": "ChunkInput.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r54",
+          "type": "MessageChunk.record"
+        },
+        {
+          "register": "r55",
+          "type": "MessageChunk.record"
+        },
+        {
+          "register": "r56",
+          "type": "MessageChunk.record"
+        },
+        {
+          "register": "r57",
+          "type": "MessageChunk.record"
+        },
+        {
+          "register": "r58",
+          "type": "MessageChunk.record"
+        },
+        {
+          "register": "r59",
+          "type": "MessageChunk.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "lt",
+        "or"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [],
+  "cross_contract_refs": [],
+  "async_or_conditional_paths": [
+    "send_message_chunk",
+    "send_message_chunk_batch_2",
+    "send_message_chunk_batch_3",
+    "send_message_chunk_batch_4",
+    "send_message_chunk_batch_5",
+    "send_message_chunk_batch_6"
+  ],
+  "state_commitment_surfaces": {
+    "records": [
+      "MessageChunk"
+    ],
+    "mappings": [],
+    "future_outputs": []
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

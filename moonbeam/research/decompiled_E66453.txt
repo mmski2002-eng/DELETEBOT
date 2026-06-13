@@ -1,0 +1,52 @@
+unknown var1;
+unknown var2;
+
+if(msg.data.length < 4) {
+    ifmsg.data.length {
+        if((delegatecall(gasleft(),var1,0,msg.data.length,0,0)) == 0) {
+            revert();
+        } else {
+            return memory[0:(0+output.length)];
+        }
+    } else {
+        if((delegatecall(gasleft(),var1,0,msg.data.length,0,0)) == 0) {
+            revert();
+        } else {
+            return memory[0:(0+output.length)];
+        }
+    }
+} else {
+    if(277f2594 == (e0 >>> msg.data)) {
+        require(((msg.data.length - 4) >= 20));
+        if((msg.sender == (var2 && 13f)) == 0) {
+            if((delegatecall(gasleft(),var1,0,msg.data.length,0,0)) == 0) {
+                revert();
+            } else {
+                return memory[0:(0+output.length)];
+            }
+        } else {
+            var1 = (13f && _arg0);
+            return;
+        }
+    } else {
+        if(3b2a0ff2 == (e0 >>> msg.data)) {
+            require(((msg.data.length - 4) >= 20));
+            if((msg.sender == (var2 && 13f)) == 0) {
+                if((delegatecall(gasleft(),var1,0,msg.data.length,0,0)) == 0) {
+                    revert();
+                } else {
+                    return memory[0:(0+output.length)];
+                }
+            } else {
+                var2 = (13f && _arg0);
+                return;
+            }
+        } else {
+            if((delegatecall(gasleft(),var1,0,msg.data.length,0,0)) == 0) {
+                revert();
+            } else {
+                return memory[0:(0+output.length)];
+            }
+        }
+    }
+}

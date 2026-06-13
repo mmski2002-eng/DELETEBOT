@@ -1,0 +1,117 @@
+{
+  "program_id": "mystery_city_v001.aleo",
+  "calls_24h_or_metric_window": 1065,
+  "imports": [
+    "puzzle_arcade_coin_v002.aleo",
+    "puzzle_arcade_ticket_v002.aleo"
+  ],
+  "mappings": {
+    "used_nonces": {
+      "key": "field.public",
+      "value": "boolean.public"
+    }
+  },
+  "structs": {
+    "Result": [
+      {
+        "name": "nonce",
+        "type": "field"
+      },
+      {
+        "name": "tickets",
+        "type": "u64"
+      }
+    ]
+  },
+  "records": {},
+  "functions": {
+    "submit_game": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "puzzle_arcade_coin_v002.aleo/PuzzleArcadeCoin.record"
+        },
+        {
+          "register": "r1",
+          "type": "Result.public"
+        },
+        {
+          "register": "r2",
+          "type": "signature.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r33",
+          "type": "puzzle_arcade_coin_v002.aleo/PuzzleArcadeCoin.record"
+        },
+        {
+          "register": "r34",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r36",
+          "type": "mystery_city_v001.aleo/submit_game.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "puzzle_arcade_coin_v002.aleo",
+        "puzzle_arcade_ticket_v002.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "is.eq",
+        "or"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "puzzle_arcade_ticket_v002.aleo/mint.future"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "used_nonces"
+      ],
+      "finalize_state_writes": [
+        "used_nonces"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "submit_game"
+  ],
+  "cross_contract_refs": [
+    "puzzle_arcade_coin_v002.aleo",
+    "puzzle_arcade_ticket_v002.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "submit_game"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [
+      "used_nonces"
+    ],
+    "future_outputs": [
+      {
+        "function": "submit_game",
+        "output": "mystery_city_v001.aleo/submit_game.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

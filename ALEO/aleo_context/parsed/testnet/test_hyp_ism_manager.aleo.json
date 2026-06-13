@@ -1,0 +1,608 @@
+{
+  "program_id": "test_hyp_ism_manager.aleo",
+  "calls_24h_or_metric_window": 2,
+  "imports": [
+    "test_hyp_multisig_core.aleo"
+  ],
+  "mappings": {
+    "nonce": {
+      "key": "boolean.public",
+      "value": "u32.public"
+    },
+    "ism_addresses": {
+      "key": "u32.public",
+      "value": "address.public"
+    },
+    "isms": {
+      "key": "address.public",
+      "value": "u8.public"
+    },
+    "domain_routing_isms": {
+      "key": "address.public",
+      "value": "DomainRoutingIsm.public"
+    },
+    "routes": {
+      "key": "IsmRouteKey.public",
+      "value": "address.public"
+    },
+    "route_iter": {
+      "key": "RouteIndexKey.public",
+      "value": "IsmRouteKey.public"
+    },
+    "route_length": {
+      "key": "address.public",
+      "value": "u32.public"
+    },
+    "message_id_multisigs": {
+      "key": "address.public",
+      "value": "MessageIdMultisigIsm.public"
+    }
+  },
+  "structs": {
+    "Message": [
+      {
+        "name": "version",
+        "type": "u8"
+      },
+      {
+        "name": "nonce",
+        "type": "u32"
+      },
+      {
+        "name": "origin_domain",
+        "type": "u32"
+      },
+      {
+        "name": "sender",
+        "type": "[u8"
+      },
+      {
+        "name": "destination_domain",
+        "type": "u32"
+      },
+      {
+        "name": "recipient",
+        "type": "[u8"
+      },
+      {
+        "name": "body",
+        "type": "[u128"
+      }
+    ],
+    "EthAddress": [
+      {
+        "name": "bytes",
+        "type": "[u8"
+      }
+    ],
+    "MessageIdMultisigIsm": [
+      {
+        "name": "validators",
+        "type": "[EthAddress"
+      },
+      {
+        "name": "validator_count",
+        "type": "u8"
+      },
+      {
+        "name": "threshold",
+        "type": "u8"
+      },
+      {
+        "name": "nonce",
+        "type": "u32"
+      }
+    ],
+    "DomainRoutingIsm": [
+      {
+        "name": "ism_owner",
+        "type": "address"
+      },
+      {
+        "name": "nonce",
+        "type": "u32"
+      }
+    ],
+    "NoopIsm": [
+      {
+        "name": "nonce",
+        "type": "u32"
+      }
+    ],
+    "IsmRouteKey": [
+      {
+        "name": "ism",
+        "type": "address"
+      },
+      {
+        "name": "domain",
+        "type": "u32"
+      }
+    ],
+    "RouteIndexKey": [
+      {
+        "name": "ism",
+        "type": "address"
+      },
+      {
+        "name": "index",
+        "type": "u32"
+      }
+    ],
+    "ChecksumEdition": [
+      {
+        "name": "checksum",
+        "type": "[u8"
+      },
+      {
+        "name": "edition",
+        "type": "u16"
+      }
+    ],
+    "WalletEcdsaSigner": [
+      {
+        "name": "wallet_id",
+        "type": "address"
+      },
+      {
+        "name": "ecdsa_signer",
+        "type": "[u8"
+      }
+    ],
+    "WalletSigningOpId": [
+      {
+        "name": "wallet_id",
+        "type": "address"
+      },
+      {
+        "name": "signing_op_id",
+        "type": "field"
+      }
+    ],
+    "AdminOp": [
+      {
+        "name": "op",
+        "type": "u8"
+      },
+      {
+        "name": "threshold",
+        "type": "u8"
+      },
+      {
+        "name": "aleo_signer",
+        "type": "address"
+      },
+      {
+        "name": "ecdsa_signer",
+        "type": "[u8"
+      }
+    ]
+  },
+  "records": {},
+  "functions": {
+    "init_noop": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "test_hyp_ism_manager.aleo/init_noop.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [],
+      "finalize_state_reads": [
+        "isms",
+        "nonce"
+      ],
+      "finalize_state_writes": [
+        "ism_addresses",
+        "isms",
+        "nonce"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "init_message_id_multisig": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "[EthAddress"
+        },
+        {
+          "register": "r1",
+          "type": "u8.private"
+        },
+        {
+          "register": "r2",
+          "type": "u8.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "test_hyp_ism_manager.aleo/init_message_id_multisig.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "[EthAddress"
+        },
+        {
+          "register": "r1",
+          "type": "u8.public"
+        },
+        {
+          "register": "r2",
+          "type": "u8.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "message_id_multisigs",
+        "nonce"
+      ],
+      "finalize_state_writes": [
+        "ism_addresses",
+        "isms",
+        "message_id_multisigs",
+        "nonce"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gt",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "init_domain_routing": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "test_hyp_ism_manager.aleo/init_domain_routing.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "domain_routing_isms",
+        "nonce"
+      ],
+      "finalize_state_writes": [
+        "domain_routing_isms",
+        "ism_addresses",
+        "isms",
+        "nonce"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "set_domain": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "u32.private"
+        },
+        {
+          "register": "r2",
+          "type": "address.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "test_hyp_ism_manager.aleo/set_domain.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u32.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "domain_routing_isms",
+        "route_length",
+        "routes"
+      ],
+      "finalize_state_writes": [
+        "route_iter",
+        "route_length",
+        "routes"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq"
+      ],
+      "snark_verify": false
+    },
+    "remove_domain": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "u32.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "test_hyp_ism_manager.aleo/remove_domain.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u32.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "domain_routing_isms"
+      ],
+      "finalize_state_writes": [
+        "routes"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "transfer_routing_ism_ownership": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "address.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "test_hyp_ism_manager.aleo/transfer_routing_ism_ownership.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "domain_routing_isms"
+      ],
+      "finalize_state_writes": [
+        "domain_routing_isms"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "verify": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "Message.public"
+        },
+        {
+          "register": "r2",
+          "type": "[u128"
+        },
+        {
+          "register": "r3",
+          "type": "[u8"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "test_hyp_ism_manager.aleo/verify.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "Message.public"
+        },
+        {
+          "register": "r2",
+          "type": "[u128"
+        },
+        {
+          "register": "r3",
+          "type": "[u8"
+        }
+      ],
+      "finalize_state_reads": [
+        "isms",
+        "message_id_multisigs",
+        "routes"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "gt",
+        "gte",
+        "is.eq",
+        "or",
+        "ternary"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "init_domain_routing",
+    "init_message_id_multisig",
+    "init_noop",
+    "remove_domain",
+    "set_domain",
+    "transfer_routing_ism_ownership",
+    "verify"
+  ],
+  "cross_contract_refs": [
+    "test_hyp_multisig_core.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "init_noop",
+    "init_message_id_multisig",
+    "init_domain_routing",
+    "set_domain",
+    "remove_domain",
+    "transfer_routing_ism_ownership",
+    "verify"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [
+      "domain_routing_isms",
+      "ism_addresses",
+      "isms",
+      "message_id_multisigs",
+      "nonce",
+      "route_iter",
+      "route_length",
+      "routes"
+    ],
+    "future_outputs": [
+      {
+        "function": "init_noop",
+        "output": "test_hyp_ism_manager.aleo/init_noop.future"
+      },
+      {
+        "function": "init_message_id_multisig",
+        "output": "test_hyp_ism_manager.aleo/init_message_id_multisig.future"
+      },
+      {
+        "function": "init_domain_routing",
+        "output": "test_hyp_ism_manager.aleo/init_domain_routing.future"
+      },
+      {
+        "function": "set_domain",
+        "output": "test_hyp_ism_manager.aleo/set_domain.future"
+      },
+      {
+        "function": "remove_domain",
+        "output": "test_hyp_ism_manager.aleo/remove_domain.future"
+      },
+      {
+        "function": "transfer_routing_ism_ownership",
+        "output": "test_hyp_ism_manager.aleo/transfer_routing_ism_ownership.future"
+      },
+      {
+        "function": "verify",
+        "output": "test_hyp_ism_manager.aleo/verify.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

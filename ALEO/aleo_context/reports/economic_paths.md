@@ -1,0 +1,99 @@
+# Economic paths and activity
+
+Calls are from Provable program metrics at collection time. TVL is not recomputed from private records; use this as a routing/activity map, not a balance attestation.
+
+## mainnet
+- `credits.aleo`: 64268 calls; class `token/credit flow`; state `committee, delegated, metadata, bonded, unbonding, account, withdraw, pool`.
+- `puzzle_arcade_coin_v002.aleo`: 12992 calls; class `NFT/game asset`; state `no public mappings parsed`.
+- `puzzle_arcade_ticket_v002.aleo`: 5487 calls; class `NFT/game asset`; state `registry`.
+- `par_giveaways_v1.aleo`: 2160 calls; class `application/other`; state `is_open, max_entries, entries, user_entries, total_entries, winners, has_won, total_winners`.
+- `puzzle_spinner_v003.aleo`: 1961 calls; class `application/other`; state `used_nonces`.
+- `mystery_city_v001.aleo`: 1065 calls; class `application/other`; state `used_nonces`.
+- `token_registry.aleo`: 1008 calls; class `token/credit flow`; state `registered_tokens, balances, authorized_balances, allowances, roles`.
+- `whalepool_easystaking_v2.aleo`: 831 calls; class `staking/liquid staking`; state `recharger, scope_check, bonding_limit, un_bonding_limit, bonded, unbonding, totals, pool_info`.
+- `arcn_pool_v2_2_2.aleo`: 299 calls; class `DeFi pool/lending`; state `amm_pools, amm_deposits, amm_extras, protocol_fee, accrued_protocol_fees, whitelisted_fee_tiers`.
+- `whalepool_easystaking_v3.aleo`: 255 calls; class `staking/liquid staking`; state `scope_check, bonding_limit, un_bonding_limit, bonded, unbonding, totals, pool_info, employee__`.
+- `betastaking.aleo`: 185 calls; class `staking/liquid staking`; state `account, approvals, metadata, state, settings, unstakings, admins, stakers`.
+- `arcn_whitelist.aleo`: 181 calls; class `DeFi pool/lending`; state `whitelist, settings`.
+- `zkwork_staker_v1.aleo`: 148 calls; class `staking/liquid staking`; state `state`.
+- `pondo_protocol.aleo`: 147 calls; class `staking/liquid staking`; state `validator_set, protocol_state, balances, owed_commission, last_rebalance_epoch, withdrawals`.
+- `arcn_compliance_v1.aleo`: 146 calls; class `DeFi pool/lending`; state `no public mappings parsed`.
+- `zkwork_staking.aleo`: 137 calls; class `staking/liquid staking`; state `account, approvals, metadata, state, settings, unstakings, admins, stakers`.
+- `squash_v4.aleo`: 116 calls; class `application/other`; state `day_start`.
+- `autojoin_credits_2_10.aleo`: 97 calls; class `token/credit flow`; state `no public mappings parsed`.
+- `connection_v1.aleo`: 90 calls; class `bridge/cross-chain`; state `already_processed, chain_id, owner_conn, total_validators, validators, threshold, messages`.
+- `par_store_inventory_v1.aleo`: 88 calls; class `application/other`; state `sku_prices, sku_stock`.
+- `asset_manager_helper_v1.aleo`: 86 calls; class `application/other`; state `owner_amh, hub_chain_id, hub_am_address`.
+- `asset_manager_core_v1.aleo`: 86 calls; class `application/other`; state `gmp_payload`.
+- `wrapped_credits.aleo`: 83 calls; class `token/credit flow`; state `no public mappings parsed`.
+- `arcn_pub_v2_2_3.aleo`: 79 calls; class `DeFi pool/lending`; state `no public mappings parsed`.
+- `arcn_priv_v2_2_3.aleo`: 64 calls; class `DeFi pool/lending`; state `no public mappings parsed`.
+- `usdcx_stablecoin.aleo`: 62 calls; class `token/credit flow`; state `token_info, balances, allowances, address_to_role, pause`.
+- `usad_stablecoin.aleo`: 58 calls; class `token/credit flow`; state `token_info, balances, allowances, address_to_role, pause`.
+- `rate_limit_v1.aleo`: 43 calls; class `oracle/governance guard`; state `owner_rate_limit, asset_manager_core, pause_status, token_config`.
+- `gmp_lib_v1.aleo`: 43 calls; class `bridge/cross-chain`; state `no public mappings parsed`.
+- `arcn_puc_out_helper_swap_v2_2_6.aleo`: 26 calls; class `DeFi pool/lending`; state `no public mappings parsed`.
+- `vlink_token_bridge_v3.aleo`: 19 calls; class `bridge/cross-chain`; state `bridge_settings, owner_TB, attestors, in_packet_consumed, out_packets, supported_chains, supported_services, sequences`.
+- `betastaker_1.aleo`: 18 calls; class `staking/liquid staking`; state `admins, operators, state`.
+- `betastaker_3.aleo`: 16 calls; class `staking/liquid staking`; state `admins, operators, state`.
+- `betastaker_2.aleo`: 14 calls; class `staking/liquid staking`; state `admins, operators, state`.
+- `betastaker_4.aleo`: 14 calls; class `staking/liquid staking`; state `admins, operators, state`.
+- `aj_usdcx_stablecoin_2_10.aleo`: 13 calls; class `token/credit flow`; state `no public mappings parsed`.
+- `delegator3.aleo`: 13 calls; class `staking/liquid staking`; state `state_mapping, validator_mapping, banned_validators`.
+- `delegator4.aleo`: 12 calls; class `staking/liquid staking`; state `state_mapping, validator_mapping, banned_validators`.
+- `vlink_token_service_cd_v3.aleo`: 12 calls; class `bridge/cross-chain`; state `owner_TS, total_supply, min_transfers, max_transfers, status, token_holding, other_chain_token_service, other_chain_token_address`.
+- `delegator2.aleo`: 12 calls; class `staking/liquid staking`; state `state_mapping, validator_mapping, banned_validators`.
+- `delegator1.aleo`: 12 calls; class `staking/liquid staking`; state `state_mapping, validator_mapping, banned_validators`.
+- `delegator5.aleo`: 12 calls; class `staking/liquid staking`; state `state_mapping, validator_mapping, banned_validators`.
+- `aj_usad_stablecoin_2_10.aleo`: 10 calls; class `token/credit flow`; state `no public mappings parsed`.
+- `betastaking_ext.aleo`: 10 calls; class `staking/liquid staking`; state `no public mappings parsed`.
+- `hyp_mailbox.aleo`: 10 calls; class `bridge/cross-chain`; state `deliveries, dispatch_events, dispatch_id_events, process_events, mailbox, process_event_index, dispatch_event_index, registered_applications`.
+- `validator_oracle.aleo`: 10 calls; class `staking/liquid staking`; state `delegator_to_validator, validator_data, top_validators, banned_validators, pondo_tvl, validator_boosting, control_addresses, delegator_allocation`.
+- `arcn_puc_in_helper_swap_v2_2_5.aleo`: 9 calls; class `DeFi pool/lending`; state `no public mappings parsed`.
+- `hyp_ism_manager.aleo`: 9 calls; class `bridge/cross-chain`; state `nonce, ism_addresses, isms, domain_routing_isms, routes, route_iter, route_length, message_id_multisigs`.
+- `vlink_token_service_v3.aleo`: 7 calls; class `bridge/cross-chain`; state `owner_TS, total_supply, added_tokens, min_transfers, max_transfers, token_withdrawal_limits, token_snapshot_supply, token_snapshot_height`.
+- `usdcx_bridge.aleo`: 7 calls; class `bridge/cross-chain`; state `circle_attester, minimum_burn_amount, nullifier, paused`.
+- `vlink_holding_cd_v3.aleo`: 6 calls; class `bridge/cross-chain`; state `holdings, owner_holding`.
+- `puzzle_capital_pool.aleo`: 6 calls; class `DeFi pool/lending`; state `deposits, total_deposited, depositor_count, deposit_block, current_epoch, epoch_commitments, epoch_total_rewards, epoch_fee_taken`.
+- `vlink_holding_v3.aleo`: 4 calls; class `bridge/cross-chain`; state `holdings, owner_holding`.
+- `pubpriv_router_credits_v3.aleo`: 3 calls; class `token/credit flow`; state `no public mappings parsed`.
+- `hyp_warp_token_sol.aleo`: 2 calls; class `bridge/cross-chain`; state `remote_routers, remote_router_iter, remote_router_length, app_metadata`.
+- `hyp_hook_manager.aleo`: 2 calls; class `bridge/cross-chain`; state `nonce, hooks, hook_addresses, igps, destination_gas_configs, destination_gas_config_iter, destination_gas_config_length, merkle_tree_hooks`.
+- `hyp_warp_token_usdt.aleo`: 2 calls; class `bridge/cross-chain`; state `remote_routers, remote_router_iter, remote_router_length, app_metadata`.
+- `arcn_puc_in_helper_v2_2_4.aleo`: 2 calls; class `DeFi pool/lending`; state `no public mappings parsed`.
+- `hyp_warp_token_usdc.aleo`: 2 calls; class `bridge/cross-chain`; state `remote_routers, remote_router_iter, remote_router_length, app_metadata`.
+- `hyp_warp_token_usad.aleo`: 2 calls; class `bridge/cross-chain`; state `remote_routers, remote_router_iter, remote_router_length, app_metadata`.
+- `phantom_mint.aleo`: 1 calls; class `NFT/game asset`; state `no public mappings parsed`.
+- `hyp_warp_token_wbtc.aleo`: 1 calls; class `bridge/cross-chain`; state `remote_routers, remote_router_iter, remote_router_length, app_metadata`.
+- `hyp_warp_token_eth.aleo`: 1 calls; class `bridge/cross-chain`; state `remote_routers, remote_router_iter, remote_router_length, app_metadata`.
+- `arcn_credits_in_helper_v2_2_3.aleo`: 1 calls; class `token/credit flow`; state `no public mappings parsed`.
+- `hyp_dispatch_proxy.aleo`: 1 calls; class `bridge/cross-chain`; state `no public mappings parsed`.
+- `whalepool_puzzlecapital.aleo`: 1 calls; class `staking/liquid staking`; state `global_config, current_epoch, initialized, address_to_role, provers, prover_epoch_shares, epoch_settlements, fee_pool`.
+- `autojoin_token_registry_2_9.aleo`: 1 calls; class `token/credit flow`; state `no public mappings parsed`.
+
+## testnet
+- `credits.aleo`: 22343 calls; class `token/credit flow`; state `committee, delegated, metadata, bonded, unbonding, account, withdraw, pool`.
+- `dara_dp_credit_v5.aleo`: 4380 calls; class `DeFi pool/lending`; state `initialized, operators, pool_paused, order_consumed, fee_vault, fee_bps, total_trades, total_volume`.
+- `dara_dp_sol_v5.aleo`: 4371 calls; class `DeFi pool/lending`; state `initialized, operators, pool_paused, order_consumed, fee_vault, fee_bps, total_trades, total_volume`.
+- `dara_dp_eth_v5.aleo`: 4367 calls; class `DeFi pool/lending`; state `initialized, operators, pool_paused, order_consumed, fee_vault, fee_bps, total_trades, total_volume`.
+- `dara_dp_btc_v5.aleo`: 4363 calls; class `DeFi pool/lending`; state `initialized, operators, pool_paused, order_consumed, fee_vault, fee_bps, total_trades, total_volume`.
+- `dara_lend_v8.aleo`: 488 calls; class `DeFi pool/lending`; state `vault_collateral_aleo, pool_total_borrowed, loan_count, active_loans, oracle_price, price_update_block, price_round, price_history`.
+- `dara_lend_v8_credits.aleo`: 323 calls; class `token/credit flow`; state `vault_collateral_usdcx, vault_collateral_usad, pool_total_borrowed, loan_count, active_loans, oracle_price, price_update_block, price_round`.
+- `dara_flash_v1.aleo`: 262 calls; class `DeFi pool/lending`; state `flash_admin, flash_paused, oracle_price, price_round, price_update_block, price_history, total_flash_loans, total_flash_volume`.
+- `autojoin_credits_2_10.aleo`: 143 calls; class `token/credit flow`; state `no public mappings parsed`.
+- `loyalty_token.aleo`: 100 calls; class `token/credit flow`; state `card_exists, total_cards, total_points_issued, approved_upgrades`.
+- `test_usdcx_stablecoin.aleo`: 87 calls; class `token/credit flow`; state `token_info, balances, allowances, address_to_role, pause`.
+- `note_server_messagingv4.aleo`: 83 calls; class `application/other`; state `no public mappings parsed`.
+- `autojoin_credits_15_16.aleo`: 29 calls; class `token/credit flow`; state `no public mappings parsed`.
+- `test_usad_stablecoin.aleo`: 24 calls; class `token/credit flow`; state `token_info, balances, allowances, address_to_role, pause`.
+- `test_usdcx_bridge.aleo`: 22 calls; class `bridge/cross-chain`; state `circle_attester, minimum_burn_amount, nullifier, paused, emergency_paused`.
+- `token_registry.aleo`: 14 calls; class `token/credit flow`; state `registered_tokens, balances, authorized_balances, allowances, roles`.
+- `aj_test_usdcx_stablecoin_2_10.aleo`: 9 calls; class `token/credit flow`; state `no public mappings parsed`.
+- `xyra_lending_v32.aleo`: 5 calls; class `DeFi pool/lending`; state `total_deposited, total_borrowed, available_liquidity, supply_index, borrow_index, last_accrual_block, protocol_fees, supply_apy`.
+- `aj_test_usad_stablecoin_2_10.aleo`: 3 calls; class `token/credit flow`; state `no public mappings parsed`.
+- `test_hyp_ism_manager.aleo`: 2 calls; class `bridge/cross-chain`; state `nonce, ism_addresses, isms, domain_routing_isms, routes, route_iter, route_length, message_id_multisigs`.
+- `test_hyp_mailbox.aleo`: 2 calls; class `bridge/cross-chain`; state `deliveries, dispatch_events, dispatch_id_events, process_events, mailbox, process_event_index, dispatch_event_index, registered_applications`.
+- `test_hyp_warp_token_usad.aleo`: 2 calls; class `bridge/cross-chain`; state `remote_routers, remote_router_iter, remote_router_length, app_metadata`.
+- `wrapped_credits.aleo`: 2 calls; class `token/credit flow`; state `no public mappings parsed`.
+- `autojoin_token_registry_2_9.aleo`: 1 calls; class `token/credit flow`; state `no public mappings parsed`.
+- `toka_token.aleo`: 1 calls; class `token/credit flow`; state `balances, approvals`.

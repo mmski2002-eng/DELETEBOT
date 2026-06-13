@@ -1,0 +1,751 @@
+{
+  "program_id": "lsp_host_ui_v1.aleo",
+  "calls_24h_or_metric_window": 2,
+  "imports": [
+    "credits.aleo",
+    "lsp_host_bank_v1.aleo"
+  ],
+  "mappings": {
+    "owned": {
+      "key": "boolean.public",
+      "value": "address.public"
+    },
+    "pool": {
+      "key": "address.public",
+      "value": "PoolState.public"
+    },
+    "authority": {
+      "key": "address.public",
+      "value": "boolean.public"
+    },
+    "release_list": {
+      "key": "[u128",
+      "value": "ReleaseRequest.public"
+    }
+  },
+  "structs": {
+    "PoolState": [
+      {
+        "name": "request_bond",
+        "type": "u64"
+      },
+      {
+        "name": "request_unbond",
+        "type": "u64"
+      },
+      {
+        "name": "total_unbond",
+        "type": "u64"
+      },
+      {
+        "name": "suspend",
+        "type": "boolean"
+      }
+    ],
+    "ReleaseRequest": [
+      {
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "name": "amount",
+        "type": "u64"
+      },
+      {
+        "name": "issued",
+        "type": "boolean"
+      }
+    ]
+  },
+  "records": {
+    "PendingOwner": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "pre",
+        "type": "address.private"
+      }
+    ]
+  },
+  "functions": {
+    "initialize": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "PendingOwner.record"
+        },
+        {
+          "register": "r1",
+          "type": "lsp_host_ui_v1.aleo/initialize.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owned"
+      ],
+      "finalize_state_writes": [
+        "owned"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "transfer_ownership": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "PendingOwner.record"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "PendingOwner.record"
+        },
+        {
+          "register": "r3",
+          "type": "lsp_host_ui_v1.aleo/transfer_ownership.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owned"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "accept_ownership": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "PendingOwner.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "PendingOwner.record"
+        },
+        {
+          "register": "r2",
+          "type": "lsp_host_ui_v1.aleo/accept_ownership.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.neq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owned"
+      ],
+      "finalize_state_writes": [
+        "owned"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "init_pool": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "lsp_host_ui_v1.aleo/init_pool.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "pool"
+      ],
+      "finalize_state_writes": [
+        "pool"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "deposit": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "lsp_host_ui_v1.aleo/deposit.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "credits.aleo/transfer_public_as_signer.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "pool"
+      ],
+      "finalize_state_writes": [
+        "pool"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "release": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "[u128"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "lsp_host_ui_v1.aleo/release.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "[u128"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "address.public"
+        },
+        {
+          "register": "r4",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "authority",
+        "pool",
+        "release_list"
+      ],
+      "finalize_state_writes": [
+        "pool",
+        "release_list"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "complete_release": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "[u128"
+        },
+        {
+          "register": "r1",
+          "type": "address.private"
+        },
+        {
+          "register": "r2",
+          "type": "address.private"
+        },
+        {
+          "register": "r3",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r5",
+          "type": "lsp_host_ui_v1.aleo/complete_release.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "lsp_host_bank_v1.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "[u128"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        },
+        {
+          "register": "r4",
+          "type": "lsp_host_bank_v1.aleo/withdraw.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "pool",
+        "release_list"
+      ],
+      "finalize_state_writes": [
+        "pool",
+        "release_list"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte"
+      ],
+      "snark_verify": false
+    },
+    "set_authority": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "boolean.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "lsp_host_ui_v1.aleo/set_authority.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "boolean.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owned"
+      ],
+      "finalize_state_writes": [
+        "authority"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "pool_control": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "boolean.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "lsp_host_ui_v1.aleo/pool_control.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "boolean.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owned",
+        "pool"
+      ],
+      "finalize_state_writes": [
+        "pool"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "report_bond": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "lsp_host_ui_v1.aleo/report_bond.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "pool"
+      ],
+      "finalize_state_writes": [
+        "pool"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte"
+      ],
+      "snark_verify": false
+    },
+    "report_unbond": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "lsp_host_ui_v1.aleo/report_unbond.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "pool"
+      ],
+      "finalize_state_writes": [
+        "pool"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte"
+      ],
+      "snark_verify": false
+    },
+    "report_total_unbond": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "lsp_host_ui_v1.aleo/report_total_unbond.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "pool"
+      ],
+      "finalize_state_writes": [
+        "pool"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "accept_ownership",
+    "complete_release",
+    "deposit",
+    "init_pool",
+    "initialize",
+    "pool_control",
+    "release",
+    "report_bond",
+    "report_total_unbond",
+    "report_unbond",
+    "set_authority",
+    "transfer_ownership"
+  ],
+  "cross_contract_refs": [
+    "credits.aleo",
+    "lsp_host_bank_v1.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "initialize",
+    "transfer_ownership",
+    "accept_ownership",
+    "init_pool",
+    "deposit",
+    "release",
+    "complete_release",
+    "set_authority",
+    "pool_control",
+    "report_bond",
+    "report_unbond",
+    "report_total_unbond"
+  ],
+  "state_commitment_surfaces": {
+    "records": [
+      "PendingOwner"
+    ],
+    "mappings": [
+      "authority",
+      "owned",
+      "pool",
+      "release_list"
+    ],
+    "future_outputs": [
+      {
+        "function": "initialize",
+        "output": "lsp_host_ui_v1.aleo/initialize.future"
+      },
+      {
+        "function": "transfer_ownership",
+        "output": "lsp_host_ui_v1.aleo/transfer_ownership.future"
+      },
+      {
+        "function": "accept_ownership",
+        "output": "lsp_host_ui_v1.aleo/accept_ownership.future"
+      },
+      {
+        "function": "init_pool",
+        "output": "lsp_host_ui_v1.aleo/init_pool.future"
+      },
+      {
+        "function": "deposit",
+        "output": "lsp_host_ui_v1.aleo/deposit.future"
+      },
+      {
+        "function": "release",
+        "output": "lsp_host_ui_v1.aleo/release.future"
+      },
+      {
+        "function": "complete_release",
+        "output": "lsp_host_ui_v1.aleo/complete_release.future"
+      },
+      {
+        "function": "set_authority",
+        "output": "lsp_host_ui_v1.aleo/set_authority.future"
+      },
+      {
+        "function": "pool_control",
+        "output": "lsp_host_ui_v1.aleo/pool_control.future"
+      },
+      {
+        "function": "report_bond",
+        "output": "lsp_host_ui_v1.aleo/report_bond.future"
+      },
+      {
+        "function": "report_unbond",
+        "output": "lsp_host_ui_v1.aleo/report_unbond.future"
+      },
+      {
+        "function": "report_total_unbond",
+        "output": "lsp_host_ui_v1.aleo/report_total_unbond.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

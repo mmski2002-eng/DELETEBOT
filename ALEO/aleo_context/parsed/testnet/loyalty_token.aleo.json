@@ -1,0 +1,498 @@
+{
+  "program_id": "loyalty_token.aleo",
+  "calls_24h_or_metric_window": 100,
+  "imports": [],
+  "mappings": {
+    "card_exists": {
+      "key": "field.public",
+      "value": "boolean.public"
+    },
+    "total_cards": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "total_points_issued": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "approved_upgrades": {
+      "key": "field.public",
+      "value": "boolean.public"
+    }
+  },
+  "structs": {
+    "CardIdInput": [
+      {
+        "name": "holder",
+        "type": "address"
+      },
+      {
+        "name": "nonce",
+        "type": "field"
+      },
+      {
+        "name": "points",
+        "type": "u64"
+      }
+    ]
+  },
+  "records": {
+    "LoyaltyCard": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "card_id",
+        "type": "field.private"
+      },
+      {
+        "name": "points",
+        "type": "u64.private"
+      },
+      {
+        "name": "tier",
+        "type": "u8.private"
+      }
+    ]
+  },
+  "functions": {
+    "approve_upgrade": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "[u8"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "loyalty_token.aleo/approve_upgrade.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [
+        "approved_upgrades"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "mint_card": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        },
+        {
+          "register": "r2",
+          "type": "field.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r9",
+          "type": "LoyaltyCard.record"
+        },
+        {
+          "register": "r10",
+          "type": "loyalty_token.aleo/mint_card.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "gte",
+        "ternary"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "card_exists",
+        "total_cards"
+      ],
+      "finalize_state_writes": [
+        "card_exists",
+        "total_cards"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "add_points": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "LoyaltyCard.record"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r7",
+          "type": "LoyaltyCard.record"
+        },
+        {
+          "register": "r8",
+          "type": "loyalty_token.aleo/add_points.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "gte",
+        "ternary"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "card_exists",
+        "total_points_issued"
+      ],
+      "finalize_state_writes": [
+        "total_points_issued"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "check_points": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "LoyaltyCard.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "LoyaltyCard.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "transfer_card": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "LoyaltyCard.record"
+        },
+        {
+          "register": "r1",
+          "type": "address.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "LoyaltyCard.record"
+        },
+        {
+          "register": "r3",
+          "type": "loyalty_token.aleo/transfer_card.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "card_exists"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "split_card": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "LoyaltyCard.record"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        },
+        {
+          "register": "r2",
+          "type": "field.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r9",
+          "type": "LoyaltyCard.record"
+        },
+        {
+          "register": "r16",
+          "type": "LoyaltyCard.record"
+        },
+        {
+          "register": "r17",
+          "type": "loyalty_token.aleo/split_card.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gte",
+        "lt",
+        "ternary"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "card_exists",
+        "total_cards"
+      ],
+      "finalize_state_writes": [
+        "card_exists",
+        "total_cards"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "split_card_v2": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "LoyaltyCard.record"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r8",
+          "type": "LoyaltyCard.record"
+        },
+        {
+          "register": "r16",
+          "type": "LoyaltyCard.record"
+        },
+        {
+          "register": "r17",
+          "type": "loyalty_token.aleo/split_card_v2.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gte",
+        "lt",
+        "ternary"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "card_exists",
+        "total_cards"
+      ],
+      "finalize_state_writes": [
+        "card_exists",
+        "total_cards"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "spend_points": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "LoyaltyCard.record"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r8",
+          "type": "LoyaltyCard.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [
+        "approved_upgrades"
+      ],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "gt",
+        "gte",
+        "ternary"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "add_points",
+    "approve_upgrade",
+    "mint_card",
+    "split_card",
+    "split_card_v2",
+    "transfer_card"
+  ],
+  "cross_contract_refs": [],
+  "async_or_conditional_paths": [
+    "approve_upgrade",
+    "mint_card",
+    "add_points",
+    "transfer_card",
+    "split_card",
+    "split_card_v2",
+    "spend_points"
+  ],
+  "state_commitment_surfaces": {
+    "records": [
+      "LoyaltyCard"
+    ],
+    "mappings": [
+      "approved_upgrades",
+      "card_exists",
+      "total_cards",
+      "total_points_issued"
+    ],
+    "future_outputs": [
+      {
+        "function": "approve_upgrade",
+        "output": "loyalty_token.aleo/approve_upgrade.future"
+      },
+      {
+        "function": "mint_card",
+        "output": "loyalty_token.aleo/mint_card.future"
+      },
+      {
+        "function": "add_points",
+        "output": "loyalty_token.aleo/add_points.future"
+      },
+      {
+        "function": "transfer_card",
+        "output": "loyalty_token.aleo/transfer_card.future"
+      },
+      {
+        "function": "split_card",
+        "output": "loyalty_token.aleo/split_card.future"
+      },
+      {
+        "function": "split_card_v2",
+        "output": "loyalty_token.aleo/split_card_v2.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

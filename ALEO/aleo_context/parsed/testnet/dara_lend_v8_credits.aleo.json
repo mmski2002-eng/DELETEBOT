@@ -1,0 +1,1087 @@
+{
+  "program_id": "dara_lend_v8_credits.aleo",
+  "calls_24h_or_metric_window": 323,
+  "imports": [
+    "credits.aleo",
+    "merkle_tree.aleo",
+    "test_usad_freezelist.aleo",
+    "test_usad_multisig_core.aleo",
+    "test_usad_stablecoin.aleo",
+    "test_usdcx_freezelist.aleo",
+    "test_usdcx_multisig_core.aleo",
+    "test_usdcx_stablecoin.aleo"
+  ],
+  "mappings": {
+    "vault_collateral_usdcx": {
+      "key": "u8.public",
+      "value": "u128.public"
+    },
+    "vault_collateral_usad": {
+      "key": "u8.public",
+      "value": "u128.public"
+    },
+    "pool_total_borrowed": {
+      "key": "u8.public",
+      "value": "u128.public"
+    },
+    "loan_count": {
+      "key": "u8.public",
+      "value": "u64.public"
+    },
+    "active_loans": {
+      "key": "field.public",
+      "value": "boolean.public"
+    },
+    "oracle_price": {
+      "key": "u8.public",
+      "value": "u64.public"
+    },
+    "price_update_block": {
+      "key": "u8.public",
+      "value": "u32.public"
+    },
+    "price_round": {
+      "key": "u8.public",
+      "value": "u64.public"
+    },
+    "used_nonces": {
+      "key": "field.public",
+      "value": "boolean.public"
+    },
+    "credits_admin": {
+      "key": "u8.public",
+      "value": "address.public"
+    },
+    "total_fees_collected": {
+      "key": "u8.public",
+      "value": "u128.public"
+    },
+    "credits_paused": {
+      "key": "u8.public",
+      "value": "boolean.public"
+    }
+  },
+  "structs": {},
+  "records": {
+    "CollateralReceipt": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "collateral_amount",
+        "type": "u64.private"
+      },
+      {
+        "name": "collateral_amount_u128",
+        "type": "u128.private"
+      },
+      {
+        "name": "token_type",
+        "type": "u8.private"
+      },
+      {
+        "name": "deposit_block",
+        "type": "u32.private"
+      },
+      {
+        "name": "nonce_hash",
+        "type": "field.private"
+      }
+    ],
+    "DebtPosition": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "collateral_amount",
+        "type": "u64.private"
+      },
+      {
+        "name": "collateral_amount_u128",
+        "type": "u128.private"
+      },
+      {
+        "name": "collateral_token",
+        "type": "u8.private"
+      },
+      {
+        "name": "debt_amount",
+        "type": "u128.private"
+      },
+      {
+        "name": "debt_token",
+        "type": "u8.private"
+      },
+      {
+        "name": "liquidation_price",
+        "type": "u64.private"
+      },
+      {
+        "name": "loan_id",
+        "type": "field.private"
+      }
+    ],
+    "LiquidationAuth": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "loan_id",
+        "type": "field.private"
+      },
+      {
+        "name": "collateral_amount",
+        "type": "u64.private"
+      },
+      {
+        "name": "collateral_amount_u128",
+        "type": "u128.private"
+      },
+      {
+        "name": "collateral_token",
+        "type": "u8.private"
+      },
+      {
+        "name": "debt_amount",
+        "type": "u128.private"
+      },
+      {
+        "name": "debt_token",
+        "type": "u8.private"
+      },
+      {
+        "name": "liquidation_price",
+        "type": "u64.private"
+      },
+      {
+        "name": "borrower_hash",
+        "type": "field.private"
+      }
+    ],
+    "RepaymentReceipt": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "amount_repaid",
+        "type": "u128.private"
+      },
+      {
+        "name": "collateral_returned",
+        "type": "u64.private"
+      },
+      {
+        "name": "collateral_returned_u128",
+        "type": "u128.private"
+      },
+      {
+        "name": "collateral_token",
+        "type": "u8.private"
+      },
+      {
+        "name": "loan_id",
+        "type": "field.private"
+      }
+    ],
+    "LiquidationReceipt": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "loan_id",
+        "type": "field.private"
+      },
+      {
+        "name": "collateral_seized",
+        "type": "u64.private"
+      },
+      {
+        "name": "collateral_seized_u128",
+        "type": "u128.private"
+      },
+      {
+        "name": "collateral_token",
+        "type": "u8.private"
+      },
+      {
+        "name": "debt_covered",
+        "type": "u128.private"
+      }
+    ]
+  },
+  "functions": {
+    "update_oracle_price": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u8.private"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        },
+        {
+          "register": "r2",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r6",
+          "type": "dara_lend_v8_credits.aleo/update_oracle_price.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "lt"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u8.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "credits_admin",
+        "price_round",
+        "price_update_block"
+      ],
+      "finalize_state_writes": [
+        "oracle_price",
+        "price_round",
+        "price_update_block"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gt",
+        "gte",
+        "is.eq",
+        "or"
+      ],
+      "snark_verify": false
+    },
+    "emergency_pause": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "dara_lend_v8_credits.aleo/emergency_pause.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "credits_admin"
+      ],
+      "finalize_state_writes": [
+        "credits_paused"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "resume_protocol": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "dara_lend_v8_credits.aleo/resume_protocol.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "credits_admin"
+      ],
+      "finalize_state_writes": [
+        "credits_paused"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "supply_usdcx_collateral": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "test_usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r1",
+          "type": "[test_usdcx_stablecoin.aleo/MerkleProof"
+        },
+        {
+          "register": "r2",
+          "type": "u128.private"
+        },
+        {
+          "register": "r3",
+          "type": "field.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r8",
+          "type": "CollateralReceipt.record"
+        },
+        {
+          "register": "r12",
+          "type": "dara_lend_v8_credits.aleo/supply_usdcx_collateral.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "test_usdcx_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gte"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "test_usdcx_stablecoin.aleo/transfer_private_to_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "u128.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "credits_paused",
+        "used_nonces",
+        "vault_collateral_usdcx"
+      ],
+      "finalize_state_writes": [
+        "used_nonces",
+        "vault_collateral_usdcx"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "supply_usad_collateral": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "test_usad_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r1",
+          "type": "[test_usad_stablecoin.aleo/MerkleProof"
+        },
+        {
+          "register": "r2",
+          "type": "u128.private"
+        },
+        {
+          "register": "r3",
+          "type": "field.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r8",
+          "type": "CollateralReceipt.record"
+        },
+        {
+          "register": "r12",
+          "type": "dara_lend_v8_credits.aleo/supply_usad_collateral.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "test_usad_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gte"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "test_usad_stablecoin.aleo/transfer_private_to_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "u128.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "credits_paused",
+        "used_nonces",
+        "vault_collateral_usad"
+      ],
+      "finalize_state_writes": [
+        "used_nonces",
+        "vault_collateral_usad"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "borrow_credits": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "CollateralReceipt.record"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        },
+        {
+          "register": "r2",
+          "type": "u64.private"
+        },
+        {
+          "register": "r3",
+          "type": "u64.private"
+        },
+        {
+          "register": "r4",
+          "type": "address.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r30",
+          "type": "DebtPosition.record"
+        },
+        {
+          "register": "r31",
+          "type": "LiquidationAuth.record"
+        },
+        {
+          "register": "r34",
+          "type": "dara_lend_v8_credits.aleo/borrow_credits.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "lte",
+        "or"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_public_to_private.future"
+        },
+        {
+          "register": "r1",
+          "type": "u8.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        },
+        {
+          "register": "r4",
+          "type": "u128.public"
+        },
+        {
+          "register": "r5",
+          "type": "u128.public"
+        },
+        {
+          "register": "r6",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "credits_paused",
+        "loan_count",
+        "oracle_price",
+        "pool_total_borrowed",
+        "total_fees_collected"
+      ],
+      "finalize_state_writes": [
+        "active_loans",
+        "loan_count",
+        "pool_total_borrowed",
+        "total_fees_collected"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "repay_credits_usdcx": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "DebtPosition.record"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/credits.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r5",
+          "type": "RepaymentReceipt.record"
+        },
+        {
+          "register": "r11",
+          "type": "dara_lend_v8_credits.aleo/repay_credits_usdcx.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo",
+        "test_usdcx_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "is.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_private_to_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "test_usdcx_stablecoin.aleo/transfer_public_to_private.future"
+        },
+        {
+          "register": "r2",
+          "type": "u128.public"
+        },
+        {
+          "register": "r3",
+          "type": "u128.public"
+        },
+        {
+          "register": "r4",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "loan_count",
+        "pool_total_borrowed",
+        "vault_collateral_usdcx"
+      ],
+      "finalize_state_writes": [
+        "active_loans",
+        "loan_count",
+        "pool_total_borrowed",
+        "vault_collateral_usdcx"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "repay_credits_usad": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "DebtPosition.record"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/credits.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r5",
+          "type": "RepaymentReceipt.record"
+        },
+        {
+          "register": "r11",
+          "type": "dara_lend_v8_credits.aleo/repay_credits_usad.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo",
+        "test_usad_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "is.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_private_to_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "test_usad_stablecoin.aleo/transfer_public_to_private.future"
+        },
+        {
+          "register": "r2",
+          "type": "u128.public"
+        },
+        {
+          "register": "r3",
+          "type": "u128.public"
+        },
+        {
+          "register": "r4",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "loan_count",
+        "pool_total_borrowed",
+        "vault_collateral_usad"
+      ],
+      "finalize_state_writes": [
+        "active_loans",
+        "loan_count",
+        "pool_total_borrowed",
+        "vault_collateral_usad"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "liquidate_usdcx": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "LiquidationAuth.record"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r7",
+          "type": "LiquidationReceipt.record"
+        },
+        {
+          "register": "r11",
+          "type": "dara_lend_v8_credits.aleo/liquidate_usdcx.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "test_usdcx_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "is.eq",
+        "lte"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "test_usdcx_stablecoin.aleo/transfer_public_to_private.future"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "u128.public"
+        },
+        {
+          "register": "r3",
+          "type": "u128.public"
+        },
+        {
+          "register": "r4",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "loan_count",
+        "oracle_price",
+        "pool_total_borrowed",
+        "vault_collateral_usdcx"
+      ],
+      "finalize_state_writes": [
+        "active_loans",
+        "loan_count",
+        "pool_total_borrowed",
+        "vault_collateral_usdcx"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "liquidate_usad": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "LiquidationAuth.record"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r7",
+          "type": "LiquidationReceipt.record"
+        },
+        {
+          "register": "r11",
+          "type": "dara_lend_v8_credits.aleo/liquidate_usad.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "test_usad_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "is.eq",
+        "lte"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "test_usad_stablecoin.aleo/transfer_public_to_private.future"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "u128.public"
+        },
+        {
+          "register": "r3",
+          "type": "u128.public"
+        },
+        {
+          "register": "r4",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "loan_count",
+        "oracle_price",
+        "pool_total_borrowed",
+        "vault_collateral_usad"
+      ],
+      "finalize_state_writes": [
+        "active_loans",
+        "loan_count",
+        "pool_total_borrowed",
+        "vault_collateral_usad"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "withdraw_usdcx_collateral": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "CollateralReceipt.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r5",
+          "type": "dara_lend_v8_credits.aleo/withdraw_usdcx_collateral.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "test_usdcx_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "is.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "test_usdcx_stablecoin.aleo/transfer_public_to_private.future"
+        },
+        {
+          "register": "r1",
+          "type": "u128.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "vault_collateral_usdcx"
+      ],
+      "finalize_state_writes": [
+        "vault_collateral_usdcx"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "withdraw_usad_collateral": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "CollateralReceipt.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r5",
+          "type": "dara_lend_v8_credits.aleo/withdraw_usad_collateral.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "test_usad_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "is.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "test_usad_stablecoin.aleo/transfer_public_to_private.future"
+        },
+        {
+          "register": "r1",
+          "type": "u128.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "vault_collateral_usad"
+      ],
+      "finalize_state_writes": [
+        "credits_admin",
+        "credits_paused",
+        "oracle_price",
+        "vault_collateral_usad"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "borrow_credits",
+    "emergency_pause",
+    "liquidate_usad",
+    "liquidate_usdcx",
+    "repay_credits_usad",
+    "repay_credits_usdcx",
+    "resume_protocol",
+    "supply_usad_collateral",
+    "supply_usdcx_collateral",
+    "update_oracle_price",
+    "withdraw_usad_collateral",
+    "withdraw_usdcx_collateral"
+  ],
+  "cross_contract_refs": [
+    "credits.aleo",
+    "test_usad_stablecoin.aleo",
+    "test_usdcx_stablecoin.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "update_oracle_price",
+    "emergency_pause",
+    "resume_protocol",
+    "supply_usdcx_collateral",
+    "supply_usad_collateral",
+    "borrow_credits",
+    "repay_credits_usdcx",
+    "repay_credits_usad",
+    "liquidate_usdcx",
+    "liquidate_usad",
+    "withdraw_usdcx_collateral",
+    "withdraw_usad_collateral"
+  ],
+  "state_commitment_surfaces": {
+    "records": [
+      "CollateralReceipt",
+      "DebtPosition",
+      "LiquidationAuth",
+      "LiquidationReceipt",
+      "RepaymentReceipt"
+    ],
+    "mappings": [
+      "active_loans",
+      "credits_admin",
+      "credits_paused",
+      "loan_count",
+      "oracle_price",
+      "pool_total_borrowed",
+      "price_round",
+      "price_update_block",
+      "total_fees_collected",
+      "used_nonces",
+      "vault_collateral_usad",
+      "vault_collateral_usdcx"
+    ],
+    "future_outputs": [
+      {
+        "function": "update_oracle_price",
+        "output": "dara_lend_v8_credits.aleo/update_oracle_price.future"
+      },
+      {
+        "function": "emergency_pause",
+        "output": "dara_lend_v8_credits.aleo/emergency_pause.future"
+      },
+      {
+        "function": "resume_protocol",
+        "output": "dara_lend_v8_credits.aleo/resume_protocol.future"
+      },
+      {
+        "function": "supply_usdcx_collateral",
+        "output": "dara_lend_v8_credits.aleo/supply_usdcx_collateral.future"
+      },
+      {
+        "function": "supply_usad_collateral",
+        "output": "dara_lend_v8_credits.aleo/supply_usad_collateral.future"
+      },
+      {
+        "function": "borrow_credits",
+        "output": "dara_lend_v8_credits.aleo/borrow_credits.future"
+      },
+      {
+        "function": "repay_credits_usdcx",
+        "output": "dara_lend_v8_credits.aleo/repay_credits_usdcx.future"
+      },
+      {
+        "function": "repay_credits_usad",
+        "output": "dara_lend_v8_credits.aleo/repay_credits_usad.future"
+      },
+      {
+        "function": "liquidate_usdcx",
+        "output": "dara_lend_v8_credits.aleo/liquidate_usdcx.future"
+      },
+      {
+        "function": "liquidate_usad",
+        "output": "dara_lend_v8_credits.aleo/liquidate_usad.future"
+      },
+      {
+        "function": "withdraw_usdcx_collateral",
+        "output": "dara_lend_v8_credits.aleo/withdraw_usdcx_collateral.future"
+      },
+      {
+        "function": "withdraw_usad_collateral",
+        "output": "dara_lend_v8_credits.aleo/withdraw_usad_collateral.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

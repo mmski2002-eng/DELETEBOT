@@ -1,0 +1,326 @@
+{-
+ * @title Torch Jetton Vault Contract
+ * @notice Manages the jetton vault operations including deposits, swaps, and withdrawals
+ * @dev 
+ * - This contract handles the core logic for managing jetton assets within the vault.
+ * - The vault contract serves as the entry point for user interactions.
+ * - It includes functions for handling deposits, swaps, and withdrawals of jetton assets.
+ * - The vault contract will verify the validity of the source address through the proof. If the proof is valid, it will execute payout operations.
+ * - The LP vault is also part of the Jetton vault. Therefore, compared to the TON vault, the Jetton vault includes an additional withdraw function.
+ -}
+#include "../../imports/stdlib.fc";
+#include "../../common/workchain.fc";
+#include "../../common/constants.fc";
+#include "../../common/errors.fc";
+#include "../../common/opcode.fc";
+#include "../../common/gas.fc";
+#include "../../common/deploy_contracts/utils.fc";
+#include "../../common/deploy_contracts/adapter.fc";
+#include "../../common/deposit/adapter.fc";
+#include "../../common/swap/adapter.fc";
+#include "../../common/withdraw/adapter.fc";
+#include "../../common/utils.fc";
+#include "storages.fc";
+#include "constants.fc";
+#include "../utils.fc";
+
+() jetton_vault::handle_payout(
+    int ctx::value,
+    int ctx::fwd_fee,
+    int query_id,
+    slice provider,
+    slice recipient,
+    int amount,
+    cell payload
+) impure inline {
+    ;; Calculate gas
+    (int total_fee, int gas_consume) = vault::payout_fee(ctx::fwd_fee, JETTON_ASSET_TYPE);
+    throw_unless(error::not_enough_ton, ctx::value >= total_fee);
+    int remaining_ton = ctx::value - gas_consume;
+
+    ;; Send jetton to recipient
+    ;; If the user specifies a payload, the `forward_ton` will be equal to `remaining_ton - JETTON_TRANSFER_TON`. 
+    ;; If the user does not specify a payload, the entire `remaining_ton` will be used to pay for the Jetton Transfer and foward_ton will be 0.
+    (int need_forward_ton?, cell forward_payload) = parse_forward_payload(payload);
+    int forward_ton = need_forward_ton? ? remaining_ton - JETTON_TRANSFER_TON : ZERO_TON;
+    send_jetton(BOUNCEABLE, recipient, provider, vault::jetton_wallet, amount, remaining_ton, query_id, forward_payload, forward_ton, SEND_MODE_REGULAR);
+    return ();
+}
+
+() jetton_vault::handle_burn(
+    int ctx::value,
+    int ctx::fwd_fee,
+    int query_id,
+    slice jetton_sender,
+    int jetton_amount,
+    slice recipient,
+    cell signed_rates,
+    cell asset_out,
+    cell withdraw_params,
+    cell next
+) impure inline {
+    ;; Calculate gas
+    (int total_fee, int gas_consume) = jetton_vault::withdraw_fee(ctx::fwd_fee, asset_out, ~ next.cell_null?());
+    throw_unless(error::not_enough_ton, ctx::value >= total_fee);
+    int remaining_ton = ctx::value - gas_consume;
+
+    ;; Pack withdraw internal message
+    cell withdraw_internal_body = pack_withdraw_internal(
+        query_id,
+        jetton_sender,
+        recipient,
+        jetton_amount,
+        signed_rates,
+        asset_out,
+        withdraw_params,
+        next
+    );
+
+    ;; Send withdraw internal message to jetton master (pool)
+    send_cell_msg(BOUNCEABLE, vault::jetton_master, remaining_ton, withdraw_internal_body, SEND_MODE_REGULAR);
+    return ();
+}
+
+() route_internal(slice ctx::sender, int ctx::value, int ctx::fwd_fee, slice ctx::body) impure inline {
+    ;; Load op and query id
+    (int op, int query_id) = ctx::body~load_op_and_query_id();
+
+    if op == op::transfer_notification {
+        int jetton_amount = ctx::body~load_coins();
+        slice jetton_sender = ctx::body~load_msg_addr();
+        slice fp = ctx::body~load_maybe_ref().begin_parse();
+        ctx::body.end_parse();
+        
+        op = fp~load_op(); ;; op MUST be the first 32 bits of the payload in this case
+
+        ;; Deposit Jetton
+        if op == op::deposit {
+            ;; Only vault's jetton wallet can send deposit_fp message
+            throw_unless(error::wrong_jetton_wallet, equal_slices_bits(ctx::sender, vault::jetton_wallet));
+            
+            ;; Unpack deposit info to check whether is deposit one liquidity to pool
+            (slice pool_address, cell assets, cell targets, cell deposit_params, cell next) = unpack_deposit(fp);
+
+            ;; Check is deposit one liquidity to pool
+            int is_deposit_one? = check_deposit_one?(assets, next);
+
+            ;; Deposit amount must be greater than 0
+            throw_unless(error::invalid_amount, jetton_amount > 0);
+
+            ;; Calculate gas
+            (int total_fee, int gas_consume) = vault::deposit_fee(ctx::fwd_fee, is_deposit_one?, JETTON_ASSET_TYPE);
+            throw_unless(error::not_enough_ton, ctx::value >= total_fee);
+            int remaining_ton = ctx::value - gas_consume;
+
+            return vault::handle_deposit(
+                remaining_ton,
+                is_deposit_one?,
+                query_id,
+                pack_jetton_to_asset(vault::jetton_master),
+                jetton_sender,
+                jetton_amount,
+                pool_address,
+                assets,
+                targets,
+                deposit_params,
+                next
+            );
+        }
+
+        if op == op::swap {
+            ;; Only vault jetton wallet can send swap_fp message
+            throw_unless(error::wrong_jetton_wallet, equal_slices_bits(ctx::sender, vault::jetton_wallet));
+            
+            slice pool_address = fp~load_msg_addr();
+            cell asset_out = fp~load_ref();
+            int deadline = fp~load_uint(TIMESTAMP_SIZE);
+            cell swap_params = fp~load_maybe_ref();
+            cell next = fp~load_maybe_ref();
+            fp.end_parse();
+
+            ;; Check deadline
+            if now() > deadline {
+                ;; Return jetton to sender if deadline is expired
+
+                ;; Unpack swap params to get reject_payload
+                (
+                    _, 
+                    _, 
+                    _,
+                    _, 
+                    cell reject_payload, 
+                    _
+                ) = unpack_swap_params(swap_params);
+
+                int is_payload_null? = reject_payload.cell_null?();
+                reject_payload = is_payload_null?
+                    ? pack_message_payload("Deadline expired (Refund)")
+                    : reject_payload;
+
+                int gas_consume = vault::deadline_refund_fee(JETTON_ASSET_TYPE);
+                int remaining_ton = ctx::value - gas_consume;
+
+                int forward_ton = is_payload_null? ? ZERO_TON : remaining_ton - JETTON_TRANSFER_TON;
+                send_jetton(BOUNCEABLE, jetton_sender, jetton_sender, vault::jetton_wallet, jetton_amount, remaining_ton, query_id, reject_payload, forward_ton, SEND_MODE_REGULAR);
+                commit();
+                throw(error::expired);
+            }
+
+            ;; Amount must be greater than 0
+            throw_unless(error::invalid_amount, jetton_amount > 0);
+
+            ;; Calculate gas
+            (int total_fee, int gas_consume) = vault::swap_fee(ctx::fwd_fee, JETTON_ASSET_TYPE, next);
+            throw_unless(error::not_enough_ton, ctx::value >= total_fee);
+            int remaining_ton = ctx::value - gas_consume;
+
+            return vault::handle_swap(
+                remaining_ton,
+                query_id,
+                pack_jetton_to_asset(vault::jetton_master),
+                jetton_sender,
+                jetton_amount,
+                pool_address,
+                asset_out,
+                swap_params,
+                next
+            );
+        }
+
+        if op == op::withdraw {
+            ;; Only vault jetton wallet can send burn_fp message
+            throw_unless(error::wrong_jetton_wallet, equal_slices_bits(ctx::sender, vault::jetton_wallet));
+            
+            slice recipient = fp~load_msg_addr();
+            cell signed_rates = fp~load_maybe_ref();
+            cell asset_out = fp~load_maybe_ref();
+            cell withdraw_params = fp~load_maybe_ref();
+            cell next = fp~load_maybe_ref();
+            fp.end_parse();
+
+            ;; Amount must be greater than 0
+            throw_unless(error::invalid_amount, jetton_amount > 0);
+
+            ;; If recipient is none, set it to provider
+            recipient = recipient.is_address_none() ? jetton_sender : recipient;
+
+            return jetton_vault::handle_burn(
+                ctx::value,
+                ctx::fwd_fee,
+                query_id,
+                jetton_sender,
+                jetton_amount,
+                recipient,
+                signed_rates,
+                asset_out,
+                withdraw_params,
+                next
+            );
+        }
+    }
+
+    if op == op::payout {
+        int proof = ctx::body~load_uint(PROOF_SIZE);
+        ;; Only contracts that deployed by factory can send payout message
+        (_, slice valid_sender) = get_base_init_and_address(vault::factory, proof, vault::base_code);
+        throw_unless(error::invalid_sender, equal_slices_bits(ctx::sender, valid_sender));
+
+        slice provider = ctx::body~load_msg_addr();
+        slice recipient = ctx::body~load_msg_addr();
+        cell asset_out = ctx::body~load_ref();
+
+        int amount = ctx::body~load_coins();
+        cell payload = ctx::body~load_maybe_ref();
+        ctx::body.end_parse();
+
+        return jetton_vault::handle_payout(
+            ctx::value,
+            ctx::fwd_fee,
+            query_id,
+            provider,
+            recipient,
+            amount,
+            payload
+        );
+    }
+
+    if op == op::take_wallet_address {
+        ;; Only jetton master can send take_wallet_address message
+        throw_unless(error::not_jetton_master, equal_slices_bits(ctx::sender, vault::jetton_master));
+        
+        slice wallet_address = ctx::body~load_msg_addr();
+        ctx::body~load_maybe_ref(); ;; we don't need include address
+        ctx::body.end_parse();
+
+        ;; Set jetton wallet address
+        vault::jetton_wallet = wallet_address;
+
+        vault::save_data();
+        return ();
+    }
+
+    if op == op::update {
+        throw_unless(error::not_admin, equal_slices_bits(ctx::sender, vault::admin));
+        update_contract(ctx::body);
+        return ();
+    }
+
+    if op == op::transfer_admin {
+        ;; Only admin can transfer admin
+        throw_unless(error::not_admin, equal_slices_bits(ctx::sender, vault::admin));
+        
+        slice new_admin = ctx::body~load_msg_addr();
+        ctx::body.end_parse();
+
+        ;; Update admin
+        vault::admin = new_admin;
+
+        ;; Save data to storage
+        vault::save_data();
+        return ();
+    }
+
+    throw(error::wrong_op);
+}
+
+() main(int ctx::value, cell in_msg_full, slice ctx::body) impure {
+    slice s = in_msg_full.begin_parse();
+    int flags = s~load_msg_flags();
+
+    if (is_bounced(flags)) { ;; skip all bounced messages
+        return ();
+    }
+    
+    ;; Only receive TON
+    if (ctx::body.slice_bits() < 32) {
+        return ();
+    }
+    
+    ;; get context
+    (slice ctx::sender, int ctx::fwd_fee) = s~retrieve_ctx(MY_WORKCHAIN);
+
+    ;; Load data from storage
+    vault::load_data();
+
+    ;; route function to handle internal message
+    route_internal(ctx::sender, ctx::value, ctx::fwd_fee, ctx::body);
+}
+
+{- Getters -}
+
+cell get_vault_data() method_id {
+    vault::load_data();
+    return begin_cell()
+        .store_uint(vault::contract_type, CONTRACT_TYPE_SIZE)
+        .store_uint(vault::asset_type, ASSET_TYPE_SIZE)
+        .store_slice(vault::admin)
+        .store_slice(vault::jetton_master)
+        .store_slice(vault::jetton_wallet)
+        .store_ref(
+            begin_cell()
+            .store_ref(vault::base_code)
+            .store_slice(vault::factory)
+            .end_cell()
+        )
+        .end_cell();
+}

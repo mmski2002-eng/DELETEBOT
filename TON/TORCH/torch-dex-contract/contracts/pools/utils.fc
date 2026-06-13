@@ -1,0 +1,356 @@
+{-
+* @notice Unpacks the signed rates from a cell
+* @param signed_rates The cell containing the signed rate for each asset
+* @return signature The signature of this signed rate payload
+* @return expiration The expiration for this signed rate, if it is expired, it should be refunded
+* @return assets Pool's assets, which is used to check if the signed rate is for this pool
+* @return rates_tuple The rates tuple containing the signed rates for each asset
+* @return payload_hash The payload hash is used to check if the signature is valid
+* @return next_signed_rates The next signed rates cell if the next pool need signed rates
+-}
+(slice, int, cell, tuple, int, cell) unpack_signed_rates(cell signed_rates) inline {
+    throw_unless(error::no_signed_rates, ~ signed_rates.cell_null?());
+
+    slice signed_rates_slice = signed_rates.begin_parse();
+    slice signature = signed_rates_slice~load_bits(SIGNATURE_SIZE);
+    cell payload = signed_rates_slice~load_ref();
+    cell next_signed_rates = signed_rates_slice~load_maybe_ref();
+
+    ;; If payload is null, which means that this pool does not have signed rates but it may have next signed rates
+    if payload.cell_null?() {
+        return (signature, 0, null(), empty_tuple(), 0, next_signed_rates);
+    }
+    int payload_hash = payload.cell_hash();
+    
+    slice payload_slice = payload.begin_parse();
+    int expiration = payload_slice~load_uint(TIMESTAMP_SIZE);
+    cell assets = payload_slice~load_ref();
+    cell rates = payload_slice~load_ref();
+    tuple rates_tuple = convert_coins_cell_to_tuple(rates);
+
+    return (signature, expiration, assets, rates_tuple, payload_hash, next_signed_rates);
+}
+
+{-
+* @notice Gets the pool LP asset
+* @return The pool LP asset cell
+-}
+cell get_pool_lp_asset() inline {
+    return pack_jetton_to_asset(my_address());
+}
+
+{-
+* @notice Calculates the pool LP vault address
+* @param factory The factory address used to calculate the vault address
+* @param base_code The base code used to calculate the vault address
+* @return The pool LP vault address
+-}
+slice cal_pool_lp_vault_address(slice factory, cell base_code) inline {
+    ;; Get pool lp asset
+    cell pool_lp_asset = get_pool_lp_asset();
+
+    return cal_vault_address(factory, pool_lp_asset, base_code);
+}
+
+{-
+* @notice Unpacks the swap next parameters
+* @param next_slice The information of next payload
+* @return next_pool_address The pool address for the next swap
+* @return next_assset_out The asset out for the next swap
+* @return next_min_amount The minimum amount required for the next pool swap
+* @return next_next The next cell for the next operation
+-}
+(slice, cell, int, cell) unpack_swap_next(slice next_slice) inline {
+    slice next_pool_address = next_slice~load_msg_addr();
+    cell next_assset_out = next_slice~load_ref();
+    int next_min_amount = next_slice~load_coins();
+    cell next_next = next_slice~load_maybe_ref();
+    return (next_pool_address, next_assset_out, next_min_amount, next_next);
+}
+
+{-
+* @notice Unpacks the deposit next parameters
+* @param next_slice The information of next payload
+* @return next_pool_address The pool address for the next operation
+* @return next_meta_amount The amount of meta asset provided for depositing to the meta pool
+* @return next_meta_asset A cell representing the meta asset for depositing to the meta pool
+* @return next_min_lp_amount The minimum lp amount required for the next pool deposit
+-}
+(slice, int, cell, int) unpack_deposit_next(slice next_slice) inline {
+    slice next_pool_address = next_slice~load_msg_addr();
+    int next_meta_amount = next_slice~load_coins();
+    cell next_meta_asset = next_slice~load_ref();
+    int next_min_lp_amount = next_slice~load_coins();
+    return (next_pool_address, next_meta_amount, next_meta_asset, next_min_lp_amount);
+}
+
+{-
+* @notice Unpacks the withdraw next parameters
+* @param next_slice The information of next payload
+* @return next_pool_address The pool address for the next operation
+* @return next_assset_out The asset out for the next operation
+* @return next_min_amounts The minimum amounts required for the next pool withdraw
+* @dev If next_assset_out is null, it means that withdraw all assets from the pool
+-}
+(slice, cell, cell) unpack_withdraw_next(slice next_slice) inline {
+    slice next_pool_address = next_slice~load_msg_addr();
+    cell next_asset_out = next_slice~load_maybe_ref();
+    cell next_min_amounts = next_slice~load_maybe_ref();
+    return (next_pool_address, next_asset_out, next_min_amounts);
+}
+
+{-
+* @notice Handles the next operation
+* @param next The next cell
+* @param query_id The unique query identifier
+* @param provider The provider address
+* @param assets The pool's assets that meta pool can use to check whether is base pool send depeposit between to meta pool
+* @param amount The amount in for the next operation (Lp amount for deposit, amount in for swap, remove lp amount for withdraw)
+* @param proof The proof for the next pool can check ctx::sender is from Torch's contract
+* @param asset_out The asset out for the next operation
+* @param next_signed_rates The next signed rates payload
+* @param recipient The recipient address for the next operation
+* @param fulfill_payload The payload that will be sent to the recipient if the operation is fulfilled
+* @param reject_payload The payload that will be sent to the recipient if the operation is rejected
+* @param extra_payload A cell containing additional data, currently used for the referral mechanism.
+* @return The next operation type
+* @return The next pool address
+* @return The next payload
+-}
+(int, slice, cell) handle_next(
+    cell next, 
+    int query_id, 
+    slice provider, 
+    cell assets, 
+    int amount, 
+    int proof, 
+    cell asset_out,
+    cell next_signed_rates,
+    slice recipient,
+    cell fulfill_payload,
+    cell reject_payload,
+    cell extra_payload
+) inline {
+    ;; If next is null, return NO_NEXT_TYPE
+    if next.cell_null?() {
+        return (NO_NEXT_TYPE, address_none(), null());
+    }
+
+    slice next_slice = next.begin_parse();
+    int next_type = next_slice~load_uint(NEXT_TYPE_SIZE);
+    if next_type == SWAP_NEXT_TYPE {
+        ;; Get swap next params
+        (slice next_pool_address, cell next_assset_out, int next_min_amount, cell next_next) = unpack_swap_next(next_slice);
+
+        ;; Pack swap params
+        cell swap_params = pack_swap_params(next_min_amount, recipient, next_signed_rates, fulfill_payload, reject_payload, extra_payload);
+
+        ;; Pack swap between, asset_out is for the first pool and for next_pool is its asset_in, so we use asset_out in the asset_in field
+        cell swap_between_body = pack_swap_between(query_id, provider, proof, asset_out, amount, next_assset_out, swap_params, next_next);
+
+        return (SWAP_NEXT_TYPE, next_pool_address, swap_between_body);
+    } elseif next_type == DEPOSIT_NEXT_TYPE {
+        ;; Get deposit next params
+        (slice next_pool_address, int next_meta_amount, cell next_meta_asset, int next_min_lp_amount) = unpack_deposit_next(next_slice);
+
+        ;; Pack deposit params
+        cell deposit_params = pack_deposit_params(next_min_lp_amount, recipient, next_signed_rates, fulfill_payload, reject_payload, extra_payload);
+
+        ;; Pack targets for deposit next and the order is based on meta pool assets (base pool lp asset and meta asset)
+        cell targets = compare_assets(get_pool_lp_asset(), next_meta_asset) 
+            ? begin_cell()
+                .store_coins(next_meta_amount)
+                .store_coins(amount)
+                .end_cell()
+            : begin_cell()
+                .store_coins(amount)
+                .store_coins(next_meta_amount)
+                .end_cell() ;
+
+        ;; Pack deposit between. With the current design, `deposit between` will occur at most once, so the `next` field is directly set to `null()`.
+        cell deposit_between_body = pack_deposit_between(query_id, provider, assets, next_meta_asset, targets, deposit_params, null());
+
+        return (DEPOSIT_NEXT_TYPE, next_pool_address, deposit_between_body);
+    } elseif next_type == WITHDRAW_NEXT_TYPE {
+        ;; Get withdraw next params
+        (slice next_pool_address, cell next_asset_out, cell next_min_amounts) = unpack_withdraw_next(next_slice);
+
+        ;; Pack withdraw between to next_pool_address
+        cell withdraw_between_body = pack_withdraw_between(query_id, provider, recipient, proof, amount, asset_out, next_asset_out, pack_withdraw_params(next_min_amounts, extra_payload), next_signed_rates);
+
+        return (WITHDRAW_NEXT_TYPE, next_pool_address, withdraw_between_body);
+    } 
+
+    return (WRONG_NEXT_TYPE, address_none(), null());
+}
+
+{-
+* @notice Handles the signed rates
+* @param signed_rates The signed rates payload
+* @param use_rates? Indicates if this pool uses signed rates
+* @param signer_key The signer key used to check the signature
+* @param assets The pool's assets used to check if the signed rates for each asset is correct
+* @return The refund status
+* @return The rates tuple to calculate reserves with precision
+* @return The next signed rates cell
+-}
+(int, tuple, cell) handle_signed_rates(cell signed_rates, int use_rates?, int signer_key, cell assets) inline {
+    if use_rates? {
+        ;; Unpack signed rate
+        (
+            slice signature, 
+            int expiration, 
+            cell signed_assets, 
+            tuple rates_tuple, 
+            int payload_hash, 
+            cell next_signed_rates
+        ) = unpack_signed_rates(signed_rates);
+
+        ;; Check expiration for signed rate
+        if expiration < now() {
+            return (NEED_REFUND, empty_tuple(), null());
+        }
+
+        ;; Check signature is valid
+        throw_unless(error::invalid_signature, check_signature(payload_hash, signature, signer_key));
+
+        ;; Check signed_assets is equal to pool assets
+        throw_unless(error::wrong_assets, signed_assets.cell_hash() == assets.cell_hash());
+
+        return (NO_REFUND, rates_tuple, next_signed_rates);
+    }
+
+    return (NO_REFUND, empty_tuple(), signed_rates);
+}
+
+{-
+* @notice Gets the LP wallet address
+* @param pool_address The pool address which is jetton master address
+* @param owner_address The owner address of the LP wallet
+* @param lp_wallet_code The LP wallet code cell
+* @return The LP wallet address of the owner
+-}
+slice get_lp_wallet_address(slice pool_address, slice owner_address, cell lp_wallet_code) inline {
+    cell state_init = calculate_jetton_wallet_state_init(owner_address, lp_wallet_code, pool_address);
+    slice wallet_address = get_contract_addr(state_init);
+
+    return wallet_address;
+}
+
+{-
+* @notice Mints LP tokens
+* @param admin The pool's admin address
+* @param recipient Pool Lp vault address
+* @param amount The pool LP amount
+ * @param query_id The unique query identifier.
+* @param ton_value The sending TON value for this premint message
+* @param lp_wallet_code The LP wallet code cell
+-}
+() mint_lp(slice admin, slice recipient, int amount, int query_id, int ton_value, cell lp_wallet_code) impure inline {
+    slice to = recipient;
+    cell state_init = calculate_jetton_wallet_state_init(to, lp_wallet_code, my_address());
+    slice to_wallet_address = get_contract_addr(state_init);
+    
+    var body = begin_cell()
+        .store_op(op::internal_transfer)
+        .store_query_id(query_id)
+        .store_coins(amount)
+        .store_slice(my_address())
+        .store_slice(admin)
+        .store_coins(0) 
+        .store_maybe_ref(null())
+        .end_cell();
+
+    send_deploy_msg(BOUNCEABLE, to_wallet_address, ton_value ,body, state_init, SEND_MODE_REGULAR);
+}
+
+{-
+* @notice Gets the rates tuple
+* @param decimals The decimals tuple (10^decimals for each asset)
+* @return The rates tuple (10^36 / decimals for each asset)
+-}
+tuple get_rates_tuple(tuple decimal) inline {
+    tuple rates_tuple = empty_tuple();
+    int len = decimal.tlen();
+    int i = 0;
+    while i < len {
+        rates_tuple~tpush(MUL_PRECISION / decimal.at(i));
+        i += 1;
+    }
+    return rates_tuple;
+}
+
+{-
+* @notice Gets the LP content
+* @return The LP content cell
+-}
+cell get_lp_content() inline {
+    (int wc, int hashpart) = parse_std_addr(my_address());
+
+    ;; create metadata uri by concatenation address, e.g. https://content.torch.finance/0:1234456....
+    cell metadata_uri = begin_cell()
+        .store_slice(URI_BASE)
+        .store_slice(int_convert_to_string(wc))
+        .store_slice(":")
+        .store_slice(address_to_hex_string(hashpart))
+        .store_slice(URI_END)
+        .end_cell();
+
+    ;; build content dict and follow tep64 semi-chain standard
+    cell content_dict = new_dict();
+    content_dict~set_token_snake_metadata_entry("uri"H, metadata_uri.begin_parse());
+    content_dict~set_token_snake_metadata_entry("decimals"H, "18");
+
+    ;; turn content dict into a cell by adding 8 bit prefix 0x0
+    cell lp_content = create_token_onchain_metadata(content_dict);
+
+    return lp_content;
+}
+
+{-
+* @notice Validates the next type for deposit
+* @param next_type The next type
+* @dev 
+* - Only supports deposit next and swap next for base pool 
+* - Does not support any next type for meta pool
+-}
+() validate_next_of_deposit(int next_type) impure inline {
+    if pool::pool_type == BASE_POOL_POOL_TYPE {
+        throw_unless(error::wrong_next_type, (next_type != WITHDRAW_NEXT_TYPE) & (next_type != WRONG_NEXT_TYPE));
+    } elseif pool::pool_type == META_POOL_POOL_TYPE {
+        throw_unless(error::wrong_next_type, next_type == NO_NEXT_TYPE);
+    }
+    else {
+        throw(error::wrong_next_type);
+    }
+}
+
+{-
+* @notice Validates the next type for swap
+* @param next_type The next type
+* @dev
+* - Only supports swap next for base pool
+* - Only supports swap next and withdraw next for meta pool
+-}
+() validate_next_of_swap(int next_type) impure inline {
+    if pool::pool_type == BASE_POOL_POOL_TYPE {
+        throw_unless(error::wrong_next_type, (next_type == SWAP_NEXT_TYPE) | (next_type == NO_NEXT_TYPE));
+    } elseif pool::pool_type == META_POOL_POOL_TYPE {
+        throw_unless(error::wrong_next_type, (next_type != DEPOSIT_NEXT_TYPE) & (next_type != WRONG_NEXT_TYPE));
+    }
+}
+
+{-
+* @notice Validates the next type for withdraw
+* @param next_type The next type
+* @dev
+* - Only supports withdraw next for meta pool
+* - Does not support any next type for base pool
+-}
+() validate_next_of_withdraw(int next_type) impure inline {
+    if pool::pool_type == META_POOL_POOL_TYPE {
+        throw_unless(error::wrong_next_type, (next_type == WITHDRAW_NEXT_TYPE) | (next_type == NO_NEXT_TYPE));
+    } elseif pool::pool_type == BASE_POOL_POOL_TYPE {
+        throw_unless(error::wrong_next_type, next_type == NO_NEXT_TYPE);
+    }
+}

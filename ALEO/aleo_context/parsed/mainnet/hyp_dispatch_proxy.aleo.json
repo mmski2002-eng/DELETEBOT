@@ -1,0 +1,307 @@
+{
+  "program_id": "hyp_dispatch_proxy.aleo",
+  "calls_24h_or_metric_window": 1,
+  "imports": [
+    "credits.aleo",
+    "hyp_hook_manager.aleo",
+    "hyp_ism_manager.aleo",
+    "hyp_mailbox.aleo",
+    "hyp_multisig_core.aleo"
+  ],
+  "mappings": {},
+  "structs": {
+    "MailboxState": [
+      {
+        "name": "default_hook",
+        "type": "address"
+      },
+      {
+        "name": "required_hook",
+        "type": "address"
+      }
+    ],
+    "ChecksumEdition": [
+      {
+        "name": "checksum",
+        "type": "[u8"
+      },
+      {
+        "name": "edition",
+        "type": "u16"
+      }
+    ],
+    "WalletEcdsaSigner": [
+      {
+        "name": "wallet_id",
+        "type": "address"
+      },
+      {
+        "name": "ecdsa_signer",
+        "type": "[u8"
+      }
+    ],
+    "WalletSigningOpId": [
+      {
+        "name": "wallet_id",
+        "type": "address"
+      },
+      {
+        "name": "signing_op_id",
+        "type": "field"
+      }
+    ],
+    "AdminOp": [
+      {
+        "name": "op",
+        "type": "u8"
+      },
+      {
+        "name": "threshold",
+        "type": "u8"
+      },
+      {
+        "name": "aleo_signer",
+        "type": "address"
+      },
+      {
+        "name": "ecdsa_signer",
+        "type": "[u8"
+      }
+    ],
+    "Message": [
+      {
+        "name": "version",
+        "type": "u8"
+      },
+      {
+        "name": "nonce",
+        "type": "u32"
+      },
+      {
+        "name": "origin_domain",
+        "type": "u32"
+      },
+      {
+        "name": "sender",
+        "type": "[u8"
+      },
+      {
+        "name": "destination_domain",
+        "type": "u32"
+      },
+      {
+        "name": "recipient",
+        "type": "[u8"
+      },
+      {
+        "name": "body",
+        "type": "[u128"
+      }
+    ],
+    "EthAddress": [
+      {
+        "name": "bytes",
+        "type": "[u8"
+      }
+    ],
+    "Mailbox": [
+      {
+        "name": "local_domain",
+        "type": "u32"
+      },
+      {
+        "name": "nonce",
+        "type": "u32"
+      },
+      {
+        "name": "process_count",
+        "type": "u32"
+      },
+      {
+        "name": "default_ism",
+        "type": "address"
+      },
+      {
+        "name": "default_hook",
+        "type": "address"
+      },
+      {
+        "name": "required_hook",
+        "type": "address"
+      },
+      {
+        "name": "dispatch_proxy",
+        "type": "address"
+      },
+      {
+        "name": "mailbox_owner",
+        "type": "address"
+      }
+    ],
+    "CreditAllowance": [
+      {
+        "name": "spender",
+        "type": "address"
+      },
+      {
+        "name": "amount",
+        "type": "u64"
+      }
+    ],
+    "HookMetadata": [
+      {
+        "name": "gas_limit",
+        "type": "u128"
+      },
+      {
+        "name": "extra_data",
+        "type": "[u8"
+      }
+    ],
+    "Tree": [
+      {
+        "name": "branch",
+        "type": "[[u128"
+      },
+      {
+        "name": "count",
+        "type": "u32"
+      }
+    ],
+    "DomainGasConfig": [
+      {
+        "name": "gas_overhead",
+        "type": "u128"
+      },
+      {
+        "name": "exchange_rate",
+        "type": "u128"
+      },
+      {
+        "name": "gas_price",
+        "type": "u128"
+      }
+    ]
+  },
+  "records": {},
+  "functions": {
+    "get_address": {
+      "inputs": [],
+      "outputs": [],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "dispatch": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "MailboxState.public"
+        },
+        {
+          "register": "r1",
+          "type": "u32.public"
+        },
+        {
+          "register": "r2",
+          "type": "[u8"
+        },
+        {
+          "register": "r3",
+          "type": "[u128"
+        },
+        {
+          "register": "r4",
+          "type": "address.public"
+        },
+        {
+          "register": "r5",
+          "type": "HookMetadata.public"
+        },
+        {
+          "register": "r6",
+          "type": "[CreditAllowance"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r12",
+          "type": "hyp_dispatch_proxy.aleo/dispatch.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "hyp_hook_manager.aleo",
+        "hyp_mailbox.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.neq",
+        "is.eq",
+        "ternary"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "MailboxState.public"
+        },
+        {
+          "register": "r1",
+          "type": "hyp_mailbox.aleo/dispatch.future"
+        },
+        {
+          "register": "r2",
+          "type": "hyp_hook_manager.aleo/post_dispatch.future"
+        },
+        {
+          "register": "r3",
+          "type": "hyp_hook_manager.aleo/post_dispatch.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "gt"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "dispatch"
+  ],
+  "cross_contract_refs": [
+    "hyp_hook_manager.aleo",
+    "hyp_mailbox.aleo",
+    "hyp_multisig_core.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "dispatch"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [],
+    "future_outputs": [
+      {
+        "function": "dispatch",
+        "output": "hyp_dispatch_proxy.aleo/dispatch.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

@@ -1,0 +1,1276 @@
+{
+  "program_id": "betastaking.aleo",
+  "calls_24h_or_metric_window": 185,
+  "imports": [
+    "credits.aleo"
+  ],
+  "mappings": {
+    "account": {
+      "key": "address.public",
+      "value": "u64.public"
+    },
+    "approvals": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "metadata": {
+      "key": "boolean.public",
+      "value": "Metadata.public"
+    },
+    "state": {
+      "key": "boolean.public",
+      "value": "State.public"
+    },
+    "settings": {
+      "key": "boolean.public",
+      "value": "Settings.public"
+    },
+    "unstakings": {
+      "key": "address.public",
+      "value": "Unstaking.public"
+    },
+    "admins": {
+      "key": "address.public",
+      "value": "boolean.public"
+    },
+    "stakers": {
+      "key": "address.public",
+      "value": "boolean.public"
+    }
+  },
+  "structs": {
+    "Metadata": [
+      {
+        "name": "name",
+        "type": "u128"
+      },
+      {
+        "name": "symbol",
+        "type": "u128"
+      },
+      {
+        "name": "decimals",
+        "type": "u8"
+      }
+    ],
+    "State": [
+      {
+        "name": "total_supply",
+        "type": "u64"
+      },
+      {
+        "name": "total_reserve",
+        "type": "u64"
+      },
+      {
+        "name": "total_unstaking",
+        "type": "u64"
+      },
+      {
+        "name": "total_reward",
+        "type": "u64"
+      }
+    ],
+    "Settings": [
+      {
+        "name": "unstake_wait",
+        "type": "u32"
+      },
+      {
+        "name": "stake_paused",
+        "type": "boolean"
+      },
+      {
+        "name": "global_paused",
+        "type": "boolean"
+      },
+      {
+        "name": "max_reward_per_notify",
+        "type": "u64"
+      },
+      {
+        "name": "protocol_fee",
+        "type": "u16"
+      },
+      {
+        "name": "fee_account",
+        "type": "address"
+      },
+      {
+        "name": "fixed_stakers",
+        "type": "boolean"
+      }
+    ],
+    "Unstaking": [
+      {
+        "name": "microcredits",
+        "type": "u64"
+      },
+      {
+        "name": "height",
+        "type": "u32"
+      }
+    ],
+    "ApprovalKey": [
+      {
+        "name": "approver",
+        "type": "address"
+      },
+      {
+        "name": "spender",
+        "type": "address"
+      }
+    ]
+  },
+  "records": {
+    "PrivateToken": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "amount",
+        "type": "u64.private"
+      }
+    ]
+  },
+  "functions": {
+    "transfer_public": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "betastaking.aleo/transfer_public.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "account"
+      ],
+      "finalize_state_writes": [
+        "account"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "transfer_private": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "PrivateToken.record"
+        },
+        {
+          "register": "r1",
+          "type": "address.private"
+        },
+        {
+          "register": "r2",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "PrivateToken.record"
+        },
+        {
+          "register": "r5",
+          "type": "PrivateToken.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "transfer_private_to_public": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "PrivateToken.record"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "PrivateToken.record"
+        },
+        {
+          "register": "r5",
+          "type": "betastaking.aleo/transfer_private_to_public.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "account"
+      ],
+      "finalize_state_writes": [
+        "account"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "transfer_public_to_private": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "PrivateToken.record"
+        },
+        {
+          "register": "r3",
+          "type": "betastaking.aleo/transfer_public_to_private.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "account"
+      ],
+      "finalize_state_writes": [
+        "account"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "join": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "PrivateToken.record"
+        },
+        {
+          "register": "r1",
+          "type": "PrivateToken.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "PrivateToken.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "stake_public": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "betastaking.aleo/stake_public.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.neq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "credits.aleo/transfer_public_as_signer.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "account",
+        "settings",
+        "state"
+      ],
+      "finalize_state_writes": [
+        "account",
+        "state"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "assert.neq",
+        "is.eq",
+        "ternary"
+      ],
+      "snark_verify": false
+    },
+    "stake_private": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r5",
+          "type": "betastaking.aleo/stake_private.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.neq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "credits.aleo/transfer_private_to_public.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "account",
+        "settings",
+        "state"
+      ],
+      "finalize_state_writes": [
+        "account",
+        "state"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "assert.neq",
+        "is.eq",
+        "ternary"
+      ],
+      "snark_verify": false
+    },
+    "unstake_token": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "betastaking.aleo/unstake_token.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.neq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "account",
+        "settings",
+        "state",
+        "unstakings"
+      ],
+      "finalize_state_writes": [
+        "account",
+        "state",
+        "unstakings"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "assert.neq"
+      ],
+      "snark_verify": false
+    },
+    "unstake_aleo": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "betastaking.aleo/unstake_aleo.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.neq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "account",
+        "settings",
+        "state",
+        "unstakings"
+      ],
+      "finalize_state_writes": [
+        "account",
+        "state",
+        "unstakings"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "assert.neq"
+      ],
+      "snark_verify": false
+    },
+    "withdraw": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "betastaking.aleo/withdraw.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.neq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "credits.aleo/transfer_public.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "settings",
+        "state",
+        "unstakings"
+      ],
+      "finalize_state_writes": [
+        "state",
+        "unstakings"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte"
+      ],
+      "snark_verify": false
+    },
+    "withdraw_private": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r4",
+          "type": "betastaking.aleo/withdraw_private.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.neq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "credits.aleo/transfer_public_to_private.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "settings",
+        "state",
+        "unstakings"
+      ],
+      "finalize_state_writes": [
+        "state",
+        "unstakings"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte"
+      ],
+      "snark_verify": false
+    },
+    "approve_public": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "betastaking.aleo/approve_public.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "approvals"
+      ],
+      "finalize_state_writes": [
+        "approvals"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "lt",
+        "ternary"
+      ],
+      "snark_verify": false
+    },
+    "unapprove_public": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "betastaking.aleo/unapprove_public.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "approvals"
+      ],
+      "finalize_state_writes": [
+        "approvals"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "gt",
+        "ternary"
+      ],
+      "snark_verify": false
+    },
+    "transfer_from_public": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r5",
+          "type": "betastaking.aleo/transfer_from_public.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "account",
+        "approvals"
+      ],
+      "finalize_state_writes": [
+        "account",
+        "approvals"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "notify_reward": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "betastaking.aleo/notify_reward.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.neq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "account",
+        "settings",
+        "stakers",
+        "state"
+      ],
+      "finalize_state_writes": [
+        "account",
+        "state"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "pull_aleo": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "betastaking.aleo/pull_aleo.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/transfer_public.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "settings",
+        "stakers"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "update_settings": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "Settings.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "betastaking.aleo/update_settings.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "assert.neq",
+        "lte"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "Settings.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "admins",
+        "settings"
+      ],
+      "finalize_state_writes": [
+        "settings"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq"
+      ],
+      "snark_verify": false
+    },
+    "set_staker": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "boolean.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "betastaking.aleo/set_staker.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "boolean.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "admins",
+        "settings"
+      ],
+      "finalize_state_writes": [
+        "stakers"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "set_admin": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "boolean.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "betastaking.aleo/set_admin.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.neq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "boolean.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "admins"
+      ],
+      "finalize_state_writes": [
+        "admins"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "init": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "betastaking.aleo/init.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "metadata"
+      ],
+      "finalize_state_writes": [
+        "admins",
+        "metadata",
+        "settings",
+        "state"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "approve_public",
+    "init",
+    "notify_reward",
+    "pull_aleo",
+    "set_admin",
+    "set_staker",
+    "stake_private",
+    "stake_public",
+    "transfer_from_public",
+    "transfer_private_to_public",
+    "transfer_public",
+    "transfer_public_to_private",
+    "unapprove_public",
+    "unstake_aleo",
+    "unstake_token",
+    "update_settings",
+    "withdraw",
+    "withdraw_private"
+  ],
+  "cross_contract_refs": [
+    "credits.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "transfer_public",
+    "transfer_private_to_public",
+    "transfer_public_to_private",
+    "stake_public",
+    "stake_private",
+    "unstake_token",
+    "unstake_aleo",
+    "withdraw",
+    "withdraw_private",
+    "approve_public",
+    "unapprove_public",
+    "transfer_from_public",
+    "notify_reward",
+    "pull_aleo",
+    "update_settings",
+    "set_staker",
+    "set_admin",
+    "init"
+  ],
+  "state_commitment_surfaces": {
+    "records": [
+      "PrivateToken"
+    ],
+    "mappings": [
+      "account",
+      "admins",
+      "approvals",
+      "metadata",
+      "settings",
+      "stakers",
+      "state",
+      "unstakings"
+    ],
+    "future_outputs": [
+      {
+        "function": "transfer_public",
+        "output": "betastaking.aleo/transfer_public.future"
+      },
+      {
+        "function": "transfer_private_to_public",
+        "output": "betastaking.aleo/transfer_private_to_public.future"
+      },
+      {
+        "function": "transfer_public_to_private",
+        "output": "betastaking.aleo/transfer_public_to_private.future"
+      },
+      {
+        "function": "stake_public",
+        "output": "betastaking.aleo/stake_public.future"
+      },
+      {
+        "function": "stake_private",
+        "output": "betastaking.aleo/stake_private.future"
+      },
+      {
+        "function": "unstake_token",
+        "output": "betastaking.aleo/unstake_token.future"
+      },
+      {
+        "function": "unstake_aleo",
+        "output": "betastaking.aleo/unstake_aleo.future"
+      },
+      {
+        "function": "withdraw",
+        "output": "betastaking.aleo/withdraw.future"
+      },
+      {
+        "function": "withdraw_private",
+        "output": "betastaking.aleo/withdraw_private.future"
+      },
+      {
+        "function": "approve_public",
+        "output": "betastaking.aleo/approve_public.future"
+      },
+      {
+        "function": "unapprove_public",
+        "output": "betastaking.aleo/unapprove_public.future"
+      },
+      {
+        "function": "transfer_from_public",
+        "output": "betastaking.aleo/transfer_from_public.future"
+      },
+      {
+        "function": "notify_reward",
+        "output": "betastaking.aleo/notify_reward.future"
+      },
+      {
+        "function": "pull_aleo",
+        "output": "betastaking.aleo/pull_aleo.future"
+      },
+      {
+        "function": "update_settings",
+        "output": "betastaking.aleo/update_settings.future"
+      },
+      {
+        "function": "set_staker",
+        "output": "betastaking.aleo/set_staker.future"
+      },
+      {
+        "function": "set_admin",
+        "output": "betastaking.aleo/set_admin.future"
+      },
+      {
+        "function": "init",
+        "output": "betastaking.aleo/init.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

@@ -1,0 +1,325 @@
+{
+  "program_id": "loyalty_rewards.aleo",
+  "calls_24h_or_metric_window": 32,
+  "imports": [
+    "loyalty_token.aleo"
+  ],
+  "mappings": {
+    "voucher_exists": {
+      "key": "field.public",
+      "value": "boolean.public"
+    },
+    "voucher_used": {
+      "key": "field.public",
+      "value": "boolean.public"
+    },
+    "redemptions_by_type": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "approved_upgrades": {
+      "key": "field.public",
+      "value": "boolean.public"
+    }
+  },
+  "structs": {
+    "VoucherInput": [
+      {
+        "name": "card_id",
+        "type": "field"
+      },
+      {
+        "name": "reward_type",
+        "type": "u8"
+      },
+      {
+        "name": "cost",
+        "type": "u64"
+      }
+    ]
+  },
+  "records": {
+    "RewardVoucher": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "voucher_id",
+        "type": "field.private"
+      },
+      {
+        "name": "reward_type",
+        "type": "u8.private"
+      },
+      {
+        "name": "amount",
+        "type": "u64.private"
+      }
+    ]
+  },
+  "functions": {
+    "approve_upgrade": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "[u8"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "loyalty_rewards.aleo/approve_upgrade.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [
+        "approved_upgrades"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "redeem_points_for_voucher": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "loyalty_token.aleo/LoyaltyCard.record"
+        },
+        {
+          "register": "r1",
+          "type": "u8.private"
+        },
+        {
+          "register": "r2",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r8",
+          "type": "loyalty_token.aleo/LoyaltyCard.record"
+        },
+        {
+          "register": "r12",
+          "type": "RewardVoucher.record"
+        },
+        {
+          "register": "r13",
+          "type": "loyalty_rewards.aleo/redeem_points_for_voucher.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "loyalty_token.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "and",
+        "assert.eq",
+        "gte",
+        "lte"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u8.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "redemptions_by_type",
+        "voucher_exists"
+      ],
+      "finalize_state_writes": [
+        "redemptions_by_type",
+        "voucher_exists"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "use_voucher": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "RewardVoucher.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "loyalty_rewards.aleo/use_voucher.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "voucher_exists",
+        "voucher_used"
+      ],
+      "finalize_state_writes": [
+        "voucher_used"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "check_voucher": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "RewardVoucher.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "RewardVoucher.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "transfer_voucher": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "RewardVoucher.record"
+        },
+        {
+          "register": "r1",
+          "type": "address.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "RewardVoucher.record"
+        },
+        {
+          "register": "r3",
+          "type": "loyalty_rewards.aleo/transfer_voucher.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "approved_upgrades",
+        "voucher_exists",
+        "voucher_used"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "gt"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "approve_upgrade",
+    "redeem_points_for_voucher",
+    "transfer_voucher",
+    "use_voucher"
+  ],
+  "cross_contract_refs": [
+    "loyalty_token.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "approve_upgrade",
+    "redeem_points_for_voucher",
+    "use_voucher",
+    "transfer_voucher"
+  ],
+  "state_commitment_surfaces": {
+    "records": [
+      "RewardVoucher"
+    ],
+    "mappings": [
+      "approved_upgrades",
+      "redemptions_by_type",
+      "voucher_exists",
+      "voucher_used"
+    ],
+    "future_outputs": [
+      {
+        "function": "approve_upgrade",
+        "output": "loyalty_rewards.aleo/approve_upgrade.future"
+      },
+      {
+        "function": "redeem_points_for_voucher",
+        "output": "loyalty_rewards.aleo/redeem_points_for_voucher.future"
+      },
+      {
+        "function": "use_voucher",
+        "output": "loyalty_rewards.aleo/use_voucher.future"
+      },
+      {
+        "function": "transfer_voucher",
+        "output": "loyalty_rewards.aleo/transfer_voucher.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

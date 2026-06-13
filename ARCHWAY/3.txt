@@ -1,0 +1,152 @@
+# PROMPT 2 — x/tracking / gas accounting audit
+
+Ты — security research agent для легального bug bounty / responsible disclosure.
+Работай только с локальным кодом, локальными тестами, локальной сетью или testnet. Не предлагай эксплуатацию mainnet, DoS публичной сети, кражу средств или действия против чужой инфраструктуры.
+
+Цель: провести глубокий аудит `x/tracking` и всей логики gas/rewards attribution в Archway.
+
+Контекст:
+Archway-specific риск: rewards могут зависеть от активности контрактов и gas tracking. Особенно важно проверить mismatch между:
+
+* tx gas limit;
+* actual gas used;
+* wasm gas;
+* SDK gas;
+* failed execution;
+* nested contract calls;
+* callbacks;
+* submessages;
+* IBC / ICA flows.
+
+Сначала найди все файлы и функции, связанные с:
+
+* `x/tracking`;
+* `GasMeter`;
+* `gas tracking`;
+* `Track`;
+* `contract gas`;
+* `wasm meter`;
+* `rewards attribution`;
+* `TxGas`;
+* `GasLimit`;
+* `GasConsumed`;
+* `BeginBlocker` / `EndBlocker`;
+* wasm hooks;
+* tests.
+
+Основные вопросы аудита:
+
+1. Что именно считается?
+
+   * Считается gas limit или реально использованный gas?
+   * Считаются ли failed transactions?
+   * Считаются ли reverted wasm executions?
+   * Считаются ли nested contract calls?
+   * Как распределяется gas между несколькими контрактами в одной tx?
+   * Что происходит при submessage failure?
+   * Что происходит при reply failure?
+   * Что происходит при callback failure?
+
+2. Attribution
+
+   * Как определяется contract address?
+   * Можно ли приписать gas не тому контракту?
+   * Можно ли заставить чужой контракт получить/потерять rewards?
+   * Можно ли искусственно увеличить tracked gas дешёвой транзакцией?
+   * Можно ли обойти tracking через нестандартный execution path?
+   * Согласованы ли sender, contract, caller, admin, rewards receiver?
+
+3. Accounting integrity
+
+   * Нет ли double counting?
+   * Нет ли missed counting?
+   * Нет ли counting после rollback?
+   * Нет ли counting до того, как стало понятно, что tx успешна?
+   * Что происходит при out-of-gas?
+   * Что происходит при panic/recover?
+   * Может ли tracking state быть записан, когда основное действие откатилось?
+
+4. Economic abuse
+
+   * Можно ли получить rewards больше, чем реальная стоимость tx?
+   * Можно ли создать контракт, который фармит rewards через дорогие no-op операции?
+   * Можно ли использовать высокий gas limit для увеличения rewards без соответствующего consumption?
+   * Можно ли использовать failed tx для rewards?
+   * Можно ли через много nested calls исказить доли распределения?
+
+5. Invariants
+
+   * Failed tx не должна давать необоснованную награду.
+   * Один и тот же gas не должен засчитываться дважды.
+   * Contract attribution должна быть однозначной.
+   * Rewards calculation не должна зависеть от user-controlled gas limit без достаточной защиты.
+   * Tracking должен быть согласован с actual wasm execution result.
+
+Методика:
+
+* Найди все места, где tracking state записывается.
+* Найди все места, где tracking state читается для rewards.
+* Построй flow: tx execution → wasm execution → tracking write → rewards calculation → claim.
+* Проверь error paths.
+* Проверь тесты: есть ли failed tx, out-of-gas, nested calls, submessages, multiple contracts in one tx.
+
+Формат для каждой потенциальной находки:
+
+## Finding Candidate: <name>
+
+Severity guess: Critical / High / Medium / Low / Informational
+Confidence: High / Medium / Low
+
+Affected files:
+
+* `<file>:<function/line>`
+
+Summary:
+
+* Кратко.
+
+Attack preconditions:
+
+* Кто вызывает?
+* Нужен ли контракт?
+* Нужны ли funds?
+* Нужен ли высокий gas limit?
+
+Technical details:
+
+* Пошаговый flow.
+* Где tracking расходится с реальным execution.
+* Как это влияет на rewards/accounting.
+
+Impact:
+
+* Extra rewards?
+* Wrong contract attribution?
+* Double counting?
+* Locked rewards?
+* Chain halt / panic?
+
+PoC plan:
+
+* Локальный тест с wasm contract.
+* Сценарии: successful tx, failed tx, out-of-gas, nested call, submessage failure.
+* Не использовать mainnet.
+
+Counterarguments:
+
+* Что может делать это intended behavior?
+* Есть ли caps, params, filters или post-processing, которые предотвращают exploit?
+
+Suggested fix:
+
+* Минимальная правка.
+* Новый invariant/test.
+
+В конце выдай:
+
+* карту gas tracking flow;
+* топ-5 подозрительных мест;
+* confirmed findings;
+* weak leads;
+* тесты, которые надо написать.
+ Вконце создай отчет в файл на русском языке. 

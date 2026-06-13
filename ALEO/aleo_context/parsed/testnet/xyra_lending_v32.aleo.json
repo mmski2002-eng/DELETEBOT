@@ -1,0 +1,2318 @@
+{
+  "program_id": "xyra_lending_v32.aleo",
+  "calls_24h_or_metric_window": 5,
+  "imports": [
+    "credits.aleo",
+    "merkle_tree.aleo",
+    "test_usad_freezelist.aleo",
+    "test_usad_multisig_core.aleo",
+    "test_usad_stablecoin.aleo",
+    "test_usdcx_freezelist.aleo",
+    "test_usdcx_multisig_core.aleo",
+    "test_usdcx_stablecoin.aleo"
+  ],
+  "mappings": {
+    "total_deposited": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "total_borrowed": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "available_liquidity": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "supply_index": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "borrow_index": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "last_accrual_block": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "protocol_fees": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "supply_apy": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "borrow_apy": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "initialized": {
+      "key": "field.public",
+      "value": "boolean.public"
+    },
+    "asset_base_rate": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "asset_slope_rate": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "asset_reserve_factor": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "asset_ltv": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "asset_liq_threshold": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "asset_liq_bonus": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "asset_price": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "flash_enabled": {
+      "key": "field.public",
+      "value": "boolean.public"
+    },
+    "flash_premium_bps": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "flash_max_amount": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "flash_strategy_allowed": {
+      "key": "field.public",
+      "value": "boolean.public"
+    },
+    "flash_active": {
+      "key": "field.public",
+      "value": "boolean.public"
+    },
+    "flash_asset": {
+      "key": "field.public",
+      "value": "field.public"
+    },
+    "flash_principal": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "flash_min_profit": {
+      "key": "field.public",
+      "value": "u64.public"
+    },
+    "flash_strategy_id": {
+      "key": "field.public",
+      "value": "field.public"
+    }
+  },
+  "structs": {
+    "U64Triple": [
+      {
+        "name": "x0",
+        "type": "u64"
+      },
+      {
+        "name": "x1",
+        "type": "u64"
+      },
+      {
+        "name": "x2",
+        "type": "u64"
+      }
+    ]
+  },
+  "records": {
+    "LendingPosition": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "scaled_sup_native",
+        "type": "u64.private"
+      },
+      {
+        "name": "scaled_sup_usdcx",
+        "type": "u64.private"
+      },
+      {
+        "name": "scaled_sup_usad",
+        "type": "u64.private"
+      },
+      {
+        "name": "scaled_bor_native",
+        "type": "u64.private"
+      },
+      {
+        "name": "scaled_bor_usdcx",
+        "type": "u64.private"
+      },
+      {
+        "name": "scaled_bor_usad",
+        "type": "u64.private"
+      }
+    ]
+  },
+  "functions": {
+    "initialize": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "xyra_lending_v32.aleo/initialize.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "is.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [
+        "initialized"
+      ],
+      "finalize_state_writes": [
+        "asset_ltv",
+        "asset_price",
+        "borrow_index",
+        "initialized",
+        "last_accrual_block",
+        "supply_index"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "open_lending_account": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "LendingPosition.record"
+        },
+        {
+          "register": "r1",
+          "type": "xyra_lending_v32.aleo/open_lending_account.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "deposit_with_credits": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "LendingPosition.record"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r2",
+          "type": "u64.private"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r17",
+          "type": "LendingPosition.record"
+        },
+        {
+          "register": "r18",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r20",
+          "type": "xyra_lending_v32.aleo/deposit_with_credits.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "lte"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_private_to_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "available_liquidity",
+        "supply_index",
+        "total_deposited"
+      ],
+      "finalize_state_writes": [
+        "available_liquidity",
+        "total_deposited"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "is.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "deposit_usdcx": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "LendingPosition.record"
+        },
+        {
+          "register": "r1",
+          "type": "test_usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r2",
+          "type": "u64.private"
+        },
+        {
+          "register": "r3",
+          "type": "[test_usdcx_stablecoin.aleo/MerkleProof"
+        },
+        {
+          "register": "r4",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r18",
+          "type": "LendingPosition.record"
+        },
+        {
+          "register": "r20",
+          "type": "test_usdcx_stablecoin.aleo/ComplianceRecord.record"
+        },
+        {
+          "register": "r21",
+          "type": "test_usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r23",
+          "type": "xyra_lending_v32.aleo/deposit_usdcx.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "test_usdcx_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "lte"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "test_usdcx_stablecoin.aleo/transfer_private_to_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "available_liquidity",
+        "supply_index",
+        "total_deposited"
+      ],
+      "finalize_state_writes": [
+        "available_liquidity",
+        "total_deposited"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "is.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "deposit_usad": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "LendingPosition.record"
+        },
+        {
+          "register": "r1",
+          "type": "test_usad_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r2",
+          "type": "u64.private"
+        },
+        {
+          "register": "r3",
+          "type": "[test_usad_stablecoin.aleo/MerkleProof"
+        },
+        {
+          "register": "r4",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r18",
+          "type": "LendingPosition.record"
+        },
+        {
+          "register": "r20",
+          "type": "test_usad_stablecoin.aleo/ComplianceRecord.record"
+        },
+        {
+          "register": "r21",
+          "type": "test_usad_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r23",
+          "type": "xyra_lending_v32.aleo/deposit_usad.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "test_usad_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "lte"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "test_usad_stablecoin.aleo/transfer_private_to_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "available_liquidity",
+        "supply_index",
+        "total_deposited"
+      ],
+      "finalize_state_writes": [
+        "available_liquidity",
+        "total_deposited"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "is.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "withdraw": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "LendingPosition.record"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        },
+        {
+          "register": "r2",
+          "type": "field.private"
+        },
+        {
+          "register": "r3",
+          "type": "u64.private"
+        },
+        {
+          "register": "r4",
+          "type": "u64.private"
+        },
+        {
+          "register": "r5",
+          "type": "u64.private"
+        },
+        {
+          "register": "r6",
+          "type": "u64.private"
+        },
+        {
+          "register": "r7",
+          "type": "u64.private"
+        },
+        {
+          "register": "r8",
+          "type": "u64.private"
+        },
+        {
+          "register": "r9",
+          "type": "u64.private"
+        },
+        {
+          "register": "r10",
+          "type": "u64.private"
+        },
+        {
+          "register": "r11",
+          "type": "u64.private"
+        },
+        {
+          "register": "r12",
+          "type": "u64.private"
+        },
+        {
+          "register": "r13",
+          "type": "u64.private"
+        },
+        {
+          "register": "r14",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r337",
+          "type": "LendingPosition.record"
+        },
+        {
+          "register": "r343",
+          "type": "xyra_lending_v32.aleo/withdraw.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "and",
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "lte",
+        "or",
+        "ternary"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "U64Triple.public"
+        },
+        {
+          "register": "r3",
+          "type": "U64Triple.public"
+        },
+        {
+          "register": "r4",
+          "type": "U64Triple.public"
+        },
+        {
+          "register": "r5",
+          "type": "U64Triple.public"
+        },
+        {
+          "register": "r6",
+          "type": "U64Triple.public"
+        },
+        {
+          "register": "r7",
+          "type": "u64.public"
+        },
+        {
+          "register": "r8",
+          "type": "u128.public"
+        },
+        {
+          "register": "r9",
+          "type": "u128.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "asset_ltv",
+        "asset_price",
+        "available_liquidity",
+        "borrow_index",
+        "supply_index",
+        "total_deposited"
+      ],
+      "finalize_state_writes": [
+        "available_liquidity",
+        "total_deposited"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "gt",
+        "is.eq",
+        "lte",
+        "or",
+        "ternary"
+      ],
+      "snark_verify": false
+    },
+    "borrow": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "LendingPosition.record"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        },
+        {
+          "register": "r2",
+          "type": "field.private"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        },
+        {
+          "register": "r4",
+          "type": "u64.public"
+        },
+        {
+          "register": "r5",
+          "type": "u64.public"
+        },
+        {
+          "register": "r6",
+          "type": "u64.public"
+        },
+        {
+          "register": "r7",
+          "type": "u64.public"
+        },
+        {
+          "register": "r8",
+          "type": "u64.public"
+        },
+        {
+          "register": "r9",
+          "type": "u64.public"
+        },
+        {
+          "register": "r10",
+          "type": "u64.public"
+        },
+        {
+          "register": "r11",
+          "type": "u64.public"
+        },
+        {
+          "register": "r12",
+          "type": "u64.public"
+        },
+        {
+          "register": "r13",
+          "type": "u64.public"
+        },
+        {
+          "register": "r14",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r157",
+          "type": "LendingPosition.record"
+        },
+        {
+          "register": "r158",
+          "type": "xyra_lending_v32.aleo/borrow.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "lte",
+        "or",
+        "ternary"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        },
+        {
+          "register": "r4",
+          "type": "u64.public"
+        },
+        {
+          "register": "r5",
+          "type": "u64.public"
+        },
+        {
+          "register": "r6",
+          "type": "u64.public"
+        },
+        {
+          "register": "r7",
+          "type": "u64.public"
+        },
+        {
+          "register": "r8",
+          "type": "u64.public"
+        },
+        {
+          "register": "r9",
+          "type": "u64.public"
+        },
+        {
+          "register": "r10",
+          "type": "u64.public"
+        },
+        {
+          "register": "r11",
+          "type": "u64.public"
+        },
+        {
+          "register": "r12",
+          "type": "u64.public"
+        },
+        {
+          "register": "r13",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "asset_ltv",
+        "asset_price",
+        "borrow_index",
+        "supply_index",
+        "total_borrowed"
+      ],
+      "finalize_state_writes": [
+        "total_borrowed"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "is.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "repay_with_credits": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "LendingPosition.record"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r2",
+          "type": "u64.private"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        },
+        {
+          "register": "r4",
+          "type": "u64.public"
+        },
+        {
+          "register": "r5",
+          "type": "u64.public"
+        },
+        {
+          "register": "r6",
+          "type": "u64.public"
+        },
+        {
+          "register": "r7",
+          "type": "u64.public"
+        },
+        {
+          "register": "r8",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r109",
+          "type": "LendingPosition.record"
+        },
+        {
+          "register": "r110",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r112",
+          "type": "xyra_lending_v32.aleo/repay_with_credits.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "lte",
+        "ternary"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_private_to_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        },
+        {
+          "register": "r4",
+          "type": "u64.public"
+        },
+        {
+          "register": "r5",
+          "type": "u64.public"
+        },
+        {
+          "register": "r6",
+          "type": "u64.public"
+        },
+        {
+          "register": "r7",
+          "type": "u64.public"
+        },
+        {
+          "register": "r8",
+          "type": "u64.public"
+        },
+        {
+          "register": "r9",
+          "type": "u64.public"
+        },
+        {
+          "register": "r10",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "asset_price",
+        "available_liquidity",
+        "borrow_index",
+        "total_borrowed"
+      ],
+      "finalize_state_writes": [
+        "available_liquidity",
+        "total_borrowed"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "lte",
+        "ternary"
+      ],
+      "snark_verify": false
+    },
+    "repay_usdcx": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "LendingPosition.record"
+        },
+        {
+          "register": "r1",
+          "type": "test_usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r2",
+          "type": "u64.private"
+        },
+        {
+          "register": "r3",
+          "type": "[test_usdcx_stablecoin.aleo/MerkleProof"
+        },
+        {
+          "register": "r4",
+          "type": "u64.public"
+        },
+        {
+          "register": "r5",
+          "type": "u64.public"
+        },
+        {
+          "register": "r6",
+          "type": "u64.public"
+        },
+        {
+          "register": "r7",
+          "type": "u64.public"
+        },
+        {
+          "register": "r8",
+          "type": "u64.public"
+        },
+        {
+          "register": "r9",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r110",
+          "type": "LendingPosition.record"
+        },
+        {
+          "register": "r112",
+          "type": "test_usdcx_stablecoin.aleo/ComplianceRecord.record"
+        },
+        {
+          "register": "r113",
+          "type": "test_usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r115",
+          "type": "xyra_lending_v32.aleo/repay_usdcx.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "test_usdcx_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "lte",
+        "ternary"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "test_usdcx_stablecoin.aleo/transfer_private_to_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        },
+        {
+          "register": "r4",
+          "type": "u64.public"
+        },
+        {
+          "register": "r5",
+          "type": "u64.public"
+        },
+        {
+          "register": "r6",
+          "type": "u64.public"
+        },
+        {
+          "register": "r7",
+          "type": "u64.public"
+        },
+        {
+          "register": "r8",
+          "type": "u64.public"
+        },
+        {
+          "register": "r9",
+          "type": "u64.public"
+        },
+        {
+          "register": "r10",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "asset_price",
+        "available_liquidity",
+        "borrow_index",
+        "total_borrowed"
+      ],
+      "finalize_state_writes": [
+        "available_liquidity",
+        "total_borrowed"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "lte",
+        "ternary"
+      ],
+      "snark_verify": false
+    },
+    "repay_usad": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "LendingPosition.record"
+        },
+        {
+          "register": "r1",
+          "type": "test_usad_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r2",
+          "type": "u64.private"
+        },
+        {
+          "register": "r3",
+          "type": "[test_usad_stablecoin.aleo/MerkleProof"
+        },
+        {
+          "register": "r4",
+          "type": "u64.public"
+        },
+        {
+          "register": "r5",
+          "type": "u64.public"
+        },
+        {
+          "register": "r6",
+          "type": "u64.public"
+        },
+        {
+          "register": "r7",
+          "type": "u64.public"
+        },
+        {
+          "register": "r8",
+          "type": "u64.public"
+        },
+        {
+          "register": "r9",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r110",
+          "type": "LendingPosition.record"
+        },
+        {
+          "register": "r112",
+          "type": "test_usad_stablecoin.aleo/ComplianceRecord.record"
+        },
+        {
+          "register": "r113",
+          "type": "test_usad_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r115",
+          "type": "xyra_lending_v32.aleo/repay_usad.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "test_usad_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "lte",
+        "ternary"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "test_usad_stablecoin.aleo/transfer_private_to_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        },
+        {
+          "register": "r4",
+          "type": "u64.public"
+        },
+        {
+          "register": "r5",
+          "type": "u64.public"
+        },
+        {
+          "register": "r6",
+          "type": "u64.public"
+        },
+        {
+          "register": "r7",
+          "type": "u64.public"
+        },
+        {
+          "register": "r8",
+          "type": "u64.public"
+        },
+        {
+          "register": "r9",
+          "type": "u64.public"
+        },
+        {
+          "register": "r10",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "asset_price",
+        "available_liquidity",
+        "borrow_index",
+        "total_borrowed"
+      ],
+      "finalize_state_writes": [
+        "available_liquidity",
+        "total_borrowed"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "lte",
+        "ternary"
+      ],
+      "snark_verify": false
+    },
+    "self_liquidate_and_payout": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "LendingPosition.record"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r2",
+          "type": "u64.private"
+        },
+        {
+          "register": "r3",
+          "type": "field.private"
+        },
+        {
+          "register": "r4",
+          "type": "U64Triple.public"
+        },
+        {
+          "register": "r5",
+          "type": "U64Triple.public"
+        },
+        {
+          "register": "r6",
+          "type": "U64Triple.public"
+        },
+        {
+          "register": "r7",
+          "type": "U64Triple.public"
+        },
+        {
+          "register": "r8",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r194",
+          "type": "LendingPosition.record"
+        },
+        {
+          "register": "r195",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r197",
+          "type": "xyra_lending_v32.aleo/self_liquidate_and_payout.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "lte",
+        "or",
+        "ternary"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_private_to_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        },
+        {
+          "register": "r4",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "asset_liq_bonus",
+        "available_liquidity",
+        "total_borrowed",
+        "total_deposited"
+      ],
+      "finalize_state_writes": [
+        "available_liquidity",
+        "total_borrowed",
+        "total_deposited"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "gt",
+        "is.eq",
+        "lte",
+        "or",
+        "ternary"
+      ],
+      "snark_verify": false
+    },
+    "accrue_interest": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "xyra_lending_v32.aleo/accrue_interest.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "asset_base_rate",
+        "asset_reserve_factor",
+        "asset_slope_rate",
+        "borrow_index",
+        "last_accrual_block",
+        "protocol_fees",
+        "supply_index",
+        "total_borrowed",
+        "total_deposited"
+      ],
+      "finalize_state_writes": [
+        "borrow_apy",
+        "borrow_index",
+        "last_accrual_block",
+        "protocol_fees",
+        "supply_apy",
+        "supply_index"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "lte",
+        "ternary"
+      ],
+      "snark_verify": false
+    },
+    "set_asset_price": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "xyra_lending_v32.aleo/set_asset_price.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [
+        "asset_price"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "set_asset_params": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        },
+        {
+          "register": "r4",
+          "type": "u64.public"
+        },
+        {
+          "register": "r5",
+          "type": "u64.public"
+        },
+        {
+          "register": "r6",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r17",
+          "type": "xyra_lending_v32.aleo/set_asset_params.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "is.eq",
+        "lte",
+        "or"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        },
+        {
+          "register": "r4",
+          "type": "u64.public"
+        },
+        {
+          "register": "r5",
+          "type": "u64.public"
+        },
+        {
+          "register": "r6",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [
+        "asset_base_rate",
+        "asset_liq_bonus",
+        "asset_liq_threshold",
+        "asset_ltv",
+        "asset_reserve_factor",
+        "asset_slope_rate"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "withdraw_fees": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "xyra_lending_v32.aleo/withdraw_fees.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "protocol_fees"
+      ],
+      "finalize_state_writes": [
+        "protocol_fees"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "admin_update_asset": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        },
+        {
+          "register": "r4",
+          "type": "u64.public"
+        },
+        {
+          "register": "r5",
+          "type": "u64.public"
+        },
+        {
+          "register": "r6",
+          "type": "u64.public"
+        },
+        {
+          "register": "r7",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r19",
+          "type": "xyra_lending_v32.aleo/admin_update_asset.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "lte",
+        "or"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        },
+        {
+          "register": "r4",
+          "type": "u64.public"
+        },
+        {
+          "register": "r5",
+          "type": "u64.public"
+        },
+        {
+          "register": "r6",
+          "type": "u64.public"
+        },
+        {
+          "register": "r7",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [
+        "asset_base_rate",
+        "asset_liq_bonus",
+        "asset_liq_threshold",
+        "asset_ltv",
+        "asset_price",
+        "asset_reserve_factor",
+        "asset_slope_rate"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "set_flash_params": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "boolean.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r11",
+          "type": "xyra_lending_v32.aleo/set_flash_params.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "is.eq",
+        "lte",
+        "or"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "boolean.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [
+        "flash_enabled",
+        "flash_max_amount",
+        "flash_premium_bps"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "set_flash_strategy_allowed": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "boolean.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "xyra_lending_v32.aleo/set_flash_strategy_allowed.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "is.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "boolean.public"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [
+        "flash_strategy_allowed"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "flash_open": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.private"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        },
+        {
+          "register": "r2",
+          "type": "u64.private"
+        },
+        {
+          "register": "r3",
+          "type": "field.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r11",
+          "type": "xyra_lending_v32.aleo/flash_open.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "or"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        },
+        {
+          "register": "r4",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "available_liquidity",
+        "flash_active",
+        "flash_enabled",
+        "flash_max_amount",
+        "flash_strategy_allowed"
+      ],
+      "finalize_state_writes": [
+        "available_liquidity",
+        "flash_active",
+        "flash_asset",
+        "flash_min_profit",
+        "flash_principal",
+        "flash_strategy_id"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "is.eq",
+        "lte",
+        "or"
+      ],
+      "snark_verify": false
+    },
+    "flash_settle_with_credits": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        },
+        {
+          "register": "r2",
+          "type": "field.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r6",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r8",
+          "type": "xyra_lending_v32.aleo/flash_settle_with_credits.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_private_to_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "available_liquidity",
+        "flash_active",
+        "flash_asset",
+        "flash_min_profit",
+        "flash_premium_bps",
+        "flash_principal",
+        "flash_strategy_id",
+        "protocol_fees"
+      ],
+      "finalize_state_writes": [
+        "available_liquidity",
+        "flash_active",
+        "flash_min_profit",
+        "flash_principal",
+        "flash_strategy_id",
+        "protocol_fees"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte",
+        "is.eq",
+        "lte",
+        "or"
+      ],
+      "snark_verify": false
+    },
+    "flash_settle_with_usdcx": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "test_usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        },
+        {
+          "register": "r2",
+          "type": "field.private"
+        },
+        {
+          "register": "r3",
+          "type": "[test_usdcx_stablecoin.aleo/MerkleProof"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r8",
+          "type": "test_usdcx_stablecoin.aleo/ComplianceRecord.record"
+        },
+        {
+          "register": "r9",
+          "type": "test_usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r11",
+          "type": "xyra_lending_v32.aleo/flash_settle_with_usdcx.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "test_usdcx_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "test_usdcx_stablecoin.aleo/transfer_private_to_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "available_liquidity",
+        "flash_active",
+        "flash_asset",
+        "flash_min_profit",
+        "flash_premium_bps",
+        "flash_principal",
+        "flash_strategy_id",
+        "protocol_fees"
+      ],
+      "finalize_state_writes": [
+        "available_liquidity",
+        "flash_active",
+        "flash_min_profit",
+        "flash_principal",
+        "flash_strategy_id",
+        "protocol_fees"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte",
+        "is.eq",
+        "lte",
+        "or"
+      ],
+      "snark_verify": false
+    },
+    "flash_settle_with_usad": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "test_usad_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        },
+        {
+          "register": "r2",
+          "type": "field.private"
+        },
+        {
+          "register": "r3",
+          "type": "[test_usad_stablecoin.aleo/MerkleProof"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r8",
+          "type": "test_usad_stablecoin.aleo/ComplianceRecord.record"
+        },
+        {
+          "register": "r9",
+          "type": "test_usad_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r11",
+          "type": "xyra_lending_v32.aleo/flash_settle_with_usad.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "test_usad_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "is.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "test_usad_stablecoin.aleo/transfer_private_to_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "available_liquidity",
+        "flash_active",
+        "flash_asset",
+        "flash_min_profit",
+        "flash_premium_bps",
+        "flash_principal",
+        "flash_strategy_id",
+        "protocol_fees"
+      ],
+      "finalize_state_writes": [
+        "available_liquidity",
+        "flash_active",
+        "flash_min_profit",
+        "flash_principal",
+        "flash_strategy_id",
+        "protocol_fees"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte",
+        "is.eq",
+        "lte",
+        "or"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "accrue_interest",
+    "admin_update_asset",
+    "borrow",
+    "deposit_usad",
+    "deposit_usdcx",
+    "deposit_with_credits",
+    "flash_open",
+    "flash_settle_with_credits",
+    "flash_settle_with_usad",
+    "flash_settle_with_usdcx",
+    "initialize",
+    "open_lending_account",
+    "repay_usad",
+    "repay_usdcx",
+    "repay_with_credits",
+    "self_liquidate_and_payout",
+    "set_asset_params",
+    "set_asset_price",
+    "set_flash_params",
+    "set_flash_strategy_allowed",
+    "withdraw",
+    "withdraw_fees"
+  ],
+  "cross_contract_refs": [
+    "credits.aleo",
+    "test_usad_stablecoin.aleo",
+    "test_usdcx_stablecoin.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "initialize",
+    "open_lending_account",
+    "deposit_with_credits",
+    "deposit_usdcx",
+    "deposit_usad",
+    "withdraw",
+    "borrow",
+    "repay_with_credits",
+    "repay_usdcx",
+    "repay_usad",
+    "self_liquidate_and_payout",
+    "accrue_interest",
+    "set_asset_price",
+    "set_asset_params",
+    "withdraw_fees",
+    "admin_update_asset",
+    "set_flash_params",
+    "set_flash_strategy_allowed",
+    "flash_open",
+    "flash_settle_with_credits",
+    "flash_settle_with_usdcx",
+    "flash_settle_with_usad"
+  ],
+  "state_commitment_surfaces": {
+    "records": [
+      "LendingPosition"
+    ],
+    "mappings": [
+      "asset_base_rate",
+      "asset_liq_bonus",
+      "asset_liq_threshold",
+      "asset_ltv",
+      "asset_price",
+      "asset_reserve_factor",
+      "asset_slope_rate",
+      "available_liquidity",
+      "borrow_apy",
+      "borrow_index",
+      "flash_active",
+      "flash_asset",
+      "flash_enabled",
+      "flash_max_amount",
+      "flash_min_profit",
+      "flash_premium_bps",
+      "flash_principal",
+      "flash_strategy_allowed",
+      "flash_strategy_id",
+      "initialized",
+      "last_accrual_block",
+      "protocol_fees",
+      "supply_apy",
+      "supply_index",
+      "total_borrowed",
+      "total_deposited"
+    ],
+    "future_outputs": [
+      {
+        "function": "initialize",
+        "output": "xyra_lending_v32.aleo/initialize.future"
+      },
+      {
+        "function": "open_lending_account",
+        "output": "xyra_lending_v32.aleo/open_lending_account.future"
+      },
+      {
+        "function": "deposit_with_credits",
+        "output": "xyra_lending_v32.aleo/deposit_with_credits.future"
+      },
+      {
+        "function": "deposit_usdcx",
+        "output": "xyra_lending_v32.aleo/deposit_usdcx.future"
+      },
+      {
+        "function": "deposit_usad",
+        "output": "xyra_lending_v32.aleo/deposit_usad.future"
+      },
+      {
+        "function": "withdraw",
+        "output": "xyra_lending_v32.aleo/withdraw.future"
+      },
+      {
+        "function": "borrow",
+        "output": "xyra_lending_v32.aleo/borrow.future"
+      },
+      {
+        "function": "repay_with_credits",
+        "output": "xyra_lending_v32.aleo/repay_with_credits.future"
+      },
+      {
+        "function": "repay_usdcx",
+        "output": "xyra_lending_v32.aleo/repay_usdcx.future"
+      },
+      {
+        "function": "repay_usad",
+        "output": "xyra_lending_v32.aleo/repay_usad.future"
+      },
+      {
+        "function": "self_liquidate_and_payout",
+        "output": "xyra_lending_v32.aleo/self_liquidate_and_payout.future"
+      },
+      {
+        "function": "accrue_interest",
+        "output": "xyra_lending_v32.aleo/accrue_interest.future"
+      },
+      {
+        "function": "set_asset_price",
+        "output": "xyra_lending_v32.aleo/set_asset_price.future"
+      },
+      {
+        "function": "set_asset_params",
+        "output": "xyra_lending_v32.aleo/set_asset_params.future"
+      },
+      {
+        "function": "withdraw_fees",
+        "output": "xyra_lending_v32.aleo/withdraw_fees.future"
+      },
+      {
+        "function": "admin_update_asset",
+        "output": "xyra_lending_v32.aleo/admin_update_asset.future"
+      },
+      {
+        "function": "set_flash_params",
+        "output": "xyra_lending_v32.aleo/set_flash_params.future"
+      },
+      {
+        "function": "set_flash_strategy_allowed",
+        "output": "xyra_lending_v32.aleo/set_flash_strategy_allowed.future"
+      },
+      {
+        "function": "flash_open",
+        "output": "xyra_lending_v32.aleo/flash_open.future"
+      },
+      {
+        "function": "flash_settle_with_credits",
+        "output": "xyra_lending_v32.aleo/flash_settle_with_credits.future"
+      },
+      {
+        "function": "flash_settle_with_usdcx",
+        "output": "xyra_lending_v32.aleo/flash_settle_with_usdcx.future"
+      },
+      {
+        "function": "flash_settle_with_usad",
+        "output": "xyra_lending_v32.aleo/flash_settle_with_usad.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

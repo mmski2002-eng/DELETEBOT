@@ -1,0 +1,672 @@
+{
+  "program_id": "par_store_v1.aleo",
+  "calls_24h_or_metric_window": 1,
+  "imports": [
+    "par_store_inventory_v1.aleo",
+    "puzzle_arcade_ticket_v002.aleo"
+  ],
+  "mappings": {},
+  "structs": {
+    "Code": [
+      {
+        "name": "pt1",
+        "type": "u128"
+      },
+      {
+        "name": "pt2",
+        "type": "u128"
+      },
+      {
+        "name": "pt3",
+        "type": "u128"
+      },
+      {
+        "name": "pt4",
+        "type": "u128"
+      },
+      {
+        "name": "pt5",
+        "type": "u128"
+      }
+    ]
+  },
+  "records": {},
+  "functions": {
+    "purchase": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u16.private"
+        },
+        {
+          "register": "r1",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r2",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r5",
+          "type": "par_store_v1.aleo/purchase.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "par_store_inventory_v1.aleo",
+        "puzzle_arcade_ticket_v002.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "par_store_inventory_v1.aleo/validate_purchase.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "purchase2": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u16.private"
+        },
+        {
+          "register": "r1",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r2",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r3",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r8",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r10",
+          "type": "par_store_v1.aleo/purchase2.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "par_store_inventory_v1.aleo",
+        "puzzle_arcade_ticket_v002.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "par_store_inventory_v1.aleo/validate_purchase.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "purchase3": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u16.private"
+        },
+        {
+          "register": "r1",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r2",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r3",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r4",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r11",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r13",
+          "type": "par_store_v1.aleo/purchase3.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "par_store_inventory_v1.aleo",
+        "puzzle_arcade_ticket_v002.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "par_store_inventory_v1.aleo/validate_purchase.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "purchase4": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u16.private"
+        },
+        {
+          "register": "r1",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r2",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r3",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r4",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r5",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r14",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r16",
+          "type": "par_store_v1.aleo/purchase4.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "par_store_inventory_v1.aleo",
+        "puzzle_arcade_ticket_v002.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "par_store_inventory_v1.aleo/validate_purchase.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "purchase5": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u16.private"
+        },
+        {
+          "register": "r1",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r2",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r3",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r4",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r5",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r6",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r17",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r19",
+          "type": "par_store_v1.aleo/purchase5.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "par_store_inventory_v1.aleo",
+        "puzzle_arcade_ticket_v002.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "par_store_inventory_v1.aleo/validate_purchase.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "purchase6": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u16.private"
+        },
+        {
+          "register": "r1",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r2",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r3",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r4",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r5",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r6",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r7",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r20",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r22",
+          "type": "par_store_v1.aleo/purchase6.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "par_store_inventory_v1.aleo",
+        "puzzle_arcade_ticket_v002.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "par_store_inventory_v1.aleo/validate_purchase.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "purchase7": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u16.private"
+        },
+        {
+          "register": "r1",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r2",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r3",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r4",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r5",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r6",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r7",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r8",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r23",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r25",
+          "type": "par_store_v1.aleo/purchase7.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "par_store_inventory_v1.aleo",
+        "puzzle_arcade_ticket_v002.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "par_store_inventory_v1.aleo/validate_purchase.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "purchase8": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u16.private"
+        },
+        {
+          "register": "r1",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r2",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r3",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r4",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r5",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r6",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r7",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r8",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r9",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r26",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r28",
+          "type": "par_store_v1.aleo/purchase8.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "par_store_inventory_v1.aleo",
+        "puzzle_arcade_ticket_v002.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "par_store_inventory_v1.aleo/validate_purchase.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "purchase9": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u16.private"
+        },
+        {
+          "register": "r1",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r2",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r3",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r4",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r5",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r6",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r7",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r8",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r9",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r10",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r29",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r31",
+          "type": "par_store_v1.aleo/purchase9.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "par_store_inventory_v1.aleo",
+        "puzzle_arcade_ticket_v002.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "par_store_inventory_v1.aleo/validate_purchase.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "purchase",
+    "purchase2",
+    "purchase3",
+    "purchase4",
+    "purchase5",
+    "purchase6",
+    "purchase7",
+    "purchase8",
+    "purchase9"
+  ],
+  "cross_contract_refs": [
+    "par_store_inventory_v1.aleo",
+    "puzzle_arcade_ticket_v002.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "purchase",
+    "purchase2",
+    "purchase3",
+    "purchase4",
+    "purchase5",
+    "purchase6",
+    "purchase7",
+    "purchase8",
+    "purchase9"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [],
+    "future_outputs": [
+      {
+        "function": "purchase",
+        "output": "par_store_v1.aleo/purchase.future"
+      },
+      {
+        "function": "purchase2",
+        "output": "par_store_v1.aleo/purchase2.future"
+      },
+      {
+        "function": "purchase3",
+        "output": "par_store_v1.aleo/purchase3.future"
+      },
+      {
+        "function": "purchase4",
+        "output": "par_store_v1.aleo/purchase4.future"
+      },
+      {
+        "function": "purchase5",
+        "output": "par_store_v1.aleo/purchase5.future"
+      },
+      {
+        "function": "purchase6",
+        "output": "par_store_v1.aleo/purchase6.future"
+      },
+      {
+        "function": "purchase7",
+        "output": "par_store_v1.aleo/purchase7.future"
+      },
+      {
+        "function": "purchase8",
+        "output": "par_store_v1.aleo/purchase8.future"
+      },
+      {
+        "function": "purchase9",
+        "output": "par_store_v1.aleo/purchase9.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

@@ -1,0 +1,100 @@
+{
+  "program_id": "gmp_lib_v1.aleo",
+  "calls_24h_or_metric_window": 43,
+  "imports": [],
+  "mappings": {},
+  "structs": {
+    "Validators": [
+      {
+        "name": "validator_1",
+        "type": "[u8"
+      },
+      {
+        "name": "validator_2",
+        "type": "[u8"
+      },
+      {
+        "name": "validator_3",
+        "type": "[u8"
+      },
+      {
+        "name": "validator_4",
+        "type": "[u8"
+      },
+      {
+        "name": "validator_5",
+        "type": "[u8"
+      }
+    ]
+  },
+  "records": {},
+  "functions": {
+    "u128_to_bytes32": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u128.private"
+        },
+        {
+          "register": "r1",
+          "type": "u128.private"
+        },
+        {
+          "register": "r2",
+          "type": "u128.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r5",
+          "type": "[u8"
+        },
+        {
+          "register": "r8",
+          "type": "[u8"
+        },
+        {
+          "register": "r11",
+          "type": "[u8"
+        },
+        {
+          "register": "r12",
+          "type": "gmp_lib_v1.aleo/u128_to_bytes32.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "u128_to_bytes32"
+  ],
+  "cross_contract_refs": [],
+  "async_or_conditional_paths": [
+    "u128_to_bytes32"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [],
+    "future_outputs": [
+      {
+        "function": "u128_to_bytes32",
+        "output": "gmp_lib_v1.aleo/u128_to_bytes32.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

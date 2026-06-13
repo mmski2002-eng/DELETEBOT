@@ -1,0 +1,314 @@
+[
+  {
+    "program_id": "credits.aleo",
+    "calls": 64268
+  },
+  {
+    "program_id": "puzzle_arcade_coin_v002.aleo",
+    "calls": 12992
+  },
+  {
+    "program_id": "puzzle_arcade_ticket_v002.aleo",
+    "calls": 5487
+  },
+  {
+    "program_id": "par_giveaways_v1.aleo",
+    "calls": 2160
+  },
+  {
+    "program_id": "puzzle_spinner_v003.aleo",
+    "calls": 1961
+  },
+  {
+    "program_id": "mystery_city_v001.aleo",
+    "calls": 1065
+  },
+  {
+    "program_id": "token_registry.aleo",
+    "calls": 1008
+  },
+  {
+    "program_id": "whalepool_easystaking_v2.aleo",
+    "calls": 831
+  },
+  {
+    "program_id": "arcn_pool_v2_2_2.aleo",
+    "calls": 299
+  },
+  {
+    "program_id": "whalepool_easystaking_v3.aleo",
+    "calls": 255
+  },
+  {
+    "program_id": "betastaking.aleo",
+    "calls": 185
+  },
+  {
+    "program_id": "arcn_whitelist.aleo",
+    "calls": 181
+  },
+  {
+    "program_id": "zkwork_staker_v1.aleo",
+    "calls": 148
+  },
+  {
+    "program_id": "pondo_protocol.aleo",
+    "calls": 147
+  },
+  {
+    "program_id": "arcn_compliance_v1.aleo",
+    "calls": 146
+  },
+  {
+    "program_id": "zkwork_staking.aleo",
+    "calls": 137
+  },
+  {
+    "program_id": "squash_v4.aleo",
+    "calls": 116
+  },
+  {
+    "program_id": "autojoin_credits_2_10.aleo",
+    "calls": 97
+  },
+  {
+    "program_id": "connection_v1.aleo",
+    "calls": 90
+  },
+  {
+    "program_id": "par_store_inventory_v1.aleo",
+    "calls": 88
+  },
+  {
+    "program_id": "asset_manager_helper_v1.aleo",
+    "calls": 86
+  },
+  {
+    "program_id": "asset_manager_core_v1.aleo",
+    "calls": 86
+  },
+  {
+    "program_id": "wrapped_credits.aleo",
+    "calls": 83
+  },
+  {
+    "program_id": "arcn_pub_v2_2_3.aleo",
+    "calls": 79
+  },
+  {
+    "program_id": "arcn_priv_v2_2_3.aleo",
+    "calls": 64
+  },
+  {
+    "program_id": "usdcx_stablecoin.aleo",
+    "calls": 62
+  },
+  {
+    "program_id": "usad_stablecoin.aleo",
+    "calls": 58
+  },
+  {
+    "program_id": "rate_limit_v1.aleo",
+    "calls": 43
+  },
+  {
+    "program_id": "gmp_lib_v1.aleo",
+    "calls": 43
+  },
+  {
+    "program_id": "mining_jouny_test_v2.aleo",
+    "calls": 31
+  },
+  {
+    "program_id": "arcn_puc_out_helper_swap_v2_2_6.aleo",
+    "calls": 26
+  },
+  {
+    "program_id": "withdrawaler.aleo",
+    "calls": 20
+  },
+  {
+    "program_id": "vlink_token_bridge_v3.aleo",
+    "calls": 19
+  },
+  {
+    "program_id": "betastaker_1.aleo",
+    "calls": 18
+  },
+  {
+    "program_id": "betastaker_3.aleo",
+    "calls": 16
+  },
+  {
+    "program_id": "betastaker_2.aleo",
+    "calls": 14
+  },
+  {
+    "program_id": "betastaker_4.aleo",
+    "calls": 14
+  },
+  {
+    "program_id": "aj_usdcx_stablecoin_2_10.aleo",
+    "calls": 13
+  },
+  {
+    "program_id": "ans_registrar_usd2.aleo",
+    "calls": 13
+  },
+  {
+    "program_id": "delegator3.aleo",
+    "calls": 13
+  },
+  {
+    "program_id": "delegator4.aleo",
+    "calls": 12
+  },
+  {
+    "program_id": "vlink_token_service_cd_v3.aleo",
+    "calls": 12
+  },
+  {
+    "program_id": "delegator2.aleo",
+    "calls": 12
+  },
+  {
+    "program_id": "delegator1.aleo",
+    "calls": 12
+  },
+  {
+    "program_id": "delegator5.aleo",
+    "calls": 12
+  },
+  {
+    "program_id": "aj_usad_stablecoin_2_10.aleo",
+    "calls": 10
+  },
+  {
+    "program_id": "betastaking_ext.aleo",
+    "calls": 10
+  },
+  {
+    "program_id": "hyp_mailbox.aleo",
+    "calls": 10
+  },
+  {
+    "program_id": "validator_oracle.aleo",
+    "calls": 10
+  },
+  {
+    "program_id": "arcn_puc_in_helper_swap_v2_2_5.aleo",
+    "calls": 9
+  },
+  {
+    "program_id": "hyp_ism_manager.aleo",
+    "calls": 9
+  },
+  {
+    "program_id": "puzzle_capital_multisig.aleo",
+    "calls": 8
+  },
+  {
+    "program_id": "vlink_token_service_v3.aleo",
+    "calls": 7
+  },
+  {
+    "program_id": "usdcx_bridge.aleo",
+    "calls": 7
+  },
+  {
+    "program_id": "vlink_holding_cd_v3.aleo",
+    "calls": 6
+  },
+  {
+    "program_id": "puzzle_capital_pool.aleo",
+    "calls": 6
+  },
+  {
+    "program_id": "certchain_equity_v1.aleo",
+    "calls": 5
+  },
+  {
+    "program_id": "vlink_holding_v3.aleo",
+    "calls": 4
+  },
+  {
+    "program_id": "pubpriv_router_credits_v3.aleo",
+    "calls": 3
+  },
+  {
+    "program_id": "shield_wallet_promo_ethdenver.aleo",
+    "calls": 3
+  },
+  {
+    "program_id": "hyp_warp_token_sol.aleo",
+    "calls": 2
+  },
+  {
+    "program_id": "hyp_hook_manager.aleo",
+    "calls": 2
+  },
+  {
+    "program_id": "lsp_host_ui_v1.aleo",
+    "calls": 2
+  },
+  {
+    "program_id": "hyp_warp_token_usdt.aleo",
+    "calls": 2
+  },
+  {
+    "program_id": "arcn_puc_in_helper_v2_2_4.aleo",
+    "calls": 2
+  },
+  {
+    "program_id": "hyp_warp_token_usdc.aleo",
+    "calls": 2
+  },
+  {
+    "program_id": "hyp_warp_token_usad.aleo",
+    "calls": 2
+  },
+  {
+    "program_id": "phantom_mint.aleo",
+    "calls": 1
+  },
+  {
+    "program_id": "lsp_host_bank_v1.aleo",
+    "calls": 1
+  },
+  {
+    "program_id": "puzzle_proving_partner.aleo",
+    "calls": 1
+  },
+  {
+    "program_id": "hyp_warp_token_wbtc.aleo",
+    "calls": 1
+  },
+  {
+    "program_id": "hyp_warp_token_eth.aleo",
+    "calls": 1
+  },
+  {
+    "program_id": "arcn_credits_in_helper_v2_2_3.aleo",
+    "calls": 1
+  },
+  {
+    "program_id": "victim_vault.aleo",
+    "calls": 1
+  },
+  {
+    "program_id": "hyp_dispatch_proxy.aleo",
+    "calls": 1
+  },
+  {
+    "program_id": "whalepool_puzzlecapital.aleo",
+    "calls": 1
+  },
+  {
+    "program_id": "autojoin_token_registry_2_9.aleo",
+    "calls": 1
+  },
+  {
+    "program_id": "par_store_v1.aleo",
+    "calls": 1
+  }
+]

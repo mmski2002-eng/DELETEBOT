@@ -1,0 +1,484 @@
+{
+  "program_id": "rate_limit_v1.aleo",
+  "calls_24h_or_metric_window": 43,
+  "imports": [
+    "gmp_checksum_v1.aleo"
+  ],
+  "mappings": {
+    "owner_rate_limit": {
+      "key": "boolean.public",
+      "value": "address.public"
+    },
+    "asset_manager_core": {
+      "key": "boolean.public",
+      "value": "address.public"
+    },
+    "pause_status": {
+      "key": "boolean.public",
+      "value": "boolean.public"
+    },
+    "token_config": {
+      "key": "field.public",
+      "value": "RateLimitConfig.public"
+    }
+  },
+  "structs": {
+    "RateLimitConfig": [
+      {
+        "name": "rate_per_second",
+        "type": "u128"
+      },
+      {
+        "name": "last_updated",
+        "type": "i64"
+      },
+      {
+        "name": "available",
+        "type": "u128"
+      },
+      {
+        "name": "max_available",
+        "type": "u128"
+      }
+    ]
+  },
+  "records": {},
+  "functions": {
+    "initialize": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "rate_limit_v1.aleo/initialize.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owner_rate_limit"
+      ],
+      "finalize_state_writes": [
+        "asset_manager_core",
+        "owner_rate_limit",
+        "pause_status"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "set_asset_manager": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "rate_limit_v1.aleo/set_asset_manager.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owner_rate_limit"
+      ],
+      "finalize_state_writes": [
+        "asset_manager_core"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "pause": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "rate_limit_v1.aleo/pause.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owner_rate_limit",
+        "pause_status"
+      ],
+      "finalize_state_writes": [
+        "pause_status"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "unpause": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "rate_limit_v1.aleo/unpause.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owner_rate_limit",
+        "pause_status"
+      ],
+      "finalize_state_writes": [
+        "pause_status"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "set_rate_limit": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.private"
+        },
+        {
+          "register": "r1",
+          "type": "u128.private"
+        },
+        {
+          "register": "r2",
+          "type": "u128.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "rate_limit_v1.aleo/set_rate_limit.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u128.public"
+        },
+        {
+          "register": "r2",
+          "type": "u128.public"
+        },
+        {
+          "register": "r3",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owner_rate_limit",
+        "token_config"
+      ],
+      "finalize_state_writes": [
+        "token_config"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "is.eq",
+        "lt",
+        "ternary"
+      ],
+      "snark_verify": false
+    },
+    "reset_rate_limit": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "rate_limit_v1.aleo/reset_rate_limit.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owner_rate_limit",
+        "token_config"
+      ],
+      "finalize_state_writes": [
+        "token_config"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "verify_withdraw": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.private"
+        },
+        {
+          "register": "r1",
+          "type": "u128.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "rate_limit_v1.aleo/verify_withdraw.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u128.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "asset_manager_core",
+        "pause_status",
+        "token_config"
+      ],
+      "finalize_state_writes": [
+        "token_config"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "gte",
+        "lt",
+        "ternary"
+      ],
+      "snark_verify": false
+    },
+    "transfer_ownership": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "rate_limit_v1.aleo/transfer_ownership.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.neq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owner_rate_limit"
+      ],
+      "finalize_state_writes": [
+        "owner_rate_limit"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "initialize",
+    "pause",
+    "reset_rate_limit",
+    "set_asset_manager",
+    "set_rate_limit",
+    "transfer_ownership",
+    "unpause",
+    "verify_withdraw"
+  ],
+  "cross_contract_refs": [
+    "gmp_checksum_v1.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "initialize",
+    "set_asset_manager",
+    "pause",
+    "unpause",
+    "set_rate_limit",
+    "reset_rate_limit",
+    "verify_withdraw",
+    "transfer_ownership"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [
+      "asset_manager_core",
+      "owner_rate_limit",
+      "pause_status",
+      "token_config"
+    ],
+    "future_outputs": [
+      {
+        "function": "initialize",
+        "output": "rate_limit_v1.aleo/initialize.future"
+      },
+      {
+        "function": "set_asset_manager",
+        "output": "rate_limit_v1.aleo/set_asset_manager.future"
+      },
+      {
+        "function": "pause",
+        "output": "rate_limit_v1.aleo/pause.future"
+      },
+      {
+        "function": "unpause",
+        "output": "rate_limit_v1.aleo/unpause.future"
+      },
+      {
+        "function": "set_rate_limit",
+        "output": "rate_limit_v1.aleo/set_rate_limit.future"
+      },
+      {
+        "function": "reset_rate_limit",
+        "output": "rate_limit_v1.aleo/reset_rate_limit.future"
+      },
+      {
+        "function": "verify_withdraw",
+        "output": "rate_limit_v1.aleo/verify_withdraw.future"
+      },
+      {
+        "function": "transfer_ownership",
+        "output": "rate_limit_v1.aleo/transfer_ownership.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

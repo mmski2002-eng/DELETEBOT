@@ -1,0 +1,240 @@
+{-
+ * @title Torch LP Account Contract
+ * @notice Manages the LP account operations including deposits and cancellations
+ * @dev 
+ * - This contract handles the core logic for managing LP account balances and interactions.
+ * - It includes functions for handling deposits and cancellations of LP accounts.
+ * - Once the LP account confirms receipt of all deposit assets, it will send a deposit all message to the pool contract.
+ -}
+#include "../imports/stdlib.fc";
+#include "../common/workchain.fc";
+#include "../common/constants.fc";
+#include "../common/errors.fc";
+#include "../common/opcode.fc";
+#include "../common/deploy_contracts/utils.fc";
+#include "../common/deploy_contracts/adapter.fc";
+#include "../common/deposit/adapter.fc";
+#include "../common/utils.fc";
+#include "../common/gas.fc";
+#include "storages.fc";
+#include "constants.fc";
+
+() lp_account::handle_deposit(
+    int ctx::value,
+    int ctx::fwd_fee,
+    int query_id,
+    slice provider,
+    slice pool_address,
+    cell assets,
+    cell provide_info,
+    cell deposit_params,
+    cell next
+) impure inline {
+    ;; If lp_account's meta_asset is not null, next should not be null
+    if ~ lp_account::meta_asset.cell_null?() {
+        throw_unless(error::wrong_next, ~ next.cell_null?());
+    }
+
+    ;; Unpack provide info to update lp_account's balances
+    (int provide_amount, cell provide_asset, cell targets) = unpack_provide_info(provide_info);
+
+    ;; Set balance by provide_asset and provide_amount
+    (
+        lp_account::balances, 
+        int meta_amount,
+        int should_refund?
+    ) = set_lp_account_balances(
+        lp_account::sorted_assets_tuple, 
+        provide_asset, 
+        provide_amount, 
+        lp_account::balances_tuple, 
+        lp_account::meta_asset
+    );
+
+    ;; If provider dulplicated deposit, refund asset to provider
+    if ((should_refund?) | ((lp_account::meta_balance > 0) & (meta_amount > 0))){
+        ;; Calculate gas
+        (int total_fee, int gas_consume) = lp_account::duplicate_deposit_fee(ctx::fwd_fee);
+        throw_unless(error::duplicate_deposit, ctx::value >= total_fee);
+        int remaining_ton = ctx::value - gas_consume;
+
+        ;; Unpack deposit params
+        (_, _, _, _, cell reject_payload, _) = unpack_deposit_params(deposit_params);
+        
+        ;; Doesn't need forward TON, TON vault will carry all reamining TON, and jetton transfer will automatically display the message
+        reject_payload = pack_forward_payload(select_forward_payload(reject_payload, pack_message_payload("Duplicate deposit (Refund)")));
+
+        ;; Ask vault transfer asset to provider
+        ask_vault_transfer(
+            lp_account::factory,
+            get_lp_account_proof(query_id, provider, pool_address, lp_account::assets), 
+            provide_asset, 
+            lp_account::base_code, 
+            query_id, 
+            provider, 
+            provider,
+            provide_amount, 
+            reject_payload, 
+            remaining_ton
+        );
+        commit();
+        throw(error::duplicate_deposit);
+    }
+
+    ;; Update meta_amount if is meta asset, otherwise meta_amount is 0
+    lp_account::meta_balance += meta_amount;
+
+    ;; Check that next's meta_asset and meta_amount are equal to lp_account's meta_asset and meta_amount if next is not null
+    if ~ next.cell_null?() {
+        (int next_type, _, int meta_amount, cell meta_asset) = parse_deposit_next(next);
+        ;; If next is deposit next, check meta_asset and meta_amount
+        if next_type == DEPOSIT_NEXT_TYPE {
+            ;; lp_account's meta_asset should not be null
+            throw_unless(error::wrong_next, ~ lp_account::meta_asset.cell_null?());
+            throw_unless(error::wrong_meta_asset, lp_account::meta_asset.cell_hash() == meta_asset.cell_hash());
+            throw_unless(error::wrong_meta_amount, lp_account::meta_amount == meta_amount);
+        }
+        ;; We don't need to check swap next, because provider won't send meta asset during deposit and swap process
+    }
+
+    ;; if balance is equal to targets and meta_amount is equal to meta_balance, then send deposit all to pool
+    if (lp_account::balances.cell_hash() == targets.cell_hash()) & (lp_account::meta_amount == lp_account::meta_balance) {
+        cell deposit_all_body = pack_deposit_all(query_id, provider, assets, targets, deposit_params, next);
+        
+        ;; Send deposit all to pool and self-destruct
+        send_cell_msg(BOUNCEABLE, pool_address, 0, deposit_all_body, SEND_MODE_DESTROY + SEND_MODE_CARRY_ALL_BALANCE);
+    }
+
+    lp_account::save_data();
+    return ();
+}
+
+() route_internal(slice ctx::sender, int ctx::value, int ctx::fwd_fee, slice ctx::body) impure inline {
+    ;; Load op and query id
+    (int op, int query_id) = ctx::body~load_op_and_query_id();
+
+    if op == op::install {
+        ;; Only factory can send deposit_internal message to lp_account
+        throw_unless(error::not_factory, equal_slices_bits(ctx::sender, lp_account::factory));
+
+        ;; lp account is already updated to the new code and new data, so we don't need them here
+        cell new_code = ctx::body~load_ref(); 
+        cell new_data = ctx::body~load_ref(); 
+        cell callback_payload = ctx::body~load_maybe_ref();
+        ctx::body.end_parse();
+
+        ;; Parse callback_payload
+        (_, _, cell body) = parse_callback_payload(callback_payload);
+
+        ;; The deposit info is in the callback_payload 
+        slice deposit_internal_slice = body.begin_parse();
+        deposit_internal_slice~load_op_and_query_id();
+        slice provider = deposit_internal_slice~load_msg_addr();
+        slice pool_address = deposit_internal_slice~load_msg_addr();
+        cell assets = deposit_internal_slice~load_ref();
+        cell provide_info = deposit_internal_slice~load_ref();
+        cell deposit_params = deposit_internal_slice~load_maybe_ref();
+        cell next = deposit_internal_slice~load_maybe_ref();
+        deposit_internal_slice.end_parse();
+
+        return lp_account::handle_deposit(
+            ctx::value,
+            ctx::fwd_fee,
+            query_id,
+            provider,
+            pool_address,
+            assets,
+            provide_info,
+            deposit_params,
+            next
+        );
+    }
+
+    if op == op::cancel_deposit {
+        int remaining_ton = ctx::value - CANCEL_DEPOSIT_TON;
+        int sending_ton_for_each_asset = remaining_ton / cal_nonzeros(lp_account::balances_tuple);
+
+        ;; Only provider or admin can cancel deposit
+        throw_unless(error::invalid_sender, 
+            equal_slices_bits(ctx::sender, lp_account::provider) | equal_slices_bits(ctx::sender, lp_account::admin)
+        );
+
+        ;; Refund assets in the balacne tuple to provider
+        send_assets(
+            query_id, 
+            lp_account::provider, 
+            lp_account::provider, 
+            lp_account::balances_tuple, 
+            lp_account::sorted_assets_tuple, 
+            lp_account::factory, 
+            get_lp_account_proof(lp_account::query_id, lp_account::provider, lp_account::pool_address, lp_account::assets), 
+            lp_account::base_code, 
+            sending_ton_for_each_asset,
+            no_skip_asset(),
+            pack_forward_payload(NO_NEED_FORWARD_TON, pack_message_payload("Cancel deposit (Refund)"))
+        );
+
+        ;; Send comment to provider and self destruct
+        send_cell_msg(
+            BOUNCEABLE , 
+            lp_account::provider, 
+            CANCEL_DEPOSIT_TON, 
+            pack_message_payload("Cancel deposit (Refund)"),
+            SEND_MODE_DESTROY + SEND_MODE_CARRY_ALL_BALANCE
+        );
+        return ();
+    }
+
+    if op == op::update {
+        ;; Only admin can update lp_account
+        throw_unless(error::not_admin, equal_slices_bits(ctx::sender, lp_account::admin));
+        update_contract(ctx::body);
+        return ();
+    }
+
+    throw(error::wrong_op);
+}
+
+() main(int ctx::value, cell in_msg_full, slice ctx::body) impure {
+    slice s = in_msg_full.begin_parse();
+    int flags = s~load_msg_flags();
+
+    if (is_bounced(flags)) { ;; skip all bounced messages
+        return ();
+    }
+
+    ;; Only receive TON
+    if (ctx::body.slice_bits() < 32) {
+        return ();
+    }
+    
+    ;; get context
+    (slice ctx::sender, int ctx::fwd_fee) = s~retrieve_ctx(MY_WORKCHAIN);
+
+    ;; Load data from storage
+    lp_account::load_data();
+
+    ;; route function to handle internal message
+    route_internal(ctx::sender, ctx::value, ctx::fwd_fee, ctx::body);
+}
+
+{- Getters -}
+
+(int, slice, int, slice, slice, cell, int, int, cell, cell, cell, cell, slice ) get_lp_account_data() method_id {
+    lp_account::load_data();
+    return (
+        lp_account::contract_type,
+        lp_account::admin,
+        lp_account::query_id,
+        lp_account::provider,
+        lp_account::pool_address,
+        lp_account::meta_asset,
+        lp_account::meta_amount,
+        lp_account::meta_balance,
+        lp_account::assets,
+        lp_account::balances,
+        lp_account::target,
+        lp_account::base_code,
+        lp_account::factory
+    );
+}

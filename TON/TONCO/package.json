@@ -1,0 +1,16 @@
+{
+  "name": "tonco",
+  "version": "1.0.0",
+  "description": "",
+  "main": "generate_init_link.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@ton/core": "^0.63.1"
+  }
+}

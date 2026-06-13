@@ -1,0 +1,150 @@
+[
+  {
+    "program_id": "credits.aleo",
+    "calls": 22343
+  },
+  {
+    "program_id": "dara_dp_credit_v5.aleo",
+    "calls": 4380
+  },
+  {
+    "program_id": "dara_dp_sol_v5.aleo",
+    "calls": 4371
+  },
+  {
+    "program_id": "dara_dp_eth_v5.aleo",
+    "calls": 4367
+  },
+  {
+    "program_id": "dara_dp_btc_v5.aleo",
+    "calls": 4363
+  },
+  {
+    "program_id": "dara_lend_v8.aleo",
+    "calls": 488
+  },
+  {
+    "program_id": "dara_lend_v8_credits.aleo",
+    "calls": 323
+  },
+  {
+    "program_id": "dara_flash_v1.aleo",
+    "calls": 262
+  },
+  {
+    "program_id": "autojoin_credits_2_10.aleo",
+    "calls": 143
+  },
+  {
+    "program_id": "loyalty_token.aleo",
+    "calls": 100
+  },
+  {
+    "program_id": "test_usdcx_stablecoin.aleo",
+    "calls": 87
+  },
+  {
+    "program_id": "note_server_messagingv4.aleo",
+    "calls": 83
+  },
+  {
+    "program_id": "loyalty_rewards.aleo",
+    "calls": 32
+  },
+  {
+    "program_id": "autojoin_credits_15_16.aleo",
+    "calls": 29
+  },
+  {
+    "program_id": "test_usad_stablecoin.aleo",
+    "calls": 24
+  },
+  {
+    "program_id": "test_usdcx_bridge.aleo",
+    "calls": 22
+  },
+  {
+    "program_id": "token_registry.aleo",
+    "calls": 14
+  },
+  {
+    "program_id": "ldgbatcher_ppub_28.aleo",
+    "calls": 11
+  },
+  {
+    "program_id": "aj_test_usdcx_stablecoin_2_10.aleo",
+    "calls": 9
+  },
+  {
+    "program_id": "ldgbatcher_p28.aleo",
+    "calls": 7
+  },
+  {
+    "program_id": "f89b0d41ebe03707fd1f37ef95255ac.aleo",
+    "calls": 7
+  },
+  {
+    "program_id": "ldgbatcher_ppub_1114.aleo",
+    "calls": 5
+  },
+  {
+    "program_id": "xyra_lending_v32.aleo",
+    "calls": 5
+  },
+  {
+    "program_id": "humanity_link_aid_v9d.aleo",
+    "calls": 4
+  },
+  {
+    "program_id": "zk_pay_proofs_privacy_v29.aleo",
+    "calls": 3
+  },
+  {
+    "program_id": "aj_test_usad_stablecoin_2_10.aleo",
+    "calls": 3
+  },
+  {
+    "program_id": "zk_pay_proofs_privacy_wallet_v6.aleo",
+    "calls": 2
+  },
+  {
+    "program_id": "cryptsign_v4.aleo",
+    "calls": 2
+  },
+  {
+    "program_id": "test_hyp_ism_manager.aleo",
+    "calls": 2
+  },
+  {
+    "program_id": "test_hyp_mailbox.aleo",
+    "calls": 2
+  },
+  {
+    "program_id": "test_hyp_warp_token_usad.aleo",
+    "calls": 2
+  },
+  {
+    "program_id": "woo_genesis_1988.aleo",
+    "calls": 2
+  },
+  {
+    "program_id": "wrapped_credits.aleo",
+    "calls": 2
+  },
+  {
+    "program_id": "autojoin_token_registry_2_9.aleo",
+    "calls": 1
+  },
+  {
+    "program_id": "ldgbatcher_p910.aleo",
+    "calls": 1
+  },
+  {
+    "program_id": "toka_token.aleo",
+    "calls": 1
+  },
+  {
+    "program_id": "ldgbatcher_p1114.aleo",
+    "calls": 1
+  }
+]

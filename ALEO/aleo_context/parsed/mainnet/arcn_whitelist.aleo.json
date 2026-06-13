@@ -1,0 +1,222 @@
+{
+  "program_id": "arcn_whitelist.aleo",
+  "calls_24h_or_metric_window": 181,
+  "imports": [
+    "arcn_access_manager_v1.aleo"
+  ],
+  "mappings": {
+    "whitelist": {
+      "key": "address.public",
+      "value": "boolean.public"
+    },
+    "settings": {
+      "key": "field.public",
+      "value": "field.public"
+    }
+  },
+  "structs": {},
+  "records": {},
+  "functions": {
+    "initialize": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "arcn_whitelist.aleo/initialize.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [],
+      "finalize_state_reads": [
+        "settings"
+      ],
+      "finalize_state_writes": [
+        "settings",
+        "whitelist"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "branch.eq"
+      ],
+      "snark_verify": false
+    },
+    "whitelist_caller": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "boolean.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "arcn_whitelist.aleo/whitelist_caller.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "arcn_access_manager_v1.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.neq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "arcn_access_manager_v1.aleo/check_access_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "boolean.public"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [
+        "whitelist"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "toggle_whitelist": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "boolean.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "arcn_whitelist.aleo/toggle_whitelist.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "arcn_access_manager_v1.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "arcn_access_manager_v1.aleo/check_access_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "boolean.public"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [
+        "settings"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "ternary"
+      ],
+      "snark_verify": false
+    },
+    "is_caller_eligible": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "arcn_whitelist.aleo/is_caller_eligible.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "settings",
+        "whitelist"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "is.eq"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "initialize",
+    "is_caller_eligible",
+    "toggle_whitelist",
+    "whitelist_caller"
+  ],
+  "cross_contract_refs": [
+    "arcn_access_manager_v1.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "initialize",
+    "whitelist_caller",
+    "toggle_whitelist",
+    "is_caller_eligible"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [
+      "settings",
+      "whitelist"
+    ],
+    "future_outputs": [
+      {
+        "function": "initialize",
+        "output": "arcn_whitelist.aleo/initialize.future"
+      },
+      {
+        "function": "whitelist_caller",
+        "output": "arcn_whitelist.aleo/whitelist_caller.future"
+      },
+      {
+        "function": "toggle_whitelist",
+        "output": "arcn_whitelist.aleo/toggle_whitelist.future"
+      },
+      {
+        "function": "is_caller_eligible",
+        "output": "arcn_whitelist.aleo/is_caller_eligible.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

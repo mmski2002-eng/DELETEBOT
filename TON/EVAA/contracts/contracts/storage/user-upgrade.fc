@@ -1,0 +1,22 @@
+;; This file is licensed under the Business Source License (BUSL).
+;; See the LICENSE.md file in the project root for more information.
+
+#include "../external/stdlib.fc";
+#include "../data/universal-dict.fc";
+
+;;note need to have this function but it can be empty since we don`t use universal storage anymore
+(cell) user::upgrade::pack_universal_storage(
+    slice master_address, slice owner_address, cell user_principals, int state,
+    int tracking_supply_index, int tracking_borrow_index, int dutch_auction_start_timestamp, cell backup_cell
+) method_id(0x153) {
+    cell storage = new_dict();
+    return storage;
+}
+
+;;note need to have this function but it can be empty since we don`t use universal storage anymore
+(cell) user::upgrade::pack_universal_storage_after_v6(
+    slice master_address, slice owner_address, cell user_principals, int state, cell user_rewards, cell backup_cell_1, cell backup_cell_2
+) method_id(0x1561) {
+    cell storage = new_dict();
+    return storage;
+}

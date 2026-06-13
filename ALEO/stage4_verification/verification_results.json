@@ -1,0 +1,140 @@
+{
+  "generatedAt": "2026-05-12T21:45:47.339Z",
+  "results": [
+    {
+      "id": "S1",
+      "title": "VLink duplicate attestor threshold",
+      "status": "REFUTED_BY_SOURCE",
+      "contracts": [
+        "vlink_token_bridge_v3.aleo"
+      ],
+      "expectedForBug": "duplicate non-zero attestors accepted",
+      "actual": "duplicate non-zero attestors rejected by pairwise is.neq checks before signature counting",
+      "sourceEvidence": [
+        "vlink_token_bridge_v3.aleo consume checks r9[0] != r9[1..4] unless r9[0] is zero",
+        "then r9[1] != r9[2..4], r9[2] != r9[3..4], r9[3] != r9[4]",
+        "zero-address placeholders do not increment signer count"
+      ],
+      "model": {
+        "attestors": [
+          "aleo_attestor_A",
+          "aleo_attestor_A",
+          "aleo_attestor_A",
+          "aleo_attestor_A",
+          "aleo_attestor_A"
+        ],
+        "pairwiseUnique": false,
+        "transitionAccepts": false
+      },
+      "bountyAction": "Do not submit as duplicate-attestor bug. Retain bridge review for PacketId/domain binding instead."
+    },
+    {
+      "id": "S2",
+      "title": "credits.aleo partial unbond becomes full unbond near minimum",
+      "status": "SOURCE_CONFIRMED_BEHAVIOR",
+      "contracts": [
+        "credits.aleo",
+        "whalepool_easystaking_v3.aleo"
+      ],
+      "inputData": {
+        "bonded": "10000000500",
+        "requested": "1000",
+        "minDelegatorStake": "10000000000"
+      },
+      "expectedForExploit": "1000",
+      "actual": "10000000500",
+      "sourceEvidence": [
+        "credits.aleo finalize unbond_public: lt residual 10_000_000_000u64",
+        "ternary r18 r5.microcredits r2 selects full bonded amount when residual below minimum"
+      ],
+      "exploitStatus": "Needs wrapper-level accounting mismatch proof. Core behavior alone may be intentional."
+    },
+    {
+      "id": "S3",
+      "title": "token_registry authorization expiry reordering",
+      "status": "SOURCE_CONFIRMED_EDGE_CASE",
+      "contracts": [
+        "token_registry.aleo",
+        "arcn_pool_v2_2_2.aleo",
+        "hyp_warp_token_*.aleo"
+      ],
+      "inputData": {
+        "proofHeight": 999,
+        "authorizedUntil": 1000,
+        "orderedFinalizeHeight": 1000,
+        "delayedFinalizeHeight": 1001
+      },
+      "actual": {
+        "proofBuiltBeforeExpiry": true,
+        "orderedPasses": true,
+        "delayedPasses": false
+      },
+      "sourceEvidence": [
+        "token_registry finalize paths check lte block.height authorized_until"
+      ],
+      "exploitStatus": "Likely DoS/griefing unless downstream state drift is demonstrated."
+    },
+    {
+      "id": "S4",
+      "title": "Pondo TVL tolerance accepts 2% drift",
+      "status": "SOURCE_CONFIRMED_BEHAVIOR",
+      "contracts": [
+        "pondo_protocol.aleo",
+        "validator_oracle.aleo",
+        "credits.aleo",
+        "delegator1-5.aleo"
+      ],
+      "inputData": {
+        "reported": "1020000000000",
+        "actualTvl": "1000000000000"
+      },
+      "actual": {
+        "lower": "999600000000",
+        "upper": "1040400000000",
+        "accepted": true
+      },
+      "sourceEvidence": [
+        "pondo_protocol finalize set_oracle_tvl computes reported*98/100 and reported*102/100 bounds"
+      ],
+      "exploitStatus": "Needs downstream effect on shares/rewards/rebalance to become bounty-ready."
+    },
+    {
+      "id": "S5",
+      "title": "USDCX bridge previous freeze root accepted inside window",
+      "status": "SOURCE_CONFIRMED_BEHAVIOR",
+      "contracts": [
+        "usdcx_bridge.aleo",
+        "usdcx_freezelist.aleo",
+        "usdcx_stablecoin.aleo"
+      ],
+      "inputData": {
+        "rootUpdatedHeight": 50000,
+        "blockHeightWindow": 360,
+        "mintHeight": 50100
+      },
+      "actual": {
+        "previousRootAccepted": true,
+        "validUntilExclusive": 50360
+      },
+      "sourceEvidence": [
+        "usdcx_bridge finalize mint_private accepts freeze_list_root[2u8] when root_updated_height + block_height_window > block.height"
+      ],
+      "exploitStatus": "Potentially bounty-worthy if frozen address can mint using old root after freeze update."
+    },
+    {
+      "id": "S6",
+      "title": "DARA stale oracle consumer acceptance",
+      "status": "NEEDS_PATH_PROOF",
+      "contracts": [
+        "dara_dp_credit_v5.aleo",
+        "dara_lend_v8.aleo",
+        "dara_flash_v1.aleo"
+      ],
+      "sourceEvidence": [
+        "update_oracle_price has monotonic round and delta checks",
+        "price_update_block mappings exist in lending/flash suite"
+      ],
+      "exploitStatus": "Need exact consumer function without max-age check. Testnet impact lowers bounty value."
+    }
+  ]
+}

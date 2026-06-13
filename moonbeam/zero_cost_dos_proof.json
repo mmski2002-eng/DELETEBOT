@@ -1,0 +1,90 @@
+{
+  "title": "Zero-Cost DoS Attack on CallPermit Relayers via Dual-Nonce Race",
+  "claim_being_refuted": "Moonbeam: 'relayers should simulate transactions before submission'",
+  "attack_mechanism": [
+    "Attacker signs PermitA (approve MAX, nonce N) — off-chain, 0 gas — hands to RelayerA",
+    "Attacker signs PermitB (approve 0,   nonce N) — off-chain, 0 gas — hands to RelayerB",
+    "RelayerA simulates PermitA at current head → SUCCESS (nonce N still unconsumed)",
+    "RelayerB front-runs: dispatches PermitB → nonce N consumed, allowance set to 0",
+    "RelayerA dispatches PermitA → nonce N already consumed → dispatch() reverts",
+    "RelayerA loses gas. Attacker paid 0. Repeat with nonce N+1 indefinitely."
+  ],
+  "why_simulation_fails_as_mitigation": [
+    "Simulation and inclusion are not atomic — a race window always exists",
+    "Attacker can sign multiple valid permits at the same nonce for free",
+    "CallPermit nonce rollback means failed permits remain reusable for replay (separate issue)",
+    "Relayer cannot distinguish a 'legitimate' permit from a deliberately doomed one"
+  ],
+  "network": "Moonbeam chainId 1284, Chopsticks fork",
+  "rounds": [
+    {
+      "round": 1,
+      "attackerNonce": "0",
+      "attackerGasSpent": "0 GLMR",
+      "simulationResult": "SUCCESS",
+      "simulationExitReason": {
+        "succeed": "Returned"
+      },
+      "permitBExit": {
+        "Succeed": "Returned"
+      },
+      "allowanceAfterPermitB": "0",
+      "nonceAfterPermitB": "1",
+      "permitAExit": {
+        "Revert": "Reverted"
+      },
+      "permitARevert": "Invalid permit",
+      "permitAFailed": true,
+      "relayerAGlmrLost": "0.0048435 GLMR"
+    },
+    {
+      "round": 2,
+      "attackerNonce": "1",
+      "attackerGasSpent": "0 GLMR",
+      "simulationResult": "SUCCESS",
+      "simulationExitReason": {
+        "succeed": "Returned"
+      },
+      "permitBExit": {
+        "Succeed": "Returned"
+      },
+      "allowanceAfterPermitB": "0",
+      "nonceAfterPermitB": "2",
+      "permitAExit": {
+        "Revert": "Reverted"
+      },
+      "permitARevert": "Invalid permit",
+      "permitAFailed": true,
+      "relayerAGlmrLost": "0.0048435 GLMR"
+    },
+    {
+      "round": 3,
+      "attackerNonce": "2",
+      "attackerGasSpent": "0 GLMR",
+      "simulationResult": "SUCCESS",
+      "simulationExitReason": {
+        "succeed": "Returned"
+      },
+      "permitBExit": {
+        "Succeed": "Returned"
+      },
+      "allowanceAfterPermitB": "0",
+      "nonceAfterPermitB": "3",
+      "permitAExit": {
+        "Revert": "Reverted"
+      },
+      "permitARevert": "Invalid permit",
+      "permitAFailed": true,
+      "relayerAGlmrLost": "0.0048435 GLMR"
+    }
+  ],
+  "summary": {
+    "totalRounds": 3,
+    "dosRoundsProven": 3,
+    "totalRelayerALoss": "0.0145305 GLMR",
+    "attackerCost": "0 GLMR",
+    "repeatable": true,
+    "requiresAttackerFunds": false
+  },
+  "conclusion": "Moonbeam's 'simulate before sending' mitigation is provably insufficient. An attacker signs two conflicting permits at the same nonce — zero gas cost. Simulation passes because the sabotage permit has not yet been dispatched. State changes between simulation and inclusion; this race window is inherent to blockchains. Attack repeats indefinitely; each new round requires only one new off-chain signature pair."
+}

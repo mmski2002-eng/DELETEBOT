@@ -1,0 +1,251 @@
+{-
+ * @title Torch TON Vault Contract
+ * @notice Manages the TON vault operations including deposits and swaps
+ * @dev 
+ * - This contract handles the core logic for managing TON assets within the vault.
+ * - The vault contract serves as the entry point for user interactions.
+ * - It includes functions for handling deposits and swaps of TON assets.
+ * - The vault contract will verify the validity of the source address through the proof. If the proof is valid, it will execute payout operations.
+ -}
+#include "../../imports/stdlib.fc";
+#include "../../common/workchain.fc";
+#include "../../common/constants.fc";
+#include "../../common/errors.fc";
+#include "../../common/opcode.fc";
+#include "../../common/gas.fc";
+#include "../../common/deploy_contracts/utils.fc";
+#include "../../common/deploy_contracts/adapter.fc";
+#include "../../common/deposit/adapter.fc";
+#include "../../common/swap/adapter.fc";
+#include "../../common/withdraw/adapter.fc";
+#include "../../common/utils.fc";
+#include "storages.fc";
+#include "constants.fc";
+#include "../utils.fc";
+
+() ton_vault::handle_payout(
+    int ctx::value,
+    int ctx::fwd_fee,
+    int query_id,
+    slice provider,
+    slice recipient,
+    int amount,
+    cell payload
+) impure inline {
+    ;; Calculate gas
+    (int total_fee, int gas_consume) = vault::payout_fee(ctx::fwd_fee, TON_ASSET_TYPE);
+    throw_unless(error::not_enough_ton, ctx::value >= total_fee);
+    int remaining_ton = ctx::value - gas_consume;
+
+    ;; Parse payload to get forward_payload
+    (_, cell forward_payload) = parse_forward_payload(payload);
+
+    ;; Pack forward payload for TON
+    cell ton_forward_payload = begin_cell().store_op(op::success_ton_payout).store_query_id(query_id).store_maybe_ref(forward_payload).end_cell();
+    
+    ;; Send TON to recipient
+    if equal_slices_bits(provider, recipient) {
+        send_cell_msg(BOUNCEABLE , recipient, amount + remaining_ton, ton_forward_payload, SEND_MODE_REGULAR);
+    } else {
+        send_cell_msg(BOUNCEABLE , recipient, amount, ton_forward_payload, SEND_MODE_REGULAR);
+        send_cell_msg(BOUNCEABLE , provider, remaining_ton, pack_message_payload("Excess TON"), SEND_MODE_REGULAR);
+    }
+    return ();
+}
+
+() route_internal(slice ctx::sender, int ctx::value, int ctx::fwd_fee, slice ctx::body) impure inline {
+    ;; Load op and query id
+    (int op, int query_id) = ctx::body~load_op_and_query_id();
+
+    if op == op::deposit {
+        int amount = ctx::body~load_coins();
+
+        ;; Amount must be greater than 0
+        throw_unless(error::invalid_amount, amount > 0);
+
+        cell deposit_info = ctx::body~load_ref();
+        ctx::body.end_parse();
+
+        slice deposit_info_slice = deposit_info.begin_parse();
+        deposit_info_slice~skip_op();
+
+        ;; Unpack deposit info to check whether is deposit one liquidity to pool
+        (slice pool_address, cell assets, cell targets, cell deposit_params, cell next) = unpack_deposit(deposit_info_slice);
+
+        ;; Check is deposit one liquidity to pool
+        int is_deposit_one? = check_deposit_one?(assets, next);
+
+        ;; Calculate gas
+        (int total_fee, int gas_consume) = vault::deposit_fee(ctx::fwd_fee, is_deposit_one?, TON_ASSET_TYPE);
+        throw_unless(error::not_enough_ton, ctx::value >= total_fee + amount);
+        int remaining_ton = ctx::value - gas_consume - amount;
+
+        return vault::handle_deposit(
+            remaining_ton,
+            is_deposit_one?,
+            query_id,
+            pack_ton_asset(),
+            ctx::sender,
+            amount,
+            pool_address,
+            assets,
+            targets,
+            deposit_params,
+            next
+        );
+    }
+
+    if op == op::swap {
+        int amount = ctx::body~load_coins();
+
+        ;; Amount must be greater than 0
+        throw_unless(error::invalid_amount, amount > 0);
+        
+        cell swap_info = ctx::body~load_ref();
+        ctx::body.end_parse();
+
+        slice swap_info_slice = swap_info.begin_parse();
+        swap_info_slice~skip_op();
+        slice pool_address = swap_info_slice~load_msg_addr();
+        cell asset_out = swap_info_slice~load_ref();
+        int deadline = swap_info_slice~load_uint(TIMESTAMP_SIZE);
+        cell swap_params = swap_info_slice~load_maybe_ref();
+        cell next = swap_info_slice~load_maybe_ref();
+        swap_info_slice.end_parse();
+
+        ;; Check deadline
+        if now() > deadline {
+            ;; Return TON to sender if deadline is expired
+
+            ;; Unpack swap params to get reject payload
+            (
+                _, 
+                _, 
+                _,
+                _, 
+                cell reject_payload, 
+                _
+            ) = unpack_swap_params(swap_params);
+
+
+            reject_payload = reject_payload.cell_null?()
+                ? pack_message_payload("Deadline expired (Refund)")
+                : reject_payload;
+
+            int gas_consume = vault::deadline_refund_fee(TON_ASSET_TYPE);
+            int remaining_ton = ctx::value - gas_consume;
+            
+            send_cell_msg(BOUNCEABLE , ctx::sender, remaining_ton, reject_payload, SEND_MODE_REGULAR);
+
+            commit();
+            throw(error::expired);
+        }
+
+        ;; Calculate gas
+        (int total_fee, int gas_consume) = vault::swap_fee(ctx::fwd_fee, TON_ASSET_TYPE, next);
+        throw_unless(error::not_enough_ton, ctx::value >= total_fee + amount);
+        int remaining_ton = ctx::value - amount - gas_consume;
+
+        return vault::handle_swap(
+            remaining_ton,   
+            query_id,
+            pack_ton_asset(),
+            ctx::sender,
+            amount,
+            pool_address,
+            asset_out,
+            swap_params,
+            next
+        );
+    }
+
+    if op == op::payout {
+        int proof = ctx::body~load_uint(PROOF_SIZE);
+        ;; Only contracts that deployed by factory can send payout message
+        (_, slice valid_sender) = get_base_init_and_address(vault::factory, proof, vault::base_code);
+        throw_unless(error::invalid_sender, equal_slices_bits(ctx::sender, valid_sender));
+
+        slice provider = ctx::body~load_msg_addr();
+        slice recipient = ctx::body~load_msg_addr();
+        cell asset_out = ctx::body~load_ref();
+        ;; Check asset out is vault asset
+        throw_unless(error::wrong_assets, asset_out.cell_hash() == pack_ton_asset().cell_hash());
+
+        int amount = ctx::body~load_coins();
+        cell payload = ctx::body~load_maybe_ref();
+        ctx::body.end_parse();
+
+        return ton_vault::handle_payout(
+            ctx::value,
+            ctx::fwd_fee,
+            query_id,
+            provider,
+            recipient,
+            amount,
+            payload
+        );
+    }
+
+    if op == op::update {
+        throw_unless(error::not_admin, equal_slices_bits(ctx::sender, vault::admin));
+        update_contract(ctx::body);
+        return ();
+    }
+
+    if op == op::transfer_admin {
+        ;; Only admin can transfer admin
+        throw_unless(error::not_admin, equal_slices_bits(ctx::sender, vault::admin));
+        
+        slice new_admin = ctx::body~load_msg_addr();
+        ctx::body.end_parse();
+
+        ;; Update admin
+        vault::admin = new_admin;
+
+        ;; Save data to storage
+        vault::save_data();
+        return ();
+    }
+
+    throw(error::wrong_op);
+}
+
+() main(int ctx::value, cell in_msg_full, slice ctx::body) impure {
+    slice s = in_msg_full.begin_parse();
+    int flags = s~load_msg_flags();
+
+    if (is_bounced(flags)) { ;; skip all bounced messages
+        return ();
+    }
+
+    ;; Only receive TON
+    if (ctx::body.slice_bits() < 32) {
+        return ();
+    }
+    
+    ;; get context
+    (slice ctx::sender, int ctx::fwd_fee) = s~retrieve_ctx(MY_WORKCHAIN);
+
+    ;; Load data from storage
+    vault::load_data();
+
+    ;; route function to handle internal message
+    route_internal(ctx::sender, ctx::value, ctx::fwd_fee, ctx::body);
+}
+
+{- Getters -}
+
+cell get_vault_data() method_id {
+    vault::load_data();
+    return begin_cell()
+        .store_uint(vault::contract_type, CONTRACT_TYPE_SIZE)
+        .store_uint(vault::asset_type, ASSET_TYPE_SIZE)
+        .store_slice(vault::admin)
+        .store_ref(
+            begin_cell()
+            .store_ref(vault::base_code)
+            .store_slice(vault::factory)
+            .end_cell()
+        )
+        .end_cell();
+}

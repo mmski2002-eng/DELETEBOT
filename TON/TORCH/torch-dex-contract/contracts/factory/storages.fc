@@ -1,0 +1,43 @@
+global slice factory::admin;
+global cell factory::base_code;
+global cell factory::lp_account_code;
+global cell factory::vault_codes;       ;; dict <uint4, Cell>, key: vault asset type, value: vault code
+global int factory::signer_key;         ;; uint256
+global cell factory::pool_codes;        ;; dict <uint4, Cell>, key: pool type, value: pool code
+global cell factory::lp_wallet_code;
+global cell factory::admin_fee_config;  ;; dict <uint4, coins>, key: pool type, value: admin fee numerator
+
+() factory::load_data() impure inline_ref {
+	slice ds = get_data().begin_parse();
+    factory::admin = ds~load_msg_addr();
+    factory::base_code = ds~load_ref();
+    factory::lp_account_code = ds~load_ref();
+    factory::vault_codes = ds~load_dict();
+
+    cell pool_cell = ds~load_ref();
+    slice pool_cell_slice = pool_cell.begin_parse();
+    factory::signer_key = pool_cell_slice~load_uint(SIGNER_KEY_SIZE);
+    factory::pool_codes = pool_cell_slice~load_dict();
+    factory::lp_wallet_code = pool_cell_slice~load_ref();
+    factory::admin_fee_config = pool_cell_slice~load_dict();
+    pool_cell_slice.end_parse();
+	ds.end_parse();
+}
+
+() factory::save_data() impure inline_ref {
+	begin_cell()
+        .store_slice(factory::admin)
+        .store_ref(factory::base_code)
+        .store_ref(factory::lp_account_code)
+        .store_dict(factory::vault_codes)
+        .store_ref(
+            begin_cell()
+            .store_uint(factory::signer_key, SIGNER_KEY_SIZE)
+            .store_dict(factory::pool_codes)
+            .store_ref(factory::lp_wallet_code)
+            .store_dict(factory::admin_fee_config)
+            .end_cell()
+        )
+    .end_cell()
+    .set_data();
+}

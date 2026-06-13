@@ -1,0 +1,313 @@
+{
+  "program_id": "par_store_inventory_v1.aleo",
+  "calls_24h_or_metric_window": 88,
+  "imports": [],
+  "mappings": {
+    "sku_prices": {
+      "key": "u16.public",
+      "value": "u64.public"
+    },
+    "sku_stock": {
+      "key": "u16.public",
+      "value": "u32.public"
+    }
+  },
+  "structs": {
+    "Code": [
+      {
+        "name": "pt1",
+        "type": "u128"
+      },
+      {
+        "name": "pt2",
+        "type": "u128"
+      },
+      {
+        "name": "pt3",
+        "type": "u128"
+      },
+      {
+        "name": "pt4",
+        "type": "u128"
+      },
+      {
+        "name": "pt5",
+        "type": "u128"
+      }
+    ]
+  },
+  "records": {
+    "Product": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "sku_id",
+        "type": "u16.private"
+      },
+      {
+        "name": "code",
+        "type": "Code.private"
+      }
+    ]
+  },
+  "functions": {
+    "set_sku_price": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u16.private"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "par_store_inventory_v1.aleo/set_sku_price.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u16.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [
+        "sku_prices"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "mint": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u16.private"
+        },
+        {
+          "register": "r1",
+          "type": "Code.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "Product.record"
+        },
+        {
+          "register": "r3",
+          "type": "par_store_inventory_v1.aleo/mint.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u16.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "sku_stock"
+      ],
+      "finalize_state_writes": [
+        "sku_stock"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "validate_purchase": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u16.private"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r7",
+          "type": "par_store_inventory_v1.aleo/validate_purchase.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "is.eq",
+        "or"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u16.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "sku_prices",
+        "sku_stock"
+      ],
+      "finalize_state_writes": [
+        "sku_stock"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gt"
+      ],
+      "snark_verify": false
+    },
+    "fulfill": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "Product.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "Product.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "shutdown": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "[u16"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "par_store_inventory_v1.aleo/shutdown.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "[u16"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [
+        "sku_prices",
+        "sku_stock"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "branch.eq"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "mint",
+    "set_sku_price",
+    "shutdown",
+    "validate_purchase"
+  ],
+  "cross_contract_refs": [],
+  "async_or_conditional_paths": [
+    "set_sku_price",
+    "mint",
+    "validate_purchase",
+    "fulfill",
+    "shutdown"
+  ],
+  "state_commitment_surfaces": {
+    "records": [
+      "Product"
+    ],
+    "mappings": [
+      "sku_prices",
+      "sku_stock"
+    ],
+    "future_outputs": [
+      {
+        "function": "set_sku_price",
+        "output": "par_store_inventory_v1.aleo/set_sku_price.future"
+      },
+      {
+        "function": "mint",
+        "output": "par_store_inventory_v1.aleo/mint.future"
+      },
+      {
+        "function": "validate_purchase",
+        "output": "par_store_inventory_v1.aleo/validate_purchase.future"
+      },
+      {
+        "function": "shutdown",
+        "output": "par_store_inventory_v1.aleo/shutdown.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

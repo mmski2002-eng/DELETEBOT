@@ -1,0 +1,114 @@
+{
+  "program_id": "betastaking_ext.aleo",
+  "calls_24h_or_metric_window": 10,
+  "imports": [
+    "betastaking.aleo",
+    "credits.aleo"
+  ],
+  "mappings": {},
+  "structs": {
+    "Settings": [
+      {
+        "name": "unstake_wait",
+        "type": "u32"
+      },
+      {
+        "name": "stake_paused",
+        "type": "boolean"
+      },
+      {
+        "name": "global_paused",
+        "type": "boolean"
+      },
+      {
+        "name": "max_reward_per_notify",
+        "type": "u64"
+      },
+      {
+        "name": "protocol_fee",
+        "type": "u16"
+      },
+      {
+        "name": "fee_account",
+        "type": "address"
+      },
+      {
+        "name": "fixed_stakers",
+        "type": "boolean"
+      }
+    ]
+  },
+  "records": {},
+  "functions": {
+    "stake": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "betastaking_ext.aleo/stake.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "betastaking.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "betastaking.aleo/stake_public.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "stake"
+  ],
+  "cross_contract_refs": [
+    "betastaking.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "stake"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [],
+    "future_outputs": [
+      {
+        "function": "stake",
+        "output": "betastaking_ext.aleo/stake.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

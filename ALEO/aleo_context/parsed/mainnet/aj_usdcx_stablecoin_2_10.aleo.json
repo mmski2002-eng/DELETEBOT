@@ -1,0 +1,534 @@
+{
+  "program_id": "aj_usdcx_stablecoin_2_10.aleo",
+  "calls_24h_or_metric_window": 13,
+  "imports": [
+    "merkle_tree.aleo",
+    "usdcx_freezelist.aleo",
+    "usdcx_multisig_core.aleo",
+    "usdcx_stablecoin.aleo"
+  ],
+  "mappings": {},
+  "structs": {
+    "MerkleProof": [
+      {
+        "name": "siblings",
+        "type": "[field"
+      },
+      {
+        "name": "leaf_index",
+        "type": "u32"
+      }
+    ],
+    "WalletEcdsaSigner": [
+      {
+        "name": "wallet_id",
+        "type": "address"
+      },
+      {
+        "name": "ecdsa_signer",
+        "type": "[u8"
+      }
+    ],
+    "AdminOp": [
+      {
+        "name": "op",
+        "type": "u8"
+      },
+      {
+        "name": "threshold",
+        "type": "u8"
+      },
+      {
+        "name": "aleo_signer",
+        "type": "address"
+      },
+      {
+        "name": "ecdsa_signer",
+        "type": "[u8"
+      }
+    ]
+  },
+  "records": {},
+  "functions": {
+    "join_2": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r1",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [
+        "usdcx_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "join_3": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r1",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r2",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [
+        "usdcx_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "join_4": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r1",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r2",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r3",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r6",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [
+        "usdcx_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "join_5": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r1",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r2",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r3",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r4",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r8",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [
+        "usdcx_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "join_6": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r1",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r2",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r3",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r4",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r5",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r10",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [
+        "usdcx_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "join_7": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r1",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r2",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r3",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r4",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r5",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r6",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r12",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [
+        "usdcx_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "join_8": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r1",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r2",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r3",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r4",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r5",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r6",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r7",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r14",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [
+        "usdcx_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "join_9": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r1",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r2",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r3",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r4",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r5",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r6",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r7",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r8",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r16",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [
+        "usdcx_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "join_10": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r1",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r2",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r3",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r4",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r5",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r6",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r7",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r8",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r9",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r18",
+          "type": "usdcx_stablecoin.aleo/Token.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [
+        "usdcx_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [],
+  "cross_contract_refs": [
+    "usdcx_stablecoin.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "join_2",
+    "join_3",
+    "join_4",
+    "join_5",
+    "join_6",
+    "join_7",
+    "join_8",
+    "join_9",
+    "join_10"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [],
+    "future_outputs": []
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

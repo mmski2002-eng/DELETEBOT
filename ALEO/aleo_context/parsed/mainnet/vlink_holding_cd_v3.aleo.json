@@ -1,0 +1,263 @@
+{
+  "program_id": "vlink_holding_cd_v3.aleo",
+  "calls_24h_or_metric_window": 6,
+  "imports": [
+    "credits.aleo"
+  ],
+  "mappings": {
+    "holdings": {
+      "key": "Holder.public",
+      "value": "u64.public"
+    },
+    "owner_holding": {
+      "key": "boolean.public",
+      "value": "address.public"
+    }
+  },
+  "structs": {
+    "Holder": [
+      {
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "name": "token_id",
+        "type": "field"
+      }
+    ]
+  },
+  "records": {},
+  "functions": {
+    "initialize_holding": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "vlink_holding_cd_v3.aleo/initialize_holding.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owner_holding"
+      ],
+      "finalize_state_writes": [
+        "owner_holding"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "transfer_ownership_holding": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "vlink_holding_cd_v3.aleo/transfer_ownership_holding.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owner_holding"
+      ],
+      "finalize_state_writes": [
+        "owner_holding"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "hold_fund": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "vlink_holding_cd_v3.aleo/hold_fund.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "Holder.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "holdings",
+        "owner_holding"
+      ],
+      "finalize_state_writes": [
+        "holdings"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "release_fund": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "vlink_holding_cd_v3.aleo/release_fund.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "Holder.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/transfer_public.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "holdings",
+        "owner_holding"
+      ],
+      "finalize_state_writes": [
+        "holdings"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "hold_fund",
+    "initialize_holding",
+    "release_fund",
+    "transfer_ownership_holding"
+  ],
+  "cross_contract_refs": [
+    "credits.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "initialize_holding",
+    "transfer_ownership_holding",
+    "hold_fund",
+    "release_fund"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [
+      "holdings",
+      "owner_holding"
+    ],
+    "future_outputs": [
+      {
+        "function": "initialize_holding",
+        "output": "vlink_holding_cd_v3.aleo/initialize_holding.future"
+      },
+      {
+        "function": "transfer_ownership_holding",
+        "output": "vlink_holding_cd_v3.aleo/transfer_ownership_holding.future"
+      },
+      {
+        "function": "hold_fund",
+        "output": "vlink_holding_cd_v3.aleo/hold_fund.future"
+      },
+      {
+        "function": "release_fund",
+        "output": "vlink_holding_cd_v3.aleo/release_fund.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

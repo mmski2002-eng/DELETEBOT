@@ -1,0 +1,29 @@
+;; This file is licensed under the Business Source License (BUSL).
+;; See the LICENSE.md file in the project root for more information.
+
+#include "../external/stdlib.fc";
+#include "../constants/errors.fc";
+#include "../constants/op-codes.fc";
+#include "../data/basic-types.fc";
+#include "../logic/tx-utils.fc";
+
+() revert_call(
+    slice sender_address, slice owner_address,
+    slice in_msg_body
+) impure method_id(0x770) {
+    
+    send_message(
+        sender_address, 0,
+        begin_cell()
+        .store_op_code(op::revert_call) ;; 32
+        .store_query_id(99999999) ;; 64
+        .store_slice(owner_address) ;; 3+8+256
+        .store_ref(
+            begin_cell().store_slice(in_msg_body).end_cell()
+        )
+        .end_cell(),
+        sendmode::CARRY_ALL_REMAINING_MESSAGE_VALUE
+    );
+    commit(); 
+    throw(error::user_code_version_mismatch);
+}

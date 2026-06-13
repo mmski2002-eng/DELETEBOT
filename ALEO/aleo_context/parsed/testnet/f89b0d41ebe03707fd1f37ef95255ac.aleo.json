@@ -1,0 +1,587 @@
+{
+  "program_id": "f89b0d41ebe03707fd1f37ef95255ac.aleo",
+  "calls_24h_or_metric_window": 7,
+  "imports": [],
+  "mappings": {
+    "pool_token0": {
+      "key": "u64.public",
+      "value": "field.public"
+    },
+    "pool_token1": {
+      "key": "u64.public",
+      "value": "field.public"
+    },
+    "pool_reserve0": {
+      "key": "u64.public",
+      "value": "u128.public"
+    },
+    "pool_reserve1": {
+      "key": "u64.public",
+      "value": "u128.public"
+    },
+    "pool_total_supply": {
+      "key": "u64.public",
+      "value": "u128.public"
+    },
+    "pool_fee_bps": {
+      "key": "u64.public",
+      "value": "u16.public"
+    },
+    "pool_enabled": {
+      "key": "u64.public",
+      "value": "boolean.public"
+    },
+    "lp_balances": {
+      "key": "field.public",
+      "value": "u128.public"
+    },
+    "token_balances": {
+      "key": "field.public",
+      "value": "u128.public"
+    },
+    "next_pool_id": {
+      "key": "boolean.public",
+      "value": "u64.public"
+    }
+  },
+  "structs": {
+    "TokenOwner": [
+      {
+        "name": "token",
+        "type": "field"
+      },
+      {
+        "name": "holder",
+        "type": "address"
+      }
+    ],
+    "LpOwner": [
+      {
+        "name": "pool_id",
+        "type": "u64"
+      },
+      {
+        "name": "holder",
+        "type": "address"
+      }
+    ]
+  },
+  "records": {},
+  "functions": {
+    "create_pool": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "u16.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r5",
+          "type": "f89b0d41ebe03707fd1f37ef95255ac.aleo/create_pool.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "lte"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "u16.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "next_pool_id"
+      ],
+      "finalize_state_writes": [
+        "next_pool_id",
+        "pool_enabled",
+        "pool_fee_bps",
+        "pool_reserve0",
+        "pool_reserve1",
+        "pool_token0",
+        "pool_token1",
+        "pool_total_supply"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "deposit": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u128.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r5",
+          "type": "f89b0d41ebe03707fd1f37ef95255ac.aleo/deposit.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u128.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "token_balances"
+      ],
+      "finalize_state_writes": [
+        "token_balances"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "withdraw": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u128.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r5",
+          "type": "f89b0d41ebe03707fd1f37ef95255ac.aleo/withdraw.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "u128.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "token_balances"
+      ],
+      "finalize_state_writes": [
+        "token_balances"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte"
+      ],
+      "snark_verify": false
+    },
+    "add_liquidity": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        },
+        {
+          "register": "r3",
+          "type": "u128.public"
+        },
+        {
+          "register": "r4",
+          "type": "u128.public"
+        },
+        {
+          "register": "r5",
+          "type": "u128.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r14",
+          "type": "f89b0d41ebe03707fd1f37ef95255ac.aleo/add_liquidity.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        },
+        {
+          "register": "r3",
+          "type": "u128.public"
+        },
+        {
+          "register": "r4",
+          "type": "u128.public"
+        },
+        {
+          "register": "r5",
+          "type": "u128.public"
+        },
+        {
+          "register": "r6",
+          "type": "field.public"
+        },
+        {
+          "register": "r7",
+          "type": "field.public"
+        },
+        {
+          "register": "r8",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "lp_balances",
+        "pool_enabled",
+        "pool_reserve0",
+        "pool_reserve1",
+        "pool_token0",
+        "pool_token1",
+        "pool_total_supply",
+        "token_balances"
+      ],
+      "finalize_state_writes": [
+        "lp_balances",
+        "pool_reserve0",
+        "pool_reserve1",
+        "pool_total_supply",
+        "token_balances"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "gte",
+        "is.eq",
+        "ternary"
+      ],
+      "snark_verify": false
+    },
+    "remove_liquidity": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        },
+        {
+          "register": "r3",
+          "type": "u128.public"
+        },
+        {
+          "register": "r4",
+          "type": "u128.public"
+        },
+        {
+          "register": "r5",
+          "type": "u128.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r13",
+          "type": "f89b0d41ebe03707fd1f37ef95255ac.aleo/remove_liquidity.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        },
+        {
+          "register": "r1",
+          "type": "u128.public"
+        },
+        {
+          "register": "r2",
+          "type": "u128.public"
+        },
+        {
+          "register": "r3",
+          "type": "u128.public"
+        },
+        {
+          "register": "r4",
+          "type": "field.public"
+        },
+        {
+          "register": "r5",
+          "type": "field.public"
+        },
+        {
+          "register": "r6",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "lp_balances",
+        "pool_reserve0",
+        "pool_reserve1",
+        "pool_total_supply",
+        "token_balances"
+      ],
+      "finalize_state_writes": [
+        "lp_balances",
+        "pool_reserve0",
+        "pool_reserve1",
+        "pool_total_supply",
+        "token_balances"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gt",
+        "gte"
+      ],
+      "snark_verify": false
+    },
+    "swap": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        },
+        {
+          "register": "r3",
+          "type": "u128.public"
+        },
+        {
+          "register": "r4",
+          "type": "u128.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r10",
+          "type": "f89b0d41ebe03707fd1f37ef95255ac.aleo/swap.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        },
+        {
+          "register": "r3",
+          "type": "u128.public"
+        },
+        {
+          "register": "r4",
+          "type": "u128.public"
+        },
+        {
+          "register": "r5",
+          "type": "field.public"
+        },
+        {
+          "register": "r6",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "pool_enabled",
+        "pool_fee_bps",
+        "pool_reserve0",
+        "pool_reserve1",
+        "pool_token0",
+        "pool_token1",
+        "token_balances"
+      ],
+      "finalize_state_writes": [
+        "pool_reserve0",
+        "pool_reserve1",
+        "token_balances"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte",
+        "is.eq",
+        "lt",
+        "or",
+        "ternary"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "add_liquidity",
+    "create_pool",
+    "deposit",
+    "remove_liquidity",
+    "swap",
+    "withdraw"
+  ],
+  "cross_contract_refs": [],
+  "async_or_conditional_paths": [
+    "create_pool",
+    "deposit",
+    "withdraw",
+    "add_liquidity",
+    "remove_liquidity",
+    "swap"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [
+      "lp_balances",
+      "next_pool_id",
+      "pool_enabled",
+      "pool_fee_bps",
+      "pool_reserve0",
+      "pool_reserve1",
+      "pool_token0",
+      "pool_token1",
+      "pool_total_supply",
+      "token_balances"
+    ],
+    "future_outputs": [
+      {
+        "function": "create_pool",
+        "output": "f89b0d41ebe03707fd1f37ef95255ac.aleo/create_pool.future"
+      },
+      {
+        "function": "deposit",
+        "output": "f89b0d41ebe03707fd1f37ef95255ac.aleo/deposit.future"
+      },
+      {
+        "function": "withdraw",
+        "output": "f89b0d41ebe03707fd1f37ef95255ac.aleo/withdraw.future"
+      },
+      {
+        "function": "add_liquidity",
+        "output": "f89b0d41ebe03707fd1f37ef95255ac.aleo/add_liquidity.future"
+      },
+      {
+        "function": "remove_liquidity",
+        "output": "f89b0d41ebe03707fd1f37ef95255ac.aleo/remove_liquidity.future"
+      },
+      {
+        "function": "swap",
+        "output": "f89b0d41ebe03707fd1f37ef95255ac.aleo/swap.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

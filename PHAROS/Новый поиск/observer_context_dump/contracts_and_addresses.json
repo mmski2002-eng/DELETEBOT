@@ -1,0 +1,21 @@
+﻿{
+    "pharos":  {
+                   "LiFiDiamond":  "0xff70f4a1d11995621854f3692acf286d8acd04b2",
+                   "OnRamp":  "0x193beb1e11731b8b740b9fbbb62655553c3b4a25",
+                   "LockReleaseTokenPool":  "0xcb79097744d5266bfca287a43612d9613be46300",
+                   "WPROS":  "0x52c48d4213107b20bc583832b0d951fb9ca8f0b0",
+                   "GlacisAirliftFacetOrSender":  "0x290d54179960984599f16f77dcda81320301b158",
+                   "FeeForwarder":  "0xd23fb66108971325f302bf0f209216d705adf987",
+                   "TokenWrapper":  "0x1de7889c440d4fefa0e5f4f83a021f6f41cdf26b",
+                   "Router":  "0x4e52dd94e9bcfefe3c78153bdfb0ab1d30687297"
+               },
+    "base":  {
+                 "WrappedPROS":  "0x8b7dde054be9d180c1be7fae0874697374a49832",
+                 "CCIPReceiverOrOffRamp":  "0xf09afe78d3c7d359b334d7cb88995751f7ec5e13",
+                 "TokenPoolOrBridgeComponent":  "0x7126c3fef4e6a680eee09fb039b2236f638384b0"
+             },
+    "selectors":  {
+                      "PharosSourceSelector":  "7801139999541420232",
+                      "BaseDestSelector":  "15971525489660198786"
+                  }
+}

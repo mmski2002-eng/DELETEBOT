@@ -1,0 +1,550 @@
+{
+  "title": "CallPermit Zero-Cost DoS: Large-Scale Financial Impact",
+  "date": "2026-05-14T19:35:15.462Z",
+  "network": "Moonbeam mainnet fork (Chopsticks, chainId 1284)",
+  "gasPrice": "125 Gwei",
+  "glmrUsdPrice": 0.01633832,
+  "attack": {
+    "targetRelayer": "0x7e4cd38d266902444dc9c8f7c0aa716a32497d0b",
+    "targetRelayerRealBalance": "181.74 GLMR",
+    "targetRelayerDailyDispatches": 459,
+    "attacker": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
+    "attackerStartBalance": "0 GLMR",
+    "attackerEndBalance": "0 GLMR",
+    "rounds": 50
+  },
+  "results": {
+    "simSuccess": "50/50",
+    "realFail": "50/50",
+    "proofValid": true,
+    "totalGlmrLost": "0.242001",
+    "totalUsdLost": "$0.0040",
+    "attackerCost": "0 GLMR / $0"
+  },
+  "perRound": {
+    "glmrLost": "0.00484002",
+    "usdLost": "$0.000079"
+  },
+  "projection": {
+    "basis": "459 real dispatches/day (Diode relayer #1)",
+    "daily": {
+      "glmr": "2.2216",
+      "usd": "$0.04"
+    },
+    "weekly": {
+      "glmr": "15.55",
+      "usd": "$0.25"
+    },
+    "monthly": {
+      "glmr": "66.65",
+      "usd": "$1.09"
+    },
+    "daysToDeplete181GLMR": "81.8"
+  },
+  "refutation": {
+    "claim": "Standard relayer infrastructure is expected to simulate transactions before submission",
+    "proof": "Simulation SUCCESS in 50/50 rounds. Real tx FAIL in 50/50 rounds. Attacker total cost: 0 GLMR / $0. Mitigation provably insufficient."
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "nonce": "16",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 2,
+      "nonce": "17",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 3,
+      "nonce": "18",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 4,
+      "nonce": "19",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 5,
+      "nonce": "20",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 6,
+      "nonce": "21",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 7,
+      "nonce": "22",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048375"
+    },
+    {
+      "round": 8,
+      "nonce": "23",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 9,
+      "nonce": "24",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048375"
+    },
+    {
+      "round": 10,
+      "nonce": "25",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 11,
+      "nonce": "26",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 12,
+      "nonce": "27",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048375"
+    },
+    {
+      "round": 13,
+      "nonce": "28",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.004839"
+    },
+    {
+      "round": 14,
+      "nonce": "29",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 15,
+      "nonce": "30",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.004839"
+    },
+    {
+      "round": 16,
+      "nonce": "31",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 17,
+      "nonce": "32",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 18,
+      "nonce": "33",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 19,
+      "nonce": "34",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.004839"
+    },
+    {
+      "round": 20,
+      "nonce": "35",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 21,
+      "nonce": "36",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 22,
+      "nonce": "37",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 23,
+      "nonce": "38",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 24,
+      "nonce": "39",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 25,
+      "nonce": "40",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.004839"
+    },
+    {
+      "round": 26,
+      "nonce": "41",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 27,
+      "nonce": "42",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 28,
+      "nonce": "43",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 29,
+      "nonce": "44",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 30,
+      "nonce": "45",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 31,
+      "nonce": "46",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 32,
+      "nonce": "47",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.004839"
+    },
+    {
+      "round": 33,
+      "nonce": "48",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.004839"
+    },
+    {
+      "round": 34,
+      "nonce": "49",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 35,
+      "nonce": "50",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 36,
+      "nonce": "51",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 37,
+      "nonce": "52",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 38,
+      "nonce": "53",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 39,
+      "nonce": "54",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 40,
+      "nonce": "55",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.004839"
+    },
+    {
+      "round": 41,
+      "nonce": "56",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 42,
+      "nonce": "57",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 43,
+      "nonce": "58",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 44,
+      "nonce": "59",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.004839"
+    },
+    {
+      "round": 45,
+      "nonce": "60",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.004839"
+    },
+    {
+      "round": 46,
+      "nonce": "61",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 47,
+      "nonce": "62",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 48,
+      "nonce": "63",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 49,
+      "nonce": "64",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.0048405"
+    },
+    {
+      "round": 50,
+      "nonce": "65",
+      "simResult": "SUCCESS",
+      "txAStatus": "FAIL",
+      "txAExit": {
+        "Revert": "Reverted"
+      },
+      "glmrLost": "0.004839"
+    }
+  ]
+}

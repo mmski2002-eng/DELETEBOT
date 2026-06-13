@@ -1,0 +1,2 @@
+const vault::contract_type = 1; ;; uint5
+const vault::asset_type = 0; ;; uint4

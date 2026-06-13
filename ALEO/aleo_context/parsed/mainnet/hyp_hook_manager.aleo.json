@@ -1,0 +1,900 @@
+{
+  "program_id": "hyp_hook_manager.aleo",
+  "calls_24h_or_metric_window": 2,
+  "imports": [
+    "credits.aleo",
+    "hyp_ism_manager.aleo",
+    "hyp_mailbox.aleo",
+    "hyp_multisig_core.aleo"
+  ],
+  "mappings": {
+    "nonce": {
+      "key": "boolean.public",
+      "value": "u32.public"
+    },
+    "hooks": {
+      "key": "address.public",
+      "value": "u8.public"
+    },
+    "hook_addresses": {
+      "key": "u32.public",
+      "value": "address.public"
+    },
+    "igps": {
+      "key": "address.public",
+      "value": "InterchainGasPaymaster.public"
+    },
+    "destination_gas_configs": {
+      "key": "GasConfigKey.public",
+      "value": "DomainGasConfig.public"
+    },
+    "destination_gas_config_iter": {
+      "key": "HookIndexKey.public",
+      "value": "GasConfigKey.public"
+    },
+    "destination_gas_config_length": {
+      "key": "address.public",
+      "value": "u32.public"
+    },
+    "merkle_tree_hooks": {
+      "key": "address.public",
+      "value": "MerkleTreeHook.public"
+    },
+    "gas_payment_events": {
+      "key": "HookIndexKey.public",
+      "value": "GasPaymentEvent.public"
+    },
+    "inserted_into_tree_events": {
+      "key": "HookIndexKey.public",
+      "value": "InsertedIntoTreeEvent.public"
+    },
+    "last_event_index": {
+      "key": "EventIndexKey.public",
+      "value": "u32.public"
+    }
+  },
+  "structs": {
+    "Message": [
+      {
+        "name": "version",
+        "type": "u8"
+      },
+      {
+        "name": "nonce",
+        "type": "u32"
+      },
+      {
+        "name": "origin_domain",
+        "type": "u32"
+      },
+      {
+        "name": "sender",
+        "type": "[u8"
+      },
+      {
+        "name": "destination_domain",
+        "type": "u32"
+      },
+      {
+        "name": "recipient",
+        "type": "[u8"
+      },
+      {
+        "name": "body",
+        "type": "[u128"
+      }
+    ],
+    "CreditAllowance": [
+      {
+        "name": "spender",
+        "type": "address"
+      },
+      {
+        "name": "amount",
+        "type": "u64"
+      }
+    ],
+    "HookMetadata": [
+      {
+        "name": "gas_limit",
+        "type": "u128"
+      },
+      {
+        "name": "extra_data",
+        "type": "[u8"
+      }
+    ],
+    "Tree": [
+      {
+        "name": "branch",
+        "type": "[[u128"
+      },
+      {
+        "name": "count",
+        "type": "u32"
+      }
+    ],
+    "MerkleTreeHook": [
+      {
+        "name": "parent",
+        "type": "address"
+      },
+      {
+        "name": "root",
+        "type": "[u128"
+      },
+      {
+        "name": "tree",
+        "type": "Tree"
+      },
+      {
+        "name": "nonce",
+        "type": "u32"
+      }
+    ],
+    "InsertedIntoTreeEvent": [
+      {
+        "name": "id",
+        "type": "[u128"
+      },
+      {
+        "name": "index",
+        "type": "u32"
+      }
+    ],
+    "NoopHook": [
+      {
+        "name": "nonce",
+        "type": "u32"
+      }
+    ],
+    "InterchainGasPaymaster": [
+      {
+        "name": "hook_owner",
+        "type": "address"
+      },
+      {
+        "name": "nonce",
+        "type": "u32"
+      },
+      {
+        "name": "balance",
+        "type": "u64"
+      },
+      {
+        "name": "count",
+        "type": "u32"
+      }
+    ],
+    "GasConfigKey": [
+      {
+        "name": "igp",
+        "type": "address"
+      },
+      {
+        "name": "destination",
+        "type": "u32"
+      }
+    ],
+    "DomainGasConfig": [
+      {
+        "name": "gas_overhead",
+        "type": "u128"
+      },
+      {
+        "name": "exchange_rate",
+        "type": "u128"
+      },
+      {
+        "name": "gas_price",
+        "type": "u128"
+      }
+    ],
+    "GasPaymentEvent": [
+      {
+        "name": "id",
+        "type": "[u128"
+      },
+      {
+        "name": "destination_domain",
+        "type": "u32"
+      },
+      {
+        "name": "gas_amount",
+        "type": "u128"
+      },
+      {
+        "name": "payment",
+        "type": "u64"
+      },
+      {
+        "name": "index",
+        "type": "u32"
+      }
+    ],
+    "HookIndexKey": [
+      {
+        "name": "hook",
+        "type": "address"
+      },
+      {
+        "name": "index",
+        "type": "u32"
+      }
+    ],
+    "EventIndexKey": [
+      {
+        "name": "hook",
+        "type": "address"
+      },
+      {
+        "name": "block_height",
+        "type": "u32"
+      }
+    ],
+    "ChecksumEdition": [
+      {
+        "name": "checksum",
+        "type": "[u8"
+      },
+      {
+        "name": "edition",
+        "type": "u16"
+      }
+    ],
+    "WalletEcdsaSigner": [
+      {
+        "name": "wallet_id",
+        "type": "address"
+      },
+      {
+        "name": "ecdsa_signer",
+        "type": "[u8"
+      }
+    ],
+    "WalletSigningOpId": [
+      {
+        "name": "wallet_id",
+        "type": "address"
+      },
+      {
+        "name": "signing_op_id",
+        "type": "field"
+      }
+    ],
+    "AdminOp": [
+      {
+        "name": "op",
+        "type": "u8"
+      },
+      {
+        "name": "threshold",
+        "type": "u8"
+      },
+      {
+        "name": "aleo_signer",
+        "type": "address"
+      },
+      {
+        "name": "ecdsa_signer",
+        "type": "[u8"
+      }
+    ],
+    "EthAddress": [
+      {
+        "name": "bytes",
+        "type": "[u8"
+      }
+    ],
+    "Mailbox": [
+      {
+        "name": "local_domain",
+        "type": "u32"
+      },
+      {
+        "name": "nonce",
+        "type": "u32"
+      },
+      {
+        "name": "process_count",
+        "type": "u32"
+      },
+      {
+        "name": "default_ism",
+        "type": "address"
+      },
+      {
+        "name": "default_hook",
+        "type": "address"
+      },
+      {
+        "name": "required_hook",
+        "type": "address"
+      },
+      {
+        "name": "dispatch_proxy",
+        "type": "address"
+      },
+      {
+        "name": "mailbox_owner",
+        "type": "address"
+      }
+    ]
+  },
+  "records": {},
+  "functions": {
+    "init_noop": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "hyp_hook_manager.aleo/init_noop.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [],
+      "finalize_state_reads": [
+        "hooks",
+        "nonce"
+      ],
+      "finalize_state_writes": [
+        "hook_addresses",
+        "hooks",
+        "nonce"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "init_igp": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "hyp_hook_manager.aleo/init_igp.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "hooks",
+        "nonce"
+      ],
+      "finalize_state_writes": [
+        "hook_addresses",
+        "hooks",
+        "igps",
+        "nonce"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "set_destination_gas_config": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u32.public"
+        },
+        {
+          "register": "r2",
+          "type": "DomainGasConfig.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "hyp_hook_manager.aleo/set_destination_gas_config.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u32.public"
+        },
+        {
+          "register": "r2",
+          "type": "DomainGasConfig.public"
+        },
+        {
+          "register": "r3",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "destination_gas_config_length",
+        "destination_gas_configs",
+        "igps"
+      ],
+      "finalize_state_writes": [
+        "destination_gas_config_iter",
+        "destination_gas_config_length",
+        "destination_gas_configs"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq"
+      ],
+      "snark_verify": false
+    },
+    "remove_destination_gas_config": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u32.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "hyp_hook_manager.aleo/remove_destination_gas_config.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u32.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "igps"
+      ],
+      "finalize_state_writes": [
+        "destination_gas_configs"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "claim": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "hyp_hook_manager.aleo/claim.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/transfer_public.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "igps"
+      ],
+      "finalize_state_writes": [
+        "igps"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte"
+      ],
+      "snark_verify": false
+    },
+    "pay_for_gas": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "[u128"
+        },
+        {
+          "register": "r2",
+          "type": "u32.private"
+        },
+        {
+          "register": "r3",
+          "type": "u128.private"
+        },
+        {
+          "register": "r4",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r6",
+          "type": "hyp_hook_manager.aleo/pay_for_gas.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "[u128"
+        },
+        {
+          "register": "r2",
+          "type": "u32.public"
+        },
+        {
+          "register": "r3",
+          "type": "u128.public"
+        },
+        {
+          "register": "r4",
+          "type": "u64.public"
+        },
+        {
+          "register": "r5",
+          "type": "credits.aleo/transfer_public_as_signer.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "destination_gas_configs",
+        "igps"
+      ],
+      "finalize_state_writes": [
+        "gas_payment_events",
+        "igps",
+        "last_event_index"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "transfer_igp_ownership": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "address.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "hyp_hook_manager.aleo/transfer_igp_ownership.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "igps"
+      ],
+      "finalize_state_writes": [
+        "igps"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "init_merkle_tree": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "hyp_hook_manager.aleo/init_merkle_tree.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "hooks",
+        "nonce"
+      ],
+      "finalize_state_writes": [
+        "hook_addresses",
+        "hooks",
+        "merkle_tree_hooks",
+        "nonce"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "post_dispatch": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "HookMetadata.public"
+        },
+        {
+          "register": "r2",
+          "type": "[CreditAllowance"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r12",
+          "type": "hyp_hook_manager.aleo/post_dispatch.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "is.eq",
+        "ternary"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "HookMetadata.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        },
+        {
+          "register": "r4",
+          "type": "credits.aleo/transfer_public_as_signer.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "destination_gas_configs",
+        "hooks",
+        "igps",
+        "merkle_tree_hooks"
+      ],
+      "finalize_state_writes": [
+        "gas_payment_events",
+        "igps",
+        "inserted_into_tree_events",
+        "last_event_index",
+        "merkle_tree_hooks"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq",
+        "branch.eq",
+        "gt",
+        "is.eq",
+        "lt",
+        "lte",
+        "ternary"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "claim",
+    "init_igp",
+    "init_merkle_tree",
+    "init_noop",
+    "pay_for_gas",
+    "post_dispatch",
+    "remove_destination_gas_config",
+    "set_destination_gas_config",
+    "transfer_igp_ownership"
+  ],
+  "cross_contract_refs": [
+    "credits.aleo",
+    "hyp_mailbox.aleo",
+    "hyp_multisig_core.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "init_noop",
+    "init_igp",
+    "set_destination_gas_config",
+    "remove_destination_gas_config",
+    "claim",
+    "pay_for_gas",
+    "transfer_igp_ownership",
+    "init_merkle_tree",
+    "post_dispatch"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [
+      "destination_gas_config_iter",
+      "destination_gas_config_length",
+      "destination_gas_configs",
+      "gas_payment_events",
+      "hook_addresses",
+      "hooks",
+      "igps",
+      "inserted_into_tree_events",
+      "last_event_index",
+      "merkle_tree_hooks",
+      "nonce"
+    ],
+    "future_outputs": [
+      {
+        "function": "init_noop",
+        "output": "hyp_hook_manager.aleo/init_noop.future"
+      },
+      {
+        "function": "init_igp",
+        "output": "hyp_hook_manager.aleo/init_igp.future"
+      },
+      {
+        "function": "set_destination_gas_config",
+        "output": "hyp_hook_manager.aleo/set_destination_gas_config.future"
+      },
+      {
+        "function": "remove_destination_gas_config",
+        "output": "hyp_hook_manager.aleo/remove_destination_gas_config.future"
+      },
+      {
+        "function": "claim",
+        "output": "hyp_hook_manager.aleo/claim.future"
+      },
+      {
+        "function": "pay_for_gas",
+        "output": "hyp_hook_manager.aleo/pay_for_gas.future"
+      },
+      {
+        "function": "transfer_igp_ownership",
+        "output": "hyp_hook_manager.aleo/transfer_igp_ownership.future"
+      },
+      {
+        "function": "init_merkle_tree",
+        "output": "hyp_hook_manager.aleo/init_merkle_tree.future"
+      },
+      {
+        "function": "post_dispatch",
+        "output": "hyp_hook_manager.aleo/post_dispatch.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

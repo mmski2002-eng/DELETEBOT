@@ -1,0 +1,143 @@
+Candidate F — bearer withdrawal URL for Telegram collectible gift → NFT export hijack
+Статус
+
+Conditional Critical.
+Актуально для текущих Telegram collectible gifts, потому что Telegram API официально описывает экспорт collectible gift в TON через payments.getStarGiftWithdrawalUrl, который возвращает URL для импорта NFT на Fragment. Метод требует 2FA владельца, но после этого возвращается именно URL.
+
+Суть
+
+Telegram API описывает flow так:
+
+payments.getStarGiftWithdrawalUrl(stargift, password)
+→ returns starGiftWithdrawalUrl.url
+→ URL can be used to import the NFT on Fragment
+
+Документация говорит, что метод требует 2FA password текущего пользователя и возвращает URL, который используется для импорта NFT на Fragment.
+
+Критичный вопрос:
+
+Is this withdrawal/import URL a bearer capability?
+
+Если да, то любой, кто получит этот URL до использования, потенциально может открыть его, подключить свой TON wallet и импортировать gift NFT на свой адрес.
+
+Почему это может быть Critical
+
+Экспорт gift в TON — это переход ownership из Telegram off-chain/stateful мира в on-chain NFT. Telegram прямо пишет, что collectible gifts могут быть transferred/auctioned on NFT marketplaces, а moving gifts to blockchain gives owners permanent control.
+
+Если withdrawal URL не привязан к:
+
+Telegram account
+Fragment session
+конкретному wallet address
+одноразовому nonce
+короткому TTL
+устройству / auth session
+
+то leakage или перехват URL может привести к:
+
+attacker imports victim’s collectible gift as TON NFT
+attacker becomes on-chain owner
+victim loses export opportunity / gift ownership
+
+Это уже не “front-run first bid”, а потенциальный asset theft.
+
+Почему это актуальнее прошлых гипотез
+
+Этот flow прямо есть в текущей Telegram API документации:
+
+payments.getStarGiftWithdrawalUrl
+returns URL used to import NFT on Fragment
+
+В отличие от старой signed deploy гипотезы, тут есть подтверждённый современный Fragment-related bridge: Telegram gift → Fragment import → TON NFT.
+
+Также Telegram blog подтверждает пользовательский flow: gift можно отправить “via Blockchain”, а после перемещения в TON wallet владелец получает permanent control даже вне Telegram account.
+
+Что нужно проверить
+Test 1 — URL привязан к Telegram session или нет
+1. На аккаунте A вызвать/получить withdrawal URL для owned collectible gift.
+2. Не завершать импорт.
+3. Открыть URL:
+   - в другом браузере;
+   - в чистой сессии;
+   - без Telegram login;
+   - с Telegram account B;
+   - с wallet B.
+4. Проверить, позволяет ли Fragment продолжить import.
+
+Critical signal:
+
+URL from account A allows account B / wallet B to import the NFT.
+
+Safe signal:
+
+Fragment требует Telegram account A или отклоняет URL вне исходной сессии.
+Test 2 — wallet binding
+1. Account A получает withdrawal URL.
+2. Account A подключает wallet A, но не подписывает.
+3. Открыть тот же URL с wallet B.
+4. Проверить, можно ли выбрать wallet B как destination.
+
+Critical signal:
+
+withdrawal URL не содержит/не enforced intended wallet,
+и NFT можно импортировать на wallet B.
+Test 3 — one-time / replay
+1. Получить withdrawal URL.
+2. Использовать его один раз.
+3. Повторно открыть URL.
+4. Проверить:
+   - повторный импорт невозможен;
+   - URL помечен consumed;
+   - старый URL нельзя применить к новому wallet/order.
+
+Critical signal:
+
+URL можно replay’нуть или использовать в race двумя wallets.
+Test 4 — TTL
+1. Получить withdrawal URL.
+2. Подождать значимое время.
+3. Проверить, остаётся ли URL рабочим.
+
+Сильный risk signal:
+
+URL живёт долго и не требует исходной Telegram auth/session.
+Report-ready формулировка
+Title:
+Collectible gift withdrawal URL may act as bearer capability and allow NFT export hijacking
+
+Impact:
+Telegram’s payments.getStarGiftWithdrawalUrl returns a URL used to import a collectible gift NFT on Fragment. If this URL is not bound to the original Telegram account/session and intended TON wallet, anyone who obtains the URL can complete the import with their own wallet and become the on-chain owner of the gift NFT.
+
+Affected flow:
+Telegram collectible gift → payments.getStarGiftWithdrawalUrl → Fragment import → TON NFT mint/export
+
+Critical condition:
+A withdrawal URL issued to account A can be completed by account B or wallet B.
+Evidence checklist
+[ ] URL generated from victim/account A
+[ ] Gift slug/id and proof account A owns it before export
+[ ] Same URL opened from clean browser/account B
+[ ] Wallet B selected/connected
+[ ] Import transaction generated or completed for wallet B
+[ ] On-chain NFT owner = wallet B
+[ ] Account A can no longer export/import the same gift
+Почему это может оказаться безопасным
+
+Кандидат снимается, если Fragment/Telegram делает любое из:
+
+- URL требует Telegram auth именно владельца gift;
+- URL привязан к конкретному wallet address;
+- URL одноразовый и consumed до TonConnect;
+- import transaction подписана сервером с force_sender_address / rewrite_sender_address;
+- URL имеет короткий TTL и session binding;
+- backend повторно проверяет ownership gift перед финальным mint/export.
+Verdict
+Candidate F: live and актуален для текущих collectible gifts / Fragment import flow.
+
+Critical if:
+  withdrawal URL from account A can be used by account B or wallet B.
+
+Not Critical if:
+  URL is session/account/wallet-bound and one-time.
+
+Это сейчас самый перспективный актуальный Critical-вектор из найденных: он связан с текущими Telegram gifts, официальным API и Fragment import flow, а не со старым Telemint reference path.

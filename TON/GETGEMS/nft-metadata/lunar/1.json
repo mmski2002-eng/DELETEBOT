@@ -1,0 +1,10 @@
+{
+  "name": "Lunar Artifact #1",
+  "description": "The second relic. Older than the Moon itself, traded for a single TON.",
+  "image": "https://placehold.co/512x512/1a0a2e/b07ef7?text=LA+%231",
+  "attributes": [
+    { "trait_type": "Origin",  "value": "Mare Imbrium" },
+    { "trait_type": "Rarity",  "value": "Mythic" },
+    { "trait_type": "Element", "value": "Ether" }
+  ]
+}

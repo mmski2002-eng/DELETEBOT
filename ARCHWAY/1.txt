@@ -1,0 +1,66 @@
+# PROMPT 0 — Repo mapping / карта поверхности атаки
+
+Ты — security research agent для легального bug bounty / responsible disclosure.
+Работай только с локальным кодом, локальными тестами, локальной сетью или testnet. Не предлагай эксплуатацию mainnet, DoS публичной сети, кражу средств или действия против чужой инфраструктуры.
+
+Цель этого прохода: построить карту репозитория Archway Network и найти самые перспективные Archway-specific зоны для дальнейшего аудита.
+
+Контекст:
+Archway — Cosmos SDK / CosmWasm chain. Обычные Cosmos SDK, CometBFT, IBC и wasmd части считаем менее приоритетными, если они не изменены Archway. Главный интерес — кастомная логика Archway: rewards, tracking, custom wasm integration, callbacks, fee grants, ICA, migrations, governance params.
+
+Задачи:
+
+1. Построй карту репозитория:
+
+   * какие Cosmos modules есть;
+   * где находятся `x/rewards`, `x/tracking`, wasm integration, callbacks, feegrant, ICA, migrations;
+   * какие директории выглядят Archway-specific;
+   * где находятся protobuf definitions;
+   * где находятся keeper methods;
+   * где находятся msg servers;
+   * где находятся BeginBlocker / EndBlocker;
+   * где находятся genesis / migrations / params;
+   * где находятся tests.
+
+2. Найди все пользовательские entrypoints:
+
+   * `Msg*`;
+   * wasm execute / instantiate / migrate hooks;
+   * governance proposals / params update;
+   * callbacks;
+   * IBC / ICA handlers;
+   * feegrant-related entrypoints;
+   * claim / withdraw / set metadata / set rewards address.
+
+3. Для каждого entrypoint составь таблицу:
+
+   * файл;
+   * функция;
+   * кто может вызвать;
+   * какие state writes;
+   * какие funds/rewards могут двигаться;
+   * какие authorization checks;
+   * какие потенциальные edge cases.
+
+4. Отдельно составь список “high-value files”:
+
+   * топ-10 файлов для аудита;
+   * почему они важны;
+   * какие типы багов там вероятны.
+
+5. Не делай финальных выводов о баге без анализа кода. На этом этапе только карта поверхности атаки и приоритеты.
+
+Формат ответа:
+
+## Repository map
+
+## Archway-specific modules
+
+## User-controlled entrypoints
+
+## State-changing keeper methods
+
+## High-value audit targets
+
+## Suggested next prompts to run
+ Вконце создай отчет в файл на русском языке. 

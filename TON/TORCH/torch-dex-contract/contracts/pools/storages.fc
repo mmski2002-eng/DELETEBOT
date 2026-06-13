@@ -1,0 +1,117 @@
+global slice pool::admin;
+global slice pool::factory;
+global int pool::signer_key;             ;; uint256
+global int pool::is_stop;                ;; bool
+global int pool::use_rates?;             ;; bool
+global int pool::base_lp_index;          ;; uint4
+global cell pool::assets;
+global cell pool::reserve;
+global cell pool::admin_fees;
+global cell pool::lp_wallet_code;
+global cell pool::decimals;
+global cell pool::plugin;                ;; dict<uint4, Cell> It will be implemented in the future
+global cell pool::base_code;
+
+global int pool::fee_numerator;          ;; coins
+global int pool::admin_fee_numerator;    ;; coins
+global int pool::lp_total_supply;        ;; coins
+
+global int pool::init_A;                 ;; uint20
+global int pool::future_A;               ;; uint20
+global int pool::init_A_time;            ;; uint32
+global int pool::future_A_time;          ;; uint32
+
+{- These variables are used for calculation -}
+global tuple pool::assets_tuple;
+global tuple pool::reserve_tuple;
+global tuple pool::admin_fees_tuple;
+global tuple pool::decimal_tuple;
+global tuple pool::rates_tuple;
+global int pool::n_coins;
+
+() pool::load_data() impure inline_ref {
+    slice ds = get_data().begin_parse();
+    pool::admin = ds~load_msg_addr();
+    pool::signer_key = ds~load_uint(SIGNER_KEY_SIZE);
+    pool::is_stop = ds~load_bool();
+    pool::use_rates? = ds~load_bool();
+    pool::base_lp_index = ds~load_uint(ASSET_INDEX_SIZE);
+    pool::assets = ds~load_ref();
+    
+    cell reserve_data = ds~load_ref();
+    slice reserve_data_slice = reserve_data.begin_parse();
+    pool::reserve = reserve_data_slice~load_ref();
+    pool::admin_fees = reserve_data_slice~load_ref();
+    reserve_data_slice.end_parse();
+
+    cell basic_info = ds~load_ref();
+    slice basic_info_slice = basic_info.begin_parse();
+    pool::fee_numerator = basic_info_slice~load_coins();
+    pool::admin_fee_numerator = basic_info_slice~load_coins();
+    pool::init_A = basic_info_slice~load_uint(A_SIZE);
+    pool::future_A = basic_info_slice~load_uint(A_SIZE);
+    pool::init_A_time = basic_info_slice~load_uint(TIMESTAMP_SIZE);
+    pool::future_A_time = basic_info_slice~load_uint(TIMESTAMP_SIZE);
+    pool::lp_total_supply = basic_info_slice~load_coins();
+    pool::lp_wallet_code = basic_info_slice~load_ref();
+    pool::decimals = basic_info_slice~load_ref();
+    pool::plugin = basic_info_slice~load_dict();
+    basic_info_slice.end_parse();
+
+    cell proof_cell = ds~load_ref();
+    slice proof_slice = proof_cell.begin_parse();
+    pool::base_code = proof_slice~load_ref();
+    pool::factory = proof_slice~load_msg_addr();
+    proof_slice.end_parse();
+    ds.end_parse();
+
+    ;; Get the tuple of assets, reserve, admin_fees, decimal, and precision_mul for calculation
+    pool::assets_tuple = convert_assets_cell_to_tuple(pool::assets);
+    pool::reserve_tuple = convert_coins_cell_to_tuple(pool::reserve);
+    pool::admin_fees_tuple = convert_coins_cell_to_tuple(pool::admin_fees);
+    pool::decimal_tuple = convert_coins_cell_to_tuple(pool::decimals);
+    pool::rates_tuple = get_rates_tuple(pool::decimal_tuple);
+    pool::n_coins = pool::assets_tuple.tlen();
+}
+
+() pool::save_data() impure inline_ref {
+    ;; Convert reserve_tuple and admin_fees_tuple to cell
+    pool::reserve = convert_coins_tuple_to_cell(pool::reserve_tuple);
+    pool::admin_fees = convert_coins_tuple_to_cell(pool::admin_fees_tuple);
+
+    begin_cell()
+        .store_slice(pool::admin)
+        .store_uint(pool::signer_key, SIGNER_KEY_SIZE)
+        .store_bool(pool::is_stop)
+        .store_bool(pool::use_rates?)
+        .store_uint(pool::base_lp_index, ASSET_INDEX_SIZE)
+        .store_ref(pool::assets)
+        .store_ref(
+            begin_cell()
+                .store_ref(pool::reserve)
+                .store_ref(pool::admin_fees)
+            .end_cell()
+        )
+        .store_ref(
+            begin_cell()
+                .store_coins(pool::fee_numerator)
+                .store_coins(pool::admin_fee_numerator)
+                .store_uint(pool::init_A, A_SIZE)
+                .store_uint(pool::future_A, A_SIZE)
+                .store_uint(pool::init_A_time, TIMESTAMP_SIZE)
+                .store_uint(pool::future_A_time, TIMESTAMP_SIZE)
+                .store_coins(pool::lp_total_supply)
+                .store_ref(pool::lp_wallet_code)
+                .store_ref(pool::decimals)
+                .store_dict(pool::plugin)
+            .end_cell()
+        )
+        .store_ref(
+            begin_cell()
+                .store_ref(pool::base_code)
+                .store_slice(pool::factory)
+            .end_cell()
+        )
+    .end_cell()
+    .set_data();
+}

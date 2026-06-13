@@ -1,0 +1,669 @@
+﻿{
+    "hash":  "0xebe802dca1cd5da82074f74f15986300e8687341fe20d8c33d537e6701894334",
+    "nonce":  411,
+    "transaction_index":  7,
+    "transaction_type":  0,
+    "from_address":  "0x7cc6eed5fb840fb7a72ff8157a0c7c21158a978a",
+    "to_address":  "0xff70f4a1d11995621854f3692acf286d8acd04b2",
+    "value":  "2300.102138586633970003",
+    "gas":  1193400,
+    "gas_price":  "0.00000001",
+    "max_fee_per_gas":  null,
+    "max_priority_fee_per_gas":  null,
+    "input":  "0x9c4b6dd900000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000002800000000000000000000000007cc6eed5fb840fb7a72ff8157a0c7c21158a978a0000000000000000000000007cc6eed5fb840fb7a72ff8157a0c7c21158a978a000000000000000000000000000000000000000000000000038f5b0faaf1a1530000000000000000000000008b7dde054be9d180c1be7fae0874697374a49832ecc56c5388e1bdb8e3a12d2378b8f0f248498d63ce364245ff60de4a18f6273100000000000000000000000000000000000000000000000000000000000001400000000000000000000000000000000000000000000000000000000000000180000000000000000000000000000000000000000000000000000000000000000000000000000000000000000052c48d4213107b20bc583832b0d951fb9ca8f0b00000000000000000000000007cc6eed5fb840fb7a72ff8157a0c7c21158a978a00000000000000000000000000000000000000000000007c5cfa3e0420a5cf5d0000000000000000000000000000000000000000000000000000000000002105000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006676c616369730000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f70726f732d6172622d62726964676500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000001e0000000000000000000000000d23fb66108971325f302bf0f209216d705adf987000000000000000000000000d23fb66108971325f302bf0f209216d705adf9870000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007cacc4f98519ac000000000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000840e8ae67f00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c06ebbefd94032b85424d51906e2a335efae264b0000000000000000000000000000000000000000000000004fcabb80f90630a3000000000000000000000000000000000000000000000000000000000000000000000000000000001de7889c440d4fefa0e5f4f83a021f6f41cdf26b0000000000000000000000001de7889c440d4fefa0e5f4f83a021f6f41cdf26b000000000000000000000000000000000000000000000000000000000000000000000000000000000000000052c48d4213107b20bc583832b0d951fb9ca8f0b000000000000000000000000000000000000000000000007c5cfa3e0420a5cf5d00000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004d0e30db000000000000000000000000000000000000000000000000000000000",
+    "method_id":  "0x9c4b6dd9",
+    "receipt_cumulative_gas_used":  "568495",
+    "receipt_gas_used":  421495,
+    "receipt_contract_address":  null,
+    "receipt_root":  null,
+    "receipt_status":  1,
+    "receipt_effective_gas_price":  10000000000,
+    "receipt_l1_fee":  null,
+    "receipt_l1_gas_used":  null,
+    "receipt_l1_gas_price":  null,
+    "receipt_l1_fee_scalar":  null,
+    "block_timestamp":  "2026-05-13T12:04:18+00:00",
+    "block_number":  7194558,
+    "block_hash":  "0xc6eced23434c533ae0397786c966e1878309503ac79a724120ceb7d735a22bfd",
+    "transaction_fee":  "4214950000000000",
+    "fee_token_id":  null,
+    "fee_token_address":  null,
+    "fee_token_info":  null,
+    "fee_limit":  null,
+    "fee_rate":  null,
+    "token_scale":  null,
+    "encryption_pubkey":  null,
+    "encryption_nonce":  null,
+    "message_version":  null,
+    "morph_version":  null,
+    "morph_reference":  null,
+    "morph_memo":  null,
+    "from_addr":  {
+                      "address":  "0x7cc6eed5fb840fb7a72ff8157a0c7c21158a978a",
+                      "is_contract":  false,
+                      "name":  null,
+                      "contract":  null,
+                      "tags":  [
+
+                               ],
+                      "display_name":  "0x7cc6eed5fb840fb7a72ff8157a0c7c21158a978a",
+                      "display_icon":  null
+                  },
+    "to_addr":  {
+                    "address":  "0xff70f4a1d11995621854f3692acf286d8acd04b2",
+                    "is_contract":  true,
+                    "name":  "LiFiDiamond",
+                    "contract":  {
+                                     "name":  "LiFiDiamond",
+                                     "contract_creator":  "0xb137683965adc470f140df1a1d05b0d25c14e269",
+                                     "block_number":  3942963,
+                                     "block_timestamp":  "2026-03-10T09:50:25+00:00",
+                                     "transaction_hash":  "0xa69c867331e4d82eb46f70ef742e32ae2608405cd1a7b6b69ac3259a206d4f93",
+                                     "transaction_from_address":  "0xb137683965adc470f140df1a1d05b0d25c14e269",
+                                     "token":  null,
+                                     "is_verified":  true,
+                                     "is_proxy":  true,
+                                     "implementation_contract":  null,
+                                     "verified_implementation_contract":  null,
+                                     "deploy_code_hash":  "1aa40e468f883ff7a9f061860064d14886dbd983d73cb2bff21df56363ad79e3"
+                                 },
+                    "tags":  [
+
+                             ],
+                    "display_name":  "LiFiDiamond",
+                    "display_icon":  null
+                },
+    "display_value":  "2300.102138586633970003",
+    "value_usd":  "1693.36",
+    "transaction_fee_usd":  "0.00310309",
+    "l1_fee_usd":  "0.0",
+    "l2_fee_usd":  "0.00310309",
+    "method":  "Swap And Start Bridge Tokens Via Glacis",
+    "contract_info":  {
+                          "address_display_name":  "0xff70f4a1d11995621854f3692acf286d8acd04b2",
+                          "function_name":  "swapAndStartBridgeTokensViaGlacis",
+                          "full_function_name":  "swapAndStartBridgeTokensViaGlacis(tuple _bridgeData, tuple[] _swapData, tuple _glacisData)",
+                          "function_unsigned":  "swapAndStartBridgeTokensViaGlacis((bytes32,string,string,address,address,address,uint256,uint256,bool,bool),(address,address,address,address,uint256,bytes,bool)[],(bytes32,address,uint256,bytes32))",
+                          "input_data":  [
+                                             {
+                                                 "indexed":  false,
+                                                 "name":  "_bridgeData",
+                                                 "data_type":  "tuple",
+                                                 "hex_data":  "{\u0027transactionId\u0027: b\"\\xec\\xc5lS\\x88\\xe1\\xbd\\xb8\\xe3\\xa1-#x\\xb8\\xf0\\xf2HI\\x8dc\\xce6BE\\xff`\\xdeJ\\x18\\xf6\u00271\", \u0027bridge\u0027: \u0027glacis\u0027, \u0027integrator\u0027: \u0027pros-arb-bridge\u0027, \u0027referrer\u0027: \u00270x0000000000000000000000000000000000000000\u0027, \u0027sendingAssetId\u0027: \u00270x52c48d4213107b20bc583832b0d951fb9ca8f0b0\u0027, \u0027receiver\u0027: \u00270x7cc6eed5fb840fb7a72ff8157a0c7c21158a978a\u0027, \u0027minAmount\u0027: 2294096000723099963229, \u0027destinationChainId\u0027: 8453, \u0027hasSourceSwaps\u0027: True, \u0027hasDestinationCall\u0027: False}",
+                                                 "dec_data":  "{\u0027transactionId\u0027: b\"\\xec\\xc5lS\\x88\\xe1\\xbd\\xb8\\xe3\\xa1-#x\\xb8\\xf0\\xf2HI\\x8dc\\xce6BE\\xff`\\xdeJ\\x18\\xf6\u00271\", \u0027bridge\u0027: \u0027glacis\u0027, \u0027integrator\u0027: \u0027pros-arb-bridge\u0027, \u0027referrer\u0027: \u00270x0000000000000000000000000000000000000000\u0027, \u0027sendingAssetId\u0027: \u00270x52c48d4213107b20bc583832b0d951fb9ca8f0b0\u0027, \u0027receiver\u0027: \u00270x7cc6eed5fb840fb7a72ff8157a0c7c21158a978a\u0027, \u0027minAmount\u0027: 2294096000723099963229, \u0027destinationChainId\u0027: 8453, \u0027hasSourceSwaps\u0027: True, \u0027hasDestinationCall\u0027: False}",
+                                                 "components":  [
+                                                                    {
+                                                                        "name":  "transactionId",
+                                                                        "data_type":  "bytes32",
+                                                                        "value":  "0xecc56c5388e1bdb8e3a12d2378b8f0f248498d63ce364245ff60de4a18f62731",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "bridge",
+                                                                        "data_type":  "string",
+                                                                        "value":  "glacis",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "integrator",
+                                                                        "data_type":  "string",
+                                                                        "value":  "pros-arb-bridge",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "referrer",
+                                                                        "data_type":  "address",
+                                                                        "value":  "0x0000000000000000000000000000000000000000",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "sendingAssetId",
+                                                                        "data_type":  "address",
+                                                                        "value":  "0x52c48d4213107b20bc583832b0d951fb9ca8f0b0",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "receiver",
+                                                                        "data_type":  "address",
+                                                                        "value":  "0x7cc6eed5fb840fb7a72ff8157a0c7c21158a978a",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "minAmount",
+                                                                        "data_type":  "uint256",
+                                                                        "value":  "2294096000723099963229",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "destinationChainId",
+                                                                        "data_type":  "uint256",
+                                                                        "value":  "8453",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "hasSourceSwaps",
+                                                                        "data_type":  "bool",
+                                                                        "value":  "True",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "hasDestinationCall",
+                                                                        "data_type":  "bool",
+                                                                        "value":  "False",
+                                                                        "components":  null
+                                                                    }
+                                                                ]
+                                             },
+                                             {
+                                                 "indexed":  false,
+                                                 "name":  "_swapData",
+                                                 "data_type":  "tuple[]",
+                                                 "hex_data":  "[{\u0027callTo\u0027: \u00270xd23fb66108971325f302bf0f209216d705adf987\u0027, \u0027approveTo\u0027: \u00270xd23fb66108971325f302bf0f209216d705adf987\u0027, \u0027sendingAssetId\u0027: \u00270x0000000000000000000000000000000000000000\u0027, \u0027receivingAssetId\u0027: \u00270x0000000000000000000000000000000000000000\u0027, \u0027fromAmount\u0027: 2299845614759999963136, \u0027callData\u0027: b\u0027\\x0e\\x8a\\xe6\\x7f\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00 \\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\xc0n\\xbb\\xef\\xd9@2\\xb8T$\\xd5\\x19\\x06\\xe2\\xa35\\xef\\xae\u0026K\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00O\\xca\\xbb\\x80\\xf9\\x060\\xa3\u0027, \u0027requiresDeposit\u0027: True}, {\u0027callTo\u0027: \u00270x1de7889c440d4fefa0e5f4f83a021f6f41cdf26b\u0027, \u0027approveTo\u0027: \u00270x1de7889c440d4fefa0e5f4f83a021f6f41cdf26b\u0027, \u0027sendingAssetId\u0027: \u00270x0000000000000000000000000000000000000000\u0027, \u0027receivingAssetId\u0027: \u00270x52c48d4213107b20bc583832b0d951fb9ca8f0b0\u0027, \u0027fromAmount\u0027: 2294096000723099963229, \u0027callData\u0027: b\u0027\\xd0\\xe3\\r\\xb0\u0027, \u0027requiresDeposit\u0027: False}]",
+                                                 "dec_data":  "[{\u0027callTo\u0027: \u00270xd23fb66108971325f302bf0f209216d705adf987\u0027, \u0027approveTo\u0027: \u00270xd23fb66108971325f302bf0f209216d705adf987\u0027, \u0027sendingAssetId\u0027: \u00270x0000000000000000000000000000000000000000\u0027, \u0027receivingAssetId\u0027: \u00270x0000000000000000000000000000000000000000\u0027, \u0027fromAmount\u0027: 2299845614759999963136, \u0027callData\u0027: b\u0027\\x0e\\x8a\\xe6\\x7f\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00 \\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\xc0n\\xbb\\xef\\xd9@2\\xb8T$\\xd5\\x19\\x06\\xe2\\xa35\\xef\\xae\u0026K\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00O\\xca\\xbb\\x80\\xf9\\x060\\xa3\u0027, \u0027requiresDeposit\u0027: True}, {\u0027callTo\u0027: \u00270x1de7889c440d4fefa0e5f4f83a021f6f41cdf26b\u0027, \u0027approveTo\u0027: \u00270x1de7889c440d4fefa0e5f4f83a021f6f41cdf26b\u0027, \u0027sendingAssetId\u0027: \u00270x0000000000000000000000000000000000000000\u0027, \u0027receivingAssetId\u0027: \u00270x52c48d4213107b20bc583832b0d951fb9ca8f0b0\u0027, \u0027fromAmount\u0027: 2294096000723099963229, \u0027callData\u0027: b\u0027\\xd0\\xe3\\r\\xb0\u0027, \u0027requiresDeposit\u0027: False}]",
+                                                 "components":  [
+                                                                    {
+                                                                        "name":  "[0].callTo",
+                                                                        "data_type":  "address",
+                                                                        "value":  "0xd23fb66108971325f302bf0f209216d705adf987",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "[0].approveTo",
+                                                                        "data_type":  "address",
+                                                                        "value":  "0xd23fb66108971325f302bf0f209216d705adf987",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "[0].sendingAssetId",
+                                                                        "data_type":  "address",
+                                                                        "value":  "0x0000000000000000000000000000000000000000",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "[0].receivingAssetId",
+                                                                        "data_type":  "address",
+                                                                        "value":  "0x0000000000000000000000000000000000000000",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "[0].fromAmount",
+                                                                        "data_type":  "uint256",
+                                                                        "value":  "2299845614759999963136",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "[0].callData",
+                                                                        "data_type":  "bytes",
+                                                                        "value":  "0x0e8ae67f00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c06ebbefd94032b85424d51906e2a335efae264b0000000000000000000000000000000000000000000000004fcabb80f90630a3",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "[0].requiresDeposit",
+                                                                        "data_type":  "bool",
+                                                                        "value":  "True",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "[1].callTo",
+                                                                        "data_type":  "address",
+                                                                        "value":  "0x1de7889c440d4fefa0e5f4f83a021f6f41cdf26b",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "[1].approveTo",
+                                                                        "data_type":  "address",
+                                                                        "value":  "0x1de7889c440d4fefa0e5f4f83a021f6f41cdf26b",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "[1].sendingAssetId",
+                                                                        "data_type":  "address",
+                                                                        "value":  "0x0000000000000000000000000000000000000000",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "[1].receivingAssetId",
+                                                                        "data_type":  "address",
+                                                                        "value":  "0x52c48d4213107b20bc583832b0d951fb9ca8f0b0",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "[1].fromAmount",
+                                                                        "data_type":  "uint256",
+                                                                        "value":  "2294096000723099963229",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "[1].callData",
+                                                                        "data_type":  "bytes",
+                                                                        "value":  "0xd0e30db0",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "[1].requiresDeposit",
+                                                                        "data_type":  "bool",
+                                                                        "value":  "False",
+                                                                        "components":  null
+                                                                    }
+                                                                ]
+                                             },
+                                             {
+                                                 "indexed":  false,
+                                                 "name":  "_glacisData",
+                                                 "data_type":  "tuple",
+                                                 "hex_data":  "{\u0027receiverAddress\u0027: b\u0027\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00|\\xc6\\xee\\xd5\\xfb\\x84\\x0f\\xb7\\xa7/\\xf8\\x15z\\x0c|!\\x15\\x8a\\x97\\x8a\u0027, \u0027refundAddress\u0027: \u00270x7cc6eed5fb840fb7a72ff8157a0c7c21158a978a\u0027, \u0027nativeFee\u0027: 256523826634006867, \u0027outputToken\u0027: b\u0027\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x8b}\\xde\\x05K\\xe9\\xd1\\x80\\xc1\\xbe\\x7f\\xae\\x08tist\\xa4\\x982\u0027}",
+                                                 "dec_data":  "{\u0027receiverAddress\u0027: b\u0027\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00|\\xc6\\xee\\xd5\\xfb\\x84\\x0f\\xb7\\xa7/\\xf8\\x15z\\x0c|!\\x15\\x8a\\x97\\x8a\u0027, \u0027refundAddress\u0027: \u00270x7cc6eed5fb840fb7a72ff8157a0c7c21158a978a\u0027, \u0027nativeFee\u0027: 256523826634006867, \u0027outputToken\u0027: b\u0027\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x8b}\\xde\\x05K\\xe9\\xd1\\x80\\xc1\\xbe\\x7f\\xae\\x08tist\\xa4\\x982\u0027}",
+                                                 "components":  [
+                                                                    {
+                                                                        "name":  "receiverAddress",
+                                                                        "data_type":  "bytes32",
+                                                                        "value":  "0x0000000000000000000000007cc6eed5fb840fb7a72ff8157a0c7c21158a978a",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "refundAddress",
+                                                                        "data_type":  "address",
+                                                                        "value":  "0x7cc6eed5fb840fb7a72ff8157a0c7c21158a978a",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "nativeFee",
+                                                                        "data_type":  "uint256",
+                                                                        "value":  "256523826634006867",
+                                                                        "components":  null
+                                                                    },
+                                                                    {
+                                                                        "name":  "outputToken",
+                                                                        "data_type":  "bytes32",
+                                                                        "value":  "0x0000000000000000000000008b7dde054be9d180c1be7fae0874697374a49832",
+                                                                        "components":  null
+                                                                    }
+                                                                ]
+                                             }
+                                         ]
+                      },
+    "gas_fee_token_price":  "0.7362098071857474",
+    "contract_abi":  [
+                         {
+                             "inputs":  [
+                                            {
+                                                "internalType":  "address",
+                                                "name":  "_contractOwner",
+                                                "type":  "address"
+                                            },
+                                            {
+                                                "internalType":  "address",
+                                                "name":  "_diamondCutFacet",
+                                                "type":  "address"
+                                            }
+                                        ],
+                             "stateMutability":  "payable",
+                             "type":  "constructor"
+                         },
+                         {
+                             "inputs":  [
+
+                                        ],
+                             "name":  "CalldataEmptyButInitNotZero",
+                             "type":  "error"
+                         },
+                         {
+                             "inputs":  [
+
+                                        ],
+                             "name":  "FacetAddressIsNotZero",
+                             "type":  "error"
+                         },
+                         {
+                             "inputs":  [
+
+                                        ],
+                             "name":  "FacetAddressIsZero",
+                             "type":  "error"
+                         },
+                         {
+                             "inputs":  [
+
+                                        ],
+                             "name":  "FacetContainsNoCode",
+                             "type":  "error"
+                         },
+                         {
+                             "inputs":  [
+
+                                        ],
+                             "name":  "FunctionAlreadyExists",
+                             "type":  "error"
+                         },
+                         {
+                             "inputs":  [
+
+                                        ],
+                             "name":  "FunctionDoesNotExist",
+                             "type":  "error"
+                         },
+                         {
+                             "inputs":  [
+
+                                        ],
+                             "name":  "FunctionIsImmutable",
+                             "type":  "error"
+                         },
+                         {
+                             "inputs":  [
+
+                                        ],
+                             "name":  "IncorrectFacetCutAction",
+                             "type":  "error"
+                         },
+                         {
+                             "inputs":  [
+
+                                        ],
+                             "name":  "InitReverted",
+                             "type":  "error"
+                         },
+                         {
+                             "inputs":  [
+
+                                        ],
+                             "name":  "InitZeroButCalldataNotEmpty",
+                             "type":  "error"
+                         },
+                         {
+                             "inputs":  [
+
+                                        ],
+                             "name":  "NoSelectorsInFace",
+                             "type":  "error"
+                         },
+                         {
+                             "anonymous":  false,
+                             "inputs":  [
+                                            {
+                                                "components":  [
+                                                                   {
+                                                                       "internalType":  "address",
+                                                                       "name":  "facetAddress",
+                                                                       "type":  "address"
+                                                                   },
+                                                                   {
+                                                                       "internalType":  "enum LibDiamond.FacetCutAction",
+                                                                       "name":  "action",
+                                                                       "type":  "uint8"
+                                                                   },
+                                                                   {
+                                                                       "internalType":  "bytes4[]",
+                                                                       "name":  "functionSelectors",
+                                                                       "type":  "bytes4[]"
+                                                                   }
+                                                               ],
+                                                "indexed":  false,
+                                                "internalType":  "struct LibDiamond.FacetCut[]",
+                                                "name":  "_diamondCut",
+                                                "type":  "tuple[]"
+                                            },
+                                            {
+                                                "indexed":  false,
+                                                "internalType":  "address",
+                                                "name":  "_init",
+                                                "type":  "address"
+                                            },
+                                            {
+                                                "indexed":  false,
+                                                "internalType":  "bytes",
+                                                "name":  "_calldata",
+                                                "type":  "bytes"
+                                            }
+                                        ],
+                             "name":  "DiamondCut",
+                             "type":  "event"
+                         },
+                         {
+                             "anonymous":  false,
+                             "inputs":  [
+                                            {
+                                                "indexed":  true,
+                                                "internalType":  "address",
+                                                "name":  "previousOwner",
+                                                "type":  "address"
+                                            },
+                                            {
+                                                "indexed":  true,
+                                                "internalType":  "address",
+                                                "name":  "newOwner",
+                                                "type":  "address"
+                                            }
+                                        ],
+                             "name":  "OwnershipTransferred",
+                             "type":  "event"
+                         },
+                         {
+                             "stateMutability":  "payable",
+                             "type":  "fallback"
+                         },
+                         {
+                             "stateMutability":  "payable",
+                             "type":  "receive"
+                         }
+                     ],
+    "transaction_fee_alt_token_fee":  null,
+    "receipt_l1_fee_alt_token_fee":  null,
+    "value_dollar":  "1693.36",
+    "transaction_fee_dollar":  "0.00310309",
+    "from_address_display_name":  "0x7cc6eed5fb840fb7a72ff8157a0c7c21158a978a",
+    "to_address_display_name":  "LiFiDiamond",
+    "l1_fee":  "0",
+    "l1_fee_alt_token_fee":  null,
+    "l2_fee":  "0.00421495",
+    "l2_fee_alt_token_fee":  null,
+    "total_transaction_fee":  "0.00421495",
+    "total_transaction_fee_dollar":  "0.00310309",
+    "total_transaction_fee_alt_token_fee":  null,
+    "gas_price_gwei":  "10",
+    "input_data":  [
+                       {
+                           "indexed":  false,
+                           "name":  "_bridgeData",
+                           "data_type":  "tuple",
+                           "hex_data":  "{\u0027transactionId\u0027: b\"\\xec\\xc5lS\\x88\\xe1\\xbd\\xb8\\xe3\\xa1-#x\\xb8\\xf0\\xf2HI\\x8dc\\xce6BE\\xff`\\xdeJ\\x18\\xf6\u00271\", \u0027bridge\u0027: \u0027glacis\u0027, \u0027integrator\u0027: \u0027pros-arb-bridge\u0027, \u0027referrer\u0027: \u00270x0000000000000000000000000000000000000000\u0027, \u0027sendingAssetId\u0027: \u00270x52c48d4213107b20bc583832b0d951fb9ca8f0b0\u0027, \u0027receiver\u0027: \u00270x7cc6eed5fb840fb7a72ff8157a0c7c21158a978a\u0027, \u0027minAmount\u0027: 2294096000723099963229, \u0027destinationChainId\u0027: 8453, \u0027hasSourceSwaps\u0027: True, \u0027hasDestinationCall\u0027: False}",
+                           "dec_data":  "{\u0027transactionId\u0027: b\"\\xec\\xc5lS\\x88\\xe1\\xbd\\xb8\\xe3\\xa1-#x\\xb8\\xf0\\xf2HI\\x8dc\\xce6BE\\xff`\\xdeJ\\x18\\xf6\u00271\", \u0027bridge\u0027: \u0027glacis\u0027, \u0027integrator\u0027: \u0027pros-arb-bridge\u0027, \u0027referrer\u0027: \u00270x0000000000000000000000000000000000000000\u0027, \u0027sendingAssetId\u0027: \u00270x52c48d4213107b20bc583832b0d951fb9ca8f0b0\u0027, \u0027receiver\u0027: \u00270x7cc6eed5fb840fb7a72ff8157a0c7c21158a978a\u0027, \u0027minAmount\u0027: 2294096000723099963229, \u0027destinationChainId\u0027: 8453, \u0027hasSourceSwaps\u0027: True, \u0027hasDestinationCall\u0027: False}",
+                           "components":  [
+                                              {
+                                                  "name":  "transactionId",
+                                                  "data_type":  "bytes32",
+                                                  "value":  "0xecc56c5388e1bdb8e3a12d2378b8f0f248498d63ce364245ff60de4a18f62731",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "bridge",
+                                                  "data_type":  "string",
+                                                  "value":  "glacis",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "integrator",
+                                                  "data_type":  "string",
+                                                  "value":  "pros-arb-bridge",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "referrer",
+                                                  "data_type":  "address",
+                                                  "value":  "0x0000000000000000000000000000000000000000",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "sendingAssetId",
+                                                  "data_type":  "address",
+                                                  "value":  "0x52c48d4213107b20bc583832b0d951fb9ca8f0b0",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "receiver",
+                                                  "data_type":  "address",
+                                                  "value":  "0x7cc6eed5fb840fb7a72ff8157a0c7c21158a978a",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "minAmount",
+                                                  "data_type":  "uint256",
+                                                  "value":  "2294096000723099963229",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "destinationChainId",
+                                                  "data_type":  "uint256",
+                                                  "value":  "8453",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "hasSourceSwaps",
+                                                  "data_type":  "bool",
+                                                  "value":  "True",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "hasDestinationCall",
+                                                  "data_type":  "bool",
+                                                  "value":  "False",
+                                                  "components":  null
+                                              }
+                                          ]
+                       },
+                       {
+                           "indexed":  false,
+                           "name":  "_swapData",
+                           "data_type":  "tuple[]",
+                           "hex_data":  "[{\u0027callTo\u0027: \u00270xd23fb66108971325f302bf0f209216d705adf987\u0027, \u0027approveTo\u0027: \u00270xd23fb66108971325f302bf0f209216d705adf987\u0027, \u0027sendingAssetId\u0027: \u00270x0000000000000000000000000000000000000000\u0027, \u0027receivingAssetId\u0027: \u00270x0000000000000000000000000000000000000000\u0027, \u0027fromAmount\u0027: 2299845614759999963136, \u0027callData\u0027: b\u0027\\x0e\\x8a\\xe6\\x7f\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00 \\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\xc0n\\xbb\\xef\\xd9@2\\xb8T$\\xd5\\x19\\x06\\xe2\\xa35\\xef\\xae\u0026K\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00O\\xca\\xbb\\x80\\xf9\\x060\\xa3\u0027, \u0027requiresDeposit\u0027: True}, {\u0027callTo\u0027: \u00270x1de7889c440d4fefa0e5f4f83a021f6f41cdf26b\u0027, \u0027approveTo\u0027: \u00270x1de7889c440d4fefa0e5f4f83a021f6f41cdf26b\u0027, \u0027sendingAssetId\u0027: \u00270x0000000000000000000000000000000000000000\u0027, \u0027receivingAssetId\u0027: \u00270x52c48d4213107b20bc583832b0d951fb9ca8f0b0\u0027, \u0027fromAmount\u0027: 2294096000723099963229, \u0027callData\u0027: b\u0027\\xd0\\xe3\\r\\xb0\u0027, \u0027requiresDeposit\u0027: False}]",
+                           "dec_data":  "[{\u0027callTo\u0027: \u00270xd23fb66108971325f302bf0f209216d705adf987\u0027, \u0027approveTo\u0027: \u00270xd23fb66108971325f302bf0f209216d705adf987\u0027, \u0027sendingAssetId\u0027: \u00270x0000000000000000000000000000000000000000\u0027, \u0027receivingAssetId\u0027: \u00270x0000000000000000000000000000000000000000\u0027, \u0027fromAmount\u0027: 2299845614759999963136, \u0027callData\u0027: b\u0027\\x0e\\x8a\\xe6\\x7f\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00 \\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\xc0n\\xbb\\xef\\xd9@2\\xb8T$\\xd5\\x19\\x06\\xe2\\xa35\\xef\\xae\u0026K\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00O\\xca\\xbb\\x80\\xf9\\x060\\xa3\u0027, \u0027requiresDeposit\u0027: True}, {\u0027callTo\u0027: \u00270x1de7889c440d4fefa0e5f4f83a021f6f41cdf26b\u0027, \u0027approveTo\u0027: \u00270x1de7889c440d4fefa0e5f4f83a021f6f41cdf26b\u0027, \u0027sendingAssetId\u0027: \u00270x0000000000000000000000000000000000000000\u0027, \u0027receivingAssetId\u0027: \u00270x52c48d4213107b20bc583832b0d951fb9ca8f0b0\u0027, \u0027fromAmount\u0027: 2294096000723099963229, \u0027callData\u0027: b\u0027\\xd0\\xe3\\r\\xb0\u0027, \u0027requiresDeposit\u0027: False}]",
+                           "components":  [
+                                              {
+                                                  "name":  "[0].callTo",
+                                                  "data_type":  "address",
+                                                  "value":  "0xd23fb66108971325f302bf0f209216d705adf987",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "[0].approveTo",
+                                                  "data_type":  "address",
+                                                  "value":  "0xd23fb66108971325f302bf0f209216d705adf987",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "[0].sendingAssetId",
+                                                  "data_type":  "address",
+                                                  "value":  "0x0000000000000000000000000000000000000000",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "[0].receivingAssetId",
+                                                  "data_type":  "address",
+                                                  "value":  "0x0000000000000000000000000000000000000000",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "[0].fromAmount",
+                                                  "data_type":  "uint256",
+                                                  "value":  "2299845614759999963136",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "[0].callData",
+                                                  "data_type":  "bytes",
+                                                  "value":  "0x0e8ae67f00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c06ebbefd94032b85424d51906e2a335efae264b0000000000000000000000000000000000000000000000004fcabb80f90630a3",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "[0].requiresDeposit",
+                                                  "data_type":  "bool",
+                                                  "value":  "True",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "[1].callTo",
+                                                  "data_type":  "address",
+                                                  "value":  "0x1de7889c440d4fefa0e5f4f83a021f6f41cdf26b",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "[1].approveTo",
+                                                  "data_type":  "address",
+                                                  "value":  "0x1de7889c440d4fefa0e5f4f83a021f6f41cdf26b",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "[1].sendingAssetId",
+                                                  "data_type":  "address",
+                                                  "value":  "0x0000000000000000000000000000000000000000",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "[1].receivingAssetId",
+                                                  "data_type":  "address",
+                                                  "value":  "0x52c48d4213107b20bc583832b0d951fb9ca8f0b0",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "[1].fromAmount",
+                                                  "data_type":  "uint256",
+                                                  "value":  "2294096000723099963229",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "[1].callData",
+                                                  "data_type":  "bytes",
+                                                  "value":  "0xd0e30db0",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "[1].requiresDeposit",
+                                                  "data_type":  "bool",
+                                                  "value":  "False",
+                                                  "components":  null
+                                              }
+                                          ]
+                       },
+                       {
+                           "indexed":  false,
+                           "name":  "_glacisData",
+                           "data_type":  "tuple",
+                           "hex_data":  "{\u0027receiverAddress\u0027: b\u0027\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00|\\xc6\\xee\\xd5\\xfb\\x84\\x0f\\xb7\\xa7/\\xf8\\x15z\\x0c|!\\x15\\x8a\\x97\\x8a\u0027, \u0027refundAddress\u0027: \u00270x7cc6eed5fb840fb7a72ff8157a0c7c21158a978a\u0027, \u0027nativeFee\u0027: 256523826634006867, \u0027outputToken\u0027: b\u0027\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x8b}\\xde\\x05K\\xe9\\xd1\\x80\\xc1\\xbe\\x7f\\xae\\x08tist\\xa4\\x982\u0027}",
+                           "dec_data":  "{\u0027receiverAddress\u0027: b\u0027\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00|\\xc6\\xee\\xd5\\xfb\\x84\\x0f\\xb7\\xa7/\\xf8\\x15z\\x0c|!\\x15\\x8a\\x97\\x8a\u0027, \u0027refundAddress\u0027: \u00270x7cc6eed5fb840fb7a72ff8157a0c7c21158a978a\u0027, \u0027nativeFee\u0027: 256523826634006867, \u0027outputToken\u0027: b\u0027\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x8b}\\xde\\x05K\\xe9\\xd1\\x80\\xc1\\xbe\\x7f\\xae\\x08tist\\xa4\\x982\u0027}",
+                           "components":  [
+                                              {
+                                                  "name":  "receiverAddress",
+                                                  "data_type":  "bytes32",
+                                                  "value":  "0x0000000000000000000000007cc6eed5fb840fb7a72ff8157a0c7c21158a978a",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "refundAddress",
+                                                  "data_type":  "address",
+                                                  "value":  "0x7cc6eed5fb840fb7a72ff8157a0c7c21158a978a",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "nativeFee",
+                                                  "data_type":  "uint256",
+                                                  "value":  "256523826634006867",
+                                                  "components":  null
+                                              },
+                                              {
+                                                  "name":  "outputToken",
+                                                  "data_type":  "bytes32",
+                                                  "value":  "0x0000000000000000000000008b7dde054be9d180c1be7fae0874697374a49832",
+                                                  "components":  null
+                                              }
+                                          ]
+                       }
+                   ],
+    "function_name":  "swapAndStartBridgeTokensViaGlacis",
+    "function_unsigned":  "swapAndStartBridgeTokensViaGlacis((bytes32,string,string,address,address,address,uint256,uint256,bool,bool),(address,address,address,address,uint256,bytes,bool)[],(bytes32,address,uint256,bytes32))",
+    "full_function_name":  "swapAndStartBridgeTokensViaGlacis(tuple _bridgeData, tuple[] _swapData, tuple _glacisData)",
+    "transaction_type_display":  "0 (Legacy)",
+    "burnt":  "0.00421495",
+    "base_fee_per_gas":  "10000000000",
+    "trace_error_msg":  null,
+    "trace_custom_error_msg":  null
+}

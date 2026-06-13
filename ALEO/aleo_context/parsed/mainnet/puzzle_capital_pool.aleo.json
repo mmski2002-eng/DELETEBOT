@@ -1,0 +1,1999 @@
+{
+  "program_id": "puzzle_capital_pool.aleo",
+  "calls_24h_or_metric_window": 6,
+  "imports": [
+    "credits.aleo",
+    "puzzle_capital_multisig.aleo"
+  ],
+  "mappings": {
+    "deposits": {
+      "key": "address.public",
+      "value": "u64.public"
+    },
+    "total_deposited": {
+      "key": "boolean.public",
+      "value": "u64.public"
+    },
+    "depositor_count": {
+      "key": "boolean.public",
+      "value": "u64.public"
+    },
+    "deposit_block": {
+      "key": "address.public",
+      "value": "u32.public"
+    },
+    "current_epoch": {
+      "key": "boolean.public",
+      "value": "u64.public"
+    },
+    "epoch_commitments": {
+      "key": "u64.public",
+      "value": "field.public"
+    },
+    "epoch_total_rewards": {
+      "key": "u64.public",
+      "value": "u64.public"
+    },
+    "epoch_fee_taken": {
+      "key": "u64.public",
+      "value": "u64.public"
+    },
+    "epoch_restaked": {
+      "key": "u64.public",
+      "value": "u64.public"
+    },
+    "epoch_start_block": {
+      "key": "u64.public",
+      "value": "u32.public"
+    },
+    "epoch_payout_count": {
+      "key": "u64.public",
+      "value": "u64.public"
+    },
+    "committed_depositor_count": {
+      "key": "u64.public",
+      "value": "u64.public"
+    },
+    "bonded_snapshot": {
+      "key": "boolean.public",
+      "value": "u64.public"
+    },
+    "epoch_net_deposits": {
+      "key": "boolean.public",
+      "value": "u64.public"
+    },
+    "epoch_net_withdrawals": {
+      "key": "boolean.public",
+      "value": "u64.public"
+    },
+    "epoch_settling": {
+      "key": "boolean.public",
+      "value": "boolean.public"
+    },
+    "last_epoch_block": {
+      "key": "boolean.public",
+      "value": "u32.public"
+    },
+    "auto_restake": {
+      "key": "address.public",
+      "value": "boolean.public"
+    },
+    "claimable": {
+      "key": "address.public",
+      "value": "u64.public"
+    },
+    "is_depositor": {
+      "key": "address.public",
+      "value": "boolean.public"
+    },
+    "pending_withdrawals": {
+      "key": "address.public",
+      "value": "PendingWithdrawal.public"
+    },
+    "withdrawal_credits": {
+      "key": "address.public",
+      "value": "u64.public"
+    },
+    "epoch_depositor_paid": {
+      "key": "field.public",
+      "value": "boolean.public"
+    },
+    "pool_config": {
+      "key": "boolean.public",
+      "value": "PoolConfig.public"
+    },
+    "validator_address": {
+      "key": "boolean.public",
+      "value": "address.public"
+    },
+    "treasury": {
+      "key": "boolean.public",
+      "value": "address.public"
+    },
+    "backup_address": {
+      "key": "boolean.public",
+      "value": "address.public"
+    },
+    "address_to_role": {
+      "key": "address.public",
+      "value": "u16.public"
+    },
+    "initialized": {
+      "key": "boolean.public",
+      "value": "boolean.public"
+    },
+    "max_reward_bps": {
+      "key": "boolean.public",
+      "value": "u64.public"
+    },
+    "skipped_depositors": {
+      "key": "u64.public",
+      "value": "u64.public"
+    }
+  },
+  "structs": {
+    "ChecksumEdition": [
+      {
+        "name": "checksum",
+        "type": "[u8"
+      },
+      {
+        "name": "edition",
+        "type": "u16"
+      }
+    ],
+    "WalletSigningOpId": [
+      {
+        "name": "wallet_id",
+        "type": "field"
+      },
+      {
+        "name": "signing_op_id",
+        "type": "field"
+      }
+    ],
+    "PoolConfig": [
+      {
+        "name": "fee_bps",
+        "type": "u64"
+      },
+      {
+        "name": "paused",
+        "type": "boolean"
+      },
+      {
+        "name": "wallet_id",
+        "type": "field"
+      }
+    ],
+    "PendingWithdrawal": [
+      {
+        "name": "amount",
+        "type": "u64"
+      },
+      {
+        "name": "unbond_block",
+        "type": "u32"
+      }
+    ],
+    "ChangeFeeAction": [
+      {
+        "name": "new_fee_bps",
+        "type": "u64"
+      }
+    ],
+    "ChangeValidatorAction": [
+      {
+        "name": "new_validator",
+        "type": "address"
+      }
+    ],
+    "PauseAction": [
+      {
+        "name": "pause",
+        "type": "boolean"
+      }
+    ],
+    "UpdateRoleAction": [
+      {
+        "name": "target",
+        "type": "address"
+      },
+      {
+        "name": "role",
+        "type": "u16"
+      }
+    ],
+    "ChangeMaxRewardAction": [
+      {
+        "name": "new_max_reward_bps",
+        "type": "u64"
+      }
+    ],
+    "EpochDepositorKey": [
+      {
+        "name": "epoch",
+        "type": "u64"
+      },
+      {
+        "name": "depositor",
+        "type": "address"
+      }
+    ]
+  },
+  "records": {
+    "PayoutReceipt": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "epoch",
+        "type": "u64.private"
+      },
+      {
+        "name": "reward",
+        "type": "u64.private"
+      },
+      {
+        "name": "deposit_snapshot",
+        "type": "u64.private"
+      },
+      {
+        "name": "commitment",
+        "type": "field.private"
+      }
+    ]
+  },
+  "functions": {
+    "initialize": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        },
+        {
+          "register": "r4",
+          "type": "field.public"
+        },
+        {
+          "register": "r5",
+          "type": "address.public"
+        },
+        {
+          "register": "r6",
+          "type": "address.public"
+        },
+        {
+          "register": "r7",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r8",
+          "type": "puzzle_capital_pool.aleo/initialize.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        },
+        {
+          "register": "r3",
+          "type": "address.public"
+        },
+        {
+          "register": "r4",
+          "type": "address.public"
+        },
+        {
+          "register": "r5",
+          "type": "address.public"
+        },
+        {
+          "register": "r6",
+          "type": "address.public"
+        },
+        {
+          "register": "r7",
+          "type": "address.public"
+        },
+        {
+          "register": "r8",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "initialized"
+      ],
+      "finalize_state_writes": [
+        "address_to_role",
+        "backup_address",
+        "bonded_snapshot",
+        "current_epoch",
+        "depositor_count",
+        "epoch_net_deposits",
+        "epoch_net_withdrawals",
+        "epoch_settling",
+        "initialized",
+        "last_epoch_block",
+        "max_reward_bps",
+        "pool_config",
+        "total_deposited",
+        "treasury",
+        "validator_address"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "deposit": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "puzzle_capital_pool.aleo/deposit.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "depositor_count",
+        "deposits",
+        "epoch_net_deposits",
+        "epoch_settling",
+        "is_depositor",
+        "pool_config",
+        "total_deposited"
+      ],
+      "finalize_state_writes": [
+        "auto_restake",
+        "deposit_block",
+        "depositor_count",
+        "deposits",
+        "epoch_net_deposits",
+        "is_depositor",
+        "total_deposited"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "gte"
+      ],
+      "snark_verify": false
+    },
+    "deposit_v2": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "puzzle_capital_pool.aleo/deposit_v2.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_public_as_signer.future"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "auto_restake",
+        "deposit_block",
+        "depositor_count",
+        "deposits",
+        "epoch_net_deposits",
+        "epoch_settling",
+        "is_depositor",
+        "pool_config",
+        "total_deposited"
+      ],
+      "finalize_state_writes": [
+        "auto_restake",
+        "deposit_block",
+        "depositor_count",
+        "deposits",
+        "epoch_net_deposits",
+        "is_depositor",
+        "total_deposited"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte",
+        "ternary"
+      ],
+      "snark_verify": false
+    },
+    "request_withdraw": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "puzzle_capital_pool.aleo/request_withdraw.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/unbond_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "depositor_count",
+        "deposits",
+        "epoch_net_withdrawals",
+        "epoch_settling",
+        "is_depositor",
+        "pool_config",
+        "total_deposited"
+      ],
+      "finalize_state_writes": [
+        "depositor_count",
+        "deposits",
+        "epoch_net_withdrawals",
+        "is_depositor",
+        "pending_withdrawals",
+        "total_deposited"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "gt",
+        "is.eq",
+        "lt",
+        "lte",
+        "ternary"
+      ],
+      "snark_verify": false
+    },
+    "complete_withdraw": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "puzzle_capital_pool.aleo/complete_withdraw.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/claim_unbond_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "pending_withdrawals",
+        "withdrawal_credits"
+      ],
+      "finalize_state_writes": [
+        "pending_withdrawals",
+        "withdrawal_credits"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gt"
+      ],
+      "snark_verify": false
+    },
+    "set_auto_restake": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "boolean.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "puzzle_capital_pool.aleo/set_auto_restake.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "boolean.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "is_depositor"
+      ],
+      "finalize_state_writes": [
+        "auto_restake"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "commit_epoch": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        },
+        {
+          "register": "r4",
+          "type": "field.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r5",
+          "type": "puzzle_capital_pool.aleo/commit_epoch.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        },
+        {
+          "register": "r4",
+          "type": "u64.public"
+        },
+        {
+          "register": "r5",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "address_to_role",
+        "committed_depositor_count",
+        "current_epoch",
+        "depositor_count",
+        "epoch_payout_count",
+        "epoch_settling",
+        "last_epoch_block",
+        "max_reward_bps",
+        "pool_config",
+        "total_deposited"
+      ],
+      "finalize_state_writes": [
+        "bonded_snapshot",
+        "committed_depositor_count",
+        "current_epoch",
+        "epoch_commitments",
+        "epoch_fee_taken",
+        "epoch_net_deposits",
+        "epoch_net_withdrawals",
+        "epoch_payout_count",
+        "epoch_settling",
+        "epoch_start_block",
+        "epoch_total_rewards"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq",
+        "branch.eq",
+        "gt",
+        "gte",
+        "is.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "apply_epoch_rewards": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u32.public"
+        },
+        {
+          "register": "r4",
+          "type": "address.public"
+        },
+        {
+          "register": "r5",
+          "type": "u64.public"
+        },
+        {
+          "register": "r6",
+          "type": "field.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r7",
+          "type": "PayoutReceipt.record"
+        },
+        {
+          "register": "r8",
+          "type": "PayoutReceipt.record"
+        },
+        {
+          "register": "r9",
+          "type": "puzzle_capital_pool.aleo/apply_epoch_rewards.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        },
+        {
+          "register": "r4",
+          "type": "field.public"
+        },
+        {
+          "register": "r5",
+          "type": "u64.public"
+        },
+        {
+          "register": "r6",
+          "type": "u32.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "address_to_role",
+        "auto_restake",
+        "bonded_snapshot",
+        "claimable",
+        "current_epoch",
+        "deposit_block",
+        "deposits",
+        "epoch_commitments",
+        "epoch_depositor_paid",
+        "epoch_fee_taken",
+        "epoch_payout_count",
+        "epoch_settling",
+        "epoch_start_block",
+        "epoch_total_rewards",
+        "is_depositor",
+        "total_deposited"
+      ],
+      "finalize_state_writes": [
+        "claimable",
+        "deposits",
+        "epoch_depositor_paid",
+        "epoch_payout_count",
+        "total_deposited"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq",
+        "branch.eq",
+        "gt",
+        "is.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "close_epoch": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "puzzle_capital_pool.aleo/close_epoch.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "address_to_role",
+        "committed_depositor_count",
+        "current_epoch",
+        "epoch_payout_count"
+      ],
+      "finalize_state_writes": [
+        "epoch_settling",
+        "last_epoch_block"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq",
+        "is.eq"
+      ],
+      "snark_verify": false
+    },
+    "restake_epoch": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "puzzle_capital_pool.aleo/restake_epoch.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/bond_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        },
+        {
+          "register": "r4",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "address_to_role",
+        "current_epoch",
+        "epoch_settling",
+        "validator_address"
+      ],
+      "finalize_state_writes": [
+        "epoch_restaked"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq",
+        "is.eq"
+      ],
+      "snark_verify": false
+    },
+    "withdraw_credits": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "puzzle_capital_pool.aleo/withdraw_credits.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "withdrawal_credits"
+      ],
+      "finalize_state_writes": [
+        "withdrawal_credits"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "gt",
+        "is.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "transfer_claimable": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "puzzle_capital_pool.aleo/transfer_claimable.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "claimable"
+      ],
+      "finalize_state_writes": [
+        "claimable"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "emergency_unseal": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "puzzle_capital_pool.aleo/emergency_unseal.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "address_to_role"
+      ],
+      "finalize_state_writes": [
+        "epoch_settling"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq",
+        "is.eq",
+        "or"
+      ],
+      "snark_verify": false
+    },
+    "force_close_epoch": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "puzzle_capital_pool.aleo/force_close_epoch.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "address_to_role",
+        "committed_depositor_count",
+        "current_epoch",
+        "epoch_payout_count",
+        "epoch_settling"
+      ],
+      "finalize_state_writes": [
+        "committed_depositor_count",
+        "last_epoch_block",
+        "skipped_depositors"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq",
+        "is.eq",
+        "lt"
+      ],
+      "snark_verify": false
+    },
+    "propose_change_fee": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r6",
+          "type": "puzzle_capital_pool.aleo/propose_change_fee.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "puzzle_capital_multisig.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "puzzle_capital_multisig.aleo/init_signing_op.future"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "address_to_role"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq",
+        "is.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "propose_change_validator": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r6",
+          "type": "puzzle_capital_pool.aleo/propose_change_validator.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "puzzle_capital_multisig.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "puzzle_capital_multisig.aleo/init_signing_op.future"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "address_to_role"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq",
+        "is.eq"
+      ],
+      "snark_verify": false
+    },
+    "propose_update_role": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "u16.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r7",
+          "type": "puzzle_capital_pool.aleo/propose_update_role.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "puzzle_capital_multisig.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "puzzle_capital_multisig.aleo/init_signing_op.future"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "address_to_role"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq",
+        "is.eq"
+      ],
+      "snark_verify": false
+    },
+    "propose_pause": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "boolean.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r6",
+          "type": "puzzle_capital_pool.aleo/propose_pause.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "puzzle_capital_multisig.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "puzzle_capital_multisig.aleo/init_signing_op.future"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "address_to_role"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq",
+        "is.eq",
+        "or"
+      ],
+      "snark_verify": false
+    },
+    "propose_change_max_reward_bps": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r6",
+          "type": "puzzle_capital_pool.aleo/propose_change_max_reward_bps.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "puzzle_capital_multisig.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "puzzle_capital_multisig.aleo/init_signing_op.future"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "address_to_role"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "exec_change_fee": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r7",
+          "type": "puzzle_capital_pool.aleo/exec_change_fee.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "puzzle_capital_multisig.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "puzzle_capital_multisig.aleo/verify_completed_op.future"
+        },
+        {
+          "register": "r1",
+          "type": "puzzle_capital_multisig.aleo/consume_signing_op.future"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "address_to_role",
+        "pool_config"
+      ],
+      "finalize_state_writes": [
+        "pool_config"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq",
+        "is.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "exec_update_role": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "u16.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r8",
+          "type": "puzzle_capital_pool.aleo/exec_update_role.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "puzzle_capital_multisig.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "puzzle_capital_multisig.aleo/verify_completed_op.future"
+        },
+        {
+          "register": "r1",
+          "type": "puzzle_capital_multisig.aleo/consume_signing_op.future"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "address.public"
+        },
+        {
+          "register": "r4",
+          "type": "u16.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "address_to_role"
+      ],
+      "finalize_state_writes": [
+        "address_to_role"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq",
+        "is.eq"
+      ],
+      "snark_verify": false
+    },
+    "exec_pause": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "boolean.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r7",
+          "type": "puzzle_capital_pool.aleo/exec_pause.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "puzzle_capital_multisig.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "puzzle_capital_multisig.aleo/verify_completed_op.future"
+        },
+        {
+          "register": "r1",
+          "type": "puzzle_capital_multisig.aleo/consume_signing_op.future"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "boolean.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "address_to_role",
+        "pool_config"
+      ],
+      "finalize_state_writes": [
+        "pool_config"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq",
+        "is.eq"
+      ],
+      "snark_verify": false
+    },
+    "exec_change_validator": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r7",
+          "type": "puzzle_capital_pool.aleo/exec_change_validator.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "puzzle_capital_multisig.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "puzzle_capital_multisig.aleo/verify_completed_op.future"
+        },
+        {
+          "register": "r1",
+          "type": "puzzle_capital_multisig.aleo/consume_signing_op.future"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "address_to_role"
+      ],
+      "finalize_state_writes": [
+        "validator_address"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq",
+        "is.eq"
+      ],
+      "snark_verify": false
+    },
+    "exec_change_max_reward_bps": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r7",
+          "type": "puzzle_capital_pool.aleo/exec_change_max_reward_bps.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "puzzle_capital_multisig.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "puzzle_capital_multisig.aleo/verify_completed_op.future"
+        },
+        {
+          "register": "r1",
+          "type": "puzzle_capital_multisig.aleo/consume_signing_op.future"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "address_to_role"
+      ],
+      "finalize_state_writes": [
+        "max_reward_bps"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq",
+        "gt",
+        "is.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "get_signing_op_id_for_deploy": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "[u8"
+        },
+        {
+          "register": "r1",
+          "type": "u16.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "field.private"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [
+        "puzzle_capital_multisig.aleo"
+      ],
+      "state_reads": [
+        "pool_config"
+      ],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "gt"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "apply_epoch_rewards",
+    "close_epoch",
+    "commit_epoch",
+    "complete_withdraw",
+    "deposit",
+    "deposit_v2",
+    "emergency_unseal",
+    "exec_change_fee",
+    "exec_change_max_reward_bps",
+    "exec_change_validator",
+    "exec_pause",
+    "exec_update_role",
+    "force_close_epoch",
+    "initialize",
+    "propose_change_fee",
+    "propose_change_max_reward_bps",
+    "propose_change_validator",
+    "propose_pause",
+    "propose_update_role",
+    "request_withdraw",
+    "restake_epoch",
+    "set_auto_restake",
+    "transfer_claimable",
+    "withdraw_credits"
+  ],
+  "cross_contract_refs": [
+    "credits.aleo",
+    "puzzle_capital_multisig.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "initialize",
+    "deposit",
+    "deposit_v2",
+    "request_withdraw",
+    "complete_withdraw",
+    "set_auto_restake",
+    "commit_epoch",
+    "apply_epoch_rewards",
+    "close_epoch",
+    "restake_epoch",
+    "withdraw_credits",
+    "transfer_claimable",
+    "emergency_unseal",
+    "force_close_epoch",
+    "propose_change_fee",
+    "propose_change_validator",
+    "propose_update_role",
+    "propose_pause",
+    "propose_change_max_reward_bps",
+    "exec_change_fee",
+    "exec_update_role",
+    "exec_pause",
+    "exec_change_validator",
+    "exec_change_max_reward_bps",
+    "get_signing_op_id_for_deploy"
+  ],
+  "state_commitment_surfaces": {
+    "records": [
+      "PayoutReceipt"
+    ],
+    "mappings": [
+      "address_to_role",
+      "auto_restake",
+      "backup_address",
+      "bonded_snapshot",
+      "claimable",
+      "committed_depositor_count",
+      "current_epoch",
+      "deposit_block",
+      "depositor_count",
+      "deposits",
+      "epoch_commitments",
+      "epoch_depositor_paid",
+      "epoch_fee_taken",
+      "epoch_net_deposits",
+      "epoch_net_withdrawals",
+      "epoch_payout_count",
+      "epoch_restaked",
+      "epoch_settling",
+      "epoch_start_block",
+      "epoch_total_rewards",
+      "initialized",
+      "is_depositor",
+      "last_epoch_block",
+      "max_reward_bps",
+      "pending_withdrawals",
+      "pool_config",
+      "skipped_depositors",
+      "total_deposited",
+      "treasury",
+      "validator_address",
+      "withdrawal_credits"
+    ],
+    "future_outputs": [
+      {
+        "function": "initialize",
+        "output": "puzzle_capital_pool.aleo/initialize.future"
+      },
+      {
+        "function": "deposit",
+        "output": "puzzle_capital_pool.aleo/deposit.future"
+      },
+      {
+        "function": "deposit_v2",
+        "output": "puzzle_capital_pool.aleo/deposit_v2.future"
+      },
+      {
+        "function": "request_withdraw",
+        "output": "puzzle_capital_pool.aleo/request_withdraw.future"
+      },
+      {
+        "function": "complete_withdraw",
+        "output": "puzzle_capital_pool.aleo/complete_withdraw.future"
+      },
+      {
+        "function": "set_auto_restake",
+        "output": "puzzle_capital_pool.aleo/set_auto_restake.future"
+      },
+      {
+        "function": "commit_epoch",
+        "output": "puzzle_capital_pool.aleo/commit_epoch.future"
+      },
+      {
+        "function": "apply_epoch_rewards",
+        "output": "puzzle_capital_pool.aleo/apply_epoch_rewards.future"
+      },
+      {
+        "function": "close_epoch",
+        "output": "puzzle_capital_pool.aleo/close_epoch.future"
+      },
+      {
+        "function": "restake_epoch",
+        "output": "puzzle_capital_pool.aleo/restake_epoch.future"
+      },
+      {
+        "function": "withdraw_credits",
+        "output": "puzzle_capital_pool.aleo/withdraw_credits.future"
+      },
+      {
+        "function": "transfer_claimable",
+        "output": "puzzle_capital_pool.aleo/transfer_claimable.future"
+      },
+      {
+        "function": "emergency_unseal",
+        "output": "puzzle_capital_pool.aleo/emergency_unseal.future"
+      },
+      {
+        "function": "force_close_epoch",
+        "output": "puzzle_capital_pool.aleo/force_close_epoch.future"
+      },
+      {
+        "function": "propose_change_fee",
+        "output": "puzzle_capital_pool.aleo/propose_change_fee.future"
+      },
+      {
+        "function": "propose_change_validator",
+        "output": "puzzle_capital_pool.aleo/propose_change_validator.future"
+      },
+      {
+        "function": "propose_update_role",
+        "output": "puzzle_capital_pool.aleo/propose_update_role.future"
+      },
+      {
+        "function": "propose_pause",
+        "output": "puzzle_capital_pool.aleo/propose_pause.future"
+      },
+      {
+        "function": "propose_change_max_reward_bps",
+        "output": "puzzle_capital_pool.aleo/propose_change_max_reward_bps.future"
+      },
+      {
+        "function": "exec_change_fee",
+        "output": "puzzle_capital_pool.aleo/exec_change_fee.future"
+      },
+      {
+        "function": "exec_update_role",
+        "output": "puzzle_capital_pool.aleo/exec_update_role.future"
+      },
+      {
+        "function": "exec_pause",
+        "output": "puzzle_capital_pool.aleo/exec_pause.future"
+      },
+      {
+        "function": "exec_change_validator",
+        "output": "puzzle_capital_pool.aleo/exec_change_validator.future"
+      },
+      {
+        "function": "exec_change_max_reward_bps",
+        "output": "puzzle_capital_pool.aleo/exec_change_max_reward_bps.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

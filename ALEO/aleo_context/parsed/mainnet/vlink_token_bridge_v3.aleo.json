@@ -1,0 +1,1030 @@
+{
+  "program_id": "vlink_token_bridge_v3.aleo",
+  "calls_24h_or_metric_window": 19,
+  "imports": [],
+  "mappings": {
+    "bridge_settings": {
+      "key": "u8.public",
+      "value": "u8.public"
+    },
+    "owner_TB": {
+      "key": "boolean.public",
+      "value": "address.public"
+    },
+    "attestors": {
+      "key": "address.public",
+      "value": "boolean.public"
+    },
+    "in_packet_consumed": {
+      "key": "PacketId.public",
+      "value": "boolean.public"
+    },
+    "out_packets": {
+      "key": "PacketId.public",
+      "value": "OutPacket.public"
+    },
+    "supported_chains": {
+      "key": "u128.public",
+      "value": "boolean.public"
+    },
+    "supported_services": {
+      "key": "address.public",
+      "value": "boolean.public"
+    },
+    "sequences": {
+      "key": "u128.public",
+      "value": "u64.public"
+    }
+  },
+  "structs": {
+    "AleoProgram": [
+      {
+        "name": "chain_id",
+        "type": "u128"
+      },
+      {
+        "name": "addr",
+        "type": "address"
+      }
+    ],
+    "ForeignContract": [
+      {
+        "name": "chain_id",
+        "type": "u128"
+      },
+      {
+        "name": "addr",
+        "type": "[u8"
+      }
+    ],
+    "OutTokenMessage": [
+      {
+        "name": "sender_address",
+        "type": "address"
+      },
+      {
+        "name": "dest_token_address",
+        "type": "[u8"
+      },
+      {
+        "name": "amount",
+        "type": "u128"
+      },
+      {
+        "name": "receiver_address",
+        "type": "[u8"
+      }
+    ],
+    "InTokenMessage": [
+      {
+        "name": "sender_address",
+        "type": "[u8"
+      },
+      {
+        "name": "dest_token_id",
+        "type": "field"
+      },
+      {
+        "name": "amount",
+        "type": "u128"
+      },
+      {
+        "name": "receiver_address",
+        "type": "address"
+      }
+    ],
+    "OutPacket": [
+      {
+        "name": "version",
+        "type": "u8"
+      },
+      {
+        "name": "sequence",
+        "type": "u64"
+      },
+      {
+        "name": "source",
+        "type": "AleoProgram"
+      },
+      {
+        "name": "destination",
+        "type": "ForeignContract"
+      },
+      {
+        "name": "message",
+        "type": "OutTokenMessage"
+      },
+      {
+        "name": "height",
+        "type": "u64"
+      }
+    ],
+    "InPacket": [
+      {
+        "name": "version",
+        "type": "u8"
+      },
+      {
+        "name": "sequence",
+        "type": "u64"
+      },
+      {
+        "name": "source",
+        "type": "ForeignContract"
+      },
+      {
+        "name": "destination",
+        "type": "AleoProgram"
+      },
+      {
+        "name": "message",
+        "type": "InTokenMessage"
+      },
+      {
+        "name": "height",
+        "type": "u64"
+      }
+    ],
+    "PacketId": [
+      {
+        "name": "chain_id",
+        "type": "u128"
+      },
+      {
+        "name": "sequence",
+        "type": "u64"
+      }
+    ],
+    "InPacketWithScreening": [
+      {
+        "name": "packet_hash",
+        "type": "field"
+      },
+      {
+        "name": "screening_passed",
+        "type": "boolean"
+      }
+    ]
+  },
+  "records": {},
+  "functions": {
+    "initialize_tb": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "[address"
+        },
+        {
+          "register": "r1",
+          "type": "u8.public"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r51",
+          "type": "vlink_token_bridge_v3.aleo/initialize_tb.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "and",
+        "assert.eq",
+        "gte",
+        "lte",
+        "or",
+        "ternary"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "[address"
+        },
+        {
+          "register": "r1",
+          "type": "u8.public"
+        },
+        {
+          "register": "r2",
+          "type": "u8.public"
+        },
+        {
+          "register": "r3",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "bridge_settings"
+      ],
+      "finalize_state_writes": [
+        "attestors",
+        "bridge_settings",
+        "owner_TB"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "migrate_eth_seq": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "vlink_token_bridge_v3.aleo/migrate_eth_seq.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "sequences"
+      ],
+      "finalize_state_writes": [
+        "sequences"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "transfer_ownership_tb": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "vlink_token_bridge_v3.aleo/transfer_ownership_tb.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.neq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owner_TB"
+      ],
+      "finalize_state_writes": [
+        "owner_TB"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "add_attestor_tb": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u8.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "vlink_token_bridge_v3.aleo/add_attestor_tb.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u8.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "attestors",
+        "bridge_settings",
+        "owner_TB"
+      ],
+      "finalize_state_writes": [
+        "attestors",
+        "bridge_settings"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "remove_attestor_tb": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u8.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "vlink_token_bridge_v3.aleo/remove_attestor_tb.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "assert.neq",
+        "gt"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u8.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "attestors",
+        "bridge_settings",
+        "owner_TB"
+      ],
+      "finalize_state_writes": [
+        "attestors",
+        "bridge_settings"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "lt"
+      ],
+      "snark_verify": false
+    },
+    "update_threshold_tb": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u8.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "vlink_token_bridge_v3.aleo/update_threshold_tb.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gte"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u8.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "bridge_settings",
+        "owner_TB"
+      ],
+      "finalize_state_writes": [
+        "bridge_settings"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "add_chain_tb": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u128.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "vlink_token_bridge_v3.aleo/add_chain_tb.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.neq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u128.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owner_TB"
+      ],
+      "finalize_state_writes": [
+        "supported_chains"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "remove_chain_tb": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u128.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "vlink_token_bridge_v3.aleo/remove_chain_tb.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u128.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owner_TB",
+        "supported_chains"
+      ],
+      "finalize_state_writes": [
+        "supported_chains"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "add_service_tb": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "vlink_token_bridge_v3.aleo/add_service_tb.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owner_TB"
+      ],
+      "finalize_state_writes": [
+        "supported_services"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "remove_service_tb": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "vlink_token_bridge_v3.aleo/remove_service_tb.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owner_TB",
+        "supported_services"
+      ],
+      "finalize_state_writes": [
+        "supported_services"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "pause_tb": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "vlink_token_bridge_v3.aleo/pause_tb.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owner_TB"
+      ],
+      "finalize_state_writes": [
+        "bridge_settings"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "unpause_tb": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "vlink_token_bridge_v3.aleo/unpause_tb.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "owner_TB"
+      ],
+      "finalize_state_writes": [
+        "bridge_settings"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "publish": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u8.public"
+        },
+        {
+          "register": "r1",
+          "type": "u128.public"
+        },
+        {
+          "register": "r2",
+          "type": "[u8"
+        },
+        {
+          "register": "r3",
+          "type": "[u8"
+        },
+        {
+          "register": "r4",
+          "type": "address.public"
+        },
+        {
+          "register": "r5",
+          "type": "[u8"
+        },
+        {
+          "register": "r6",
+          "type": "u128.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r7",
+          "type": "vlink_token_bridge_v3.aleo/publish.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u8.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u128.public"
+        },
+        {
+          "register": "r3",
+          "type": "[u8"
+        },
+        {
+          "register": "r4",
+          "type": "[u8"
+        },
+        {
+          "register": "r5",
+          "type": "address.public"
+        },
+        {
+          "register": "r6",
+          "type": "[u8"
+        },
+        {
+          "register": "r7",
+          "type": "u128.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "bridge_settings",
+        "sequences",
+        "supported_chains",
+        "supported_services"
+      ],
+      "finalize_state_writes": [
+        "out_packets",
+        "sequences"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "consume": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u8.public"
+        },
+        {
+          "register": "r1",
+          "type": "u128.public"
+        },
+        {
+          "register": "r2",
+          "type": "[u8"
+        },
+        {
+          "register": "r3",
+          "type": "field.public"
+        },
+        {
+          "register": "r4",
+          "type": "[u8"
+        },
+        {
+          "register": "r5",
+          "type": "address.public"
+        },
+        {
+          "register": "r6",
+          "type": "u128.public"
+        },
+        {
+          "register": "r7",
+          "type": "u64.public"
+        },
+        {
+          "register": "r8",
+          "type": "u64.public"
+        },
+        {
+          "register": "r9",
+          "type": "[address"
+        },
+        {
+          "register": "r10",
+          "type": "[signature"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r128",
+          "type": "boolean.public"
+        },
+        {
+          "register": "r130",
+          "type": "vlink_token_bridge_v3.aleo/consume.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "gt",
+        "or",
+        "ternary"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u128.public"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "[address"
+        },
+        {
+          "register": "r4",
+          "type": "u8.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "attestors",
+        "bridge_settings",
+        "in_packet_consumed",
+        "supported_chains",
+        "supported_services"
+      ],
+      "finalize_state_writes": [
+        "in_packet_consumed"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "add_attestor_tb",
+    "add_chain_tb",
+    "add_service_tb",
+    "consume",
+    "initialize_tb",
+    "migrate_eth_seq",
+    "pause_tb",
+    "publish",
+    "remove_attestor_tb",
+    "remove_chain_tb",
+    "remove_service_tb",
+    "transfer_ownership_tb",
+    "unpause_tb",
+    "update_threshold_tb"
+  ],
+  "cross_contract_refs": [],
+  "async_or_conditional_paths": [
+    "initialize_tb",
+    "migrate_eth_seq",
+    "transfer_ownership_tb",
+    "add_attestor_tb",
+    "remove_attestor_tb",
+    "update_threshold_tb",
+    "add_chain_tb",
+    "remove_chain_tb",
+    "add_service_tb",
+    "remove_service_tb",
+    "pause_tb",
+    "unpause_tb",
+    "publish",
+    "consume"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [
+      "attestors",
+      "bridge_settings",
+      "in_packet_consumed",
+      "out_packets",
+      "owner_TB",
+      "sequences",
+      "supported_chains",
+      "supported_services"
+    ],
+    "future_outputs": [
+      {
+        "function": "initialize_tb",
+        "output": "vlink_token_bridge_v3.aleo/initialize_tb.future"
+      },
+      {
+        "function": "migrate_eth_seq",
+        "output": "vlink_token_bridge_v3.aleo/migrate_eth_seq.future"
+      },
+      {
+        "function": "transfer_ownership_tb",
+        "output": "vlink_token_bridge_v3.aleo/transfer_ownership_tb.future"
+      },
+      {
+        "function": "add_attestor_tb",
+        "output": "vlink_token_bridge_v3.aleo/add_attestor_tb.future"
+      },
+      {
+        "function": "remove_attestor_tb",
+        "output": "vlink_token_bridge_v3.aleo/remove_attestor_tb.future"
+      },
+      {
+        "function": "update_threshold_tb",
+        "output": "vlink_token_bridge_v3.aleo/update_threshold_tb.future"
+      },
+      {
+        "function": "add_chain_tb",
+        "output": "vlink_token_bridge_v3.aleo/add_chain_tb.future"
+      },
+      {
+        "function": "remove_chain_tb",
+        "output": "vlink_token_bridge_v3.aleo/remove_chain_tb.future"
+      },
+      {
+        "function": "add_service_tb",
+        "output": "vlink_token_bridge_v3.aleo/add_service_tb.future"
+      },
+      {
+        "function": "remove_service_tb",
+        "output": "vlink_token_bridge_v3.aleo/remove_service_tb.future"
+      },
+      {
+        "function": "pause_tb",
+        "output": "vlink_token_bridge_v3.aleo/pause_tb.future"
+      },
+      {
+        "function": "unpause_tb",
+        "output": "vlink_token_bridge_v3.aleo/unpause_tb.future"
+      },
+      {
+        "function": "publish",
+        "output": "vlink_token_bridge_v3.aleo/publish.future"
+      },
+      {
+        "function": "consume",
+        "output": "vlink_token_bridge_v3.aleo/consume.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

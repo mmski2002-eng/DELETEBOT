@@ -1,0 +1,261 @@
+﻿{
+    "transactionId":  "0x4fc0568949eedb9309fa91902f4c037e2aa620412cbc6492318671ead5dd0afc",
+    "sending":  {
+                    "txHash":  "0xb1dc2f023c44d7f126ea047663de574263795537cc0134542a84bc9f1bc11c32",
+                    "txLink":  "https://www.pharosscan.xyz/tx/0xb1dc2f023c44d7f126ea047663de574263795537cc0134542a84bc9f1bc11c32",
+                    "token":  {
+                                  "address":  "0x0000000000000000000000000000000000000000",
+                                  "chainId":  1672,
+                                  "symbol":  "PROS",
+                                  "decimals":  18,
+                                  "name":  "Pharos",
+                                  "coinKey":  "PROS",
+                                  "logoURI":  "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/pharos.svg",
+                                  "priceUSD":  "0.734322",
+                                  "tags":  [
+
+                                           ],
+                                  "verificationStatus":  "unverified",
+                                  "verificationStatusBreakdown":  [
+
+                                                                  ]
+                              },
+                    "chainId":  1672,
+                    "gasPrice":  "10000000000",
+                    "gasUsed":  "421519",
+                    "gasToken":  {
+                                     "address":  "0x0000000000000000000000000000000000000000",
+                                     "chainId":  1672,
+                                     "symbol":  "PROS",
+                                     "decimals":  18,
+                                     "name":  "Pharos",
+                                     "coinKey":  "PROS",
+                                     "logoURI":  "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/pharos.svg",
+                                     "priceUSD":  "0.734322",
+                                     "tags":  [
+
+                                              ],
+                                     "verificationStatus":  "unverified",
+                                     "verificationStatusBreakdown":  [
+
+                                                                     ]
+                                 },
+                    "gasAmount":  "4215190000000000",
+                    "gasAmountUSD":  "0.0031",
+                    "amountUSD":  "1688.6351",
+                    "value":  "2299842955329179000486",
+                    "includedSteps":  [
+                                          {
+                                              "tool":  "feeCollection",
+                                              "toolDetails":  {
+                                                                  "key":  "feeCollection",
+                                                                  "name":  "Integrator Fee",
+                                                                  "logoURI":  "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/protocols/feeCollection.svg"
+                                                              },
+                                              "fromAmount":  "2299583944520494133409",
+                                              "fromToken":  {
+                                                                "address":  "0x0000000000000000000000000000000000000000",
+                                                                "chainId":  1672,
+                                                                "symbol":  "PROS",
+                                                                "decimals":  18,
+                                                                "name":  "Pharos",
+                                                                "coinKey":  "PROS",
+                                                                "logoURI":  "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/pharos.svg",
+                                                                "priceUSD":  "0.734322",
+                                                                "tags":  [
+
+                                                                         ],
+                                                                "verificationStatus":  "unverified",
+                                                                "verificationStatusBreakdown":  [
+
+                                                                                                ]
+                                                            },
+                                              "toToken":  {
+                                                              "address":  "0x0000000000000000000000000000000000000000",
+                                                              "chainId":  1672,
+                                                              "symbol":  "PROS",
+                                                              "decimals":  18,
+                                                              "name":  "Pharos",
+                                                              "coinKey":  "PROS",
+                                                              "logoURI":  "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/pharos.svg",
+                                                              "priceUSD":  "0.734322",
+                                                              "tags":  [
+
+                                                                       ],
+                                                              "verificationStatus":  "unverified",
+                                                              "verificationStatusBreakdown":  [
+
+                                                                                              ]
+                                                          },
+                                              "toAmount":  "2294093995467877765153"
+                                          },
+                                          {
+                                              "tool":  "wrapper",
+                                              "toolDetails":  {
+                                                                  "key":  "wrapper",
+                                                                  "name":  "Wrapper",
+                                                                  "logoURI":  "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/protocols/wrapper.svg"
+                                                              },
+                                              "fromAmount":  "2293834984659192898076",
+                                              "fromToken":  {
+                                                                "address":  "0x0000000000000000000000000000000000000000",
+                                                                "chainId":  1672,
+                                                                "symbol":  "PROS",
+                                                                "decimals":  18,
+                                                                "name":  "Pharos",
+                                                                "coinKey":  "PROS",
+                                                                "logoURI":  "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/pharos.svg",
+                                                                "priceUSD":  "0.734322",
+                                                                "tags":  [
+
+                                                                         ],
+                                                                "verificationStatus":  "unverified",
+                                                                "verificationStatusBreakdown":  [
+
+                                                                                                ]
+                                                            },
+                                              "toToken":  {
+                                                              "address":  "0x52C48d4213107b20bC583832b0d951FB9CA8F0B0",
+                                                              "chainId":  1672,
+                                                              "symbol":  "WPROS",
+                                                              "decimals":  18,
+                                                              "name":  "Wrapped Pharos",
+                                                              "coinKey":  "WPROS",
+                                                              "logoURI":  "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/pharos.svg",
+                                                              "priceUSD":  "0.6268367540121874",
+                                                              "tags":  [
+
+                                                                       ],
+                                                              "verificationStatus":  "unverified",
+                                                              "verificationStatusBreakdown":  [
+
+                                                                                              ]
+                                                          },
+                                              "toAmount":  "2293834984659192898076",
+                                              "bridgedAmount":  "2293834984659192898076"
+                                          }
+                                      ],
+                    "amount":  "2299583944520494133409",
+                    "timestamp":  1778670701
+                },
+    "receiving":  {
+                      "txHash":  "0x6db5965336974da4a1ba3aa12b32b6dcb23b607d070b3f0274a217c6fb012ad7",
+                      "txLink":  "https://basescan.org/tx/0x6db5965336974da4a1ba3aa12b32b6dcb23b607d070b3f0274a217c6fb012ad7",
+                      "token":  {
+                                    "address":  "0x8B7DdE054BE9D180c1Be7FaE0874697374A49832",
+                                    "chainId":  8453,
+                                    "symbol":  "PROS",
+                                    "decimals":  18,
+                                    "name":  "Wrapped PROS",
+                                    "coinKey":  null,
+                                    "logoURI":  "https://storage.googleapis.com/zapper-fi-assets/tokens/base/0x8b7dde054be9d180c1be7fae0874697374a49832.png",
+                                    "priceUSD":  "0.734913",
+                                    "tags":  [
+
+                                             ],
+                                    "verificationStatus":  "unverified",
+                                    "verificationStatusBreakdown":  [
+
+                                                                    ]
+                                },
+                      "chainId":  8453,
+                      "gasPrice":  "8500000",
+                      "gasUsed":  "159252",
+                      "gasToken":  {
+                                       "address":  "0x0000000000000000000000000000000000000000",
+                                       "chainId":  8453,
+                                       "symbol":  "ETH",
+                                       "decimals":  18,
+                                       "name":  "ETH",
+                                       "coinKey":  "ETH",
+                                       "logoURI":  "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+                                       "priceUSD":  "2282.55",
+                                       "tags":  [
+
+                                                ],
+                                       "verificationStatus":  "unverified",
+                                       "verificationStatusBreakdown":  [
+
+                                                                       ]
+                                   },
+                      "gasAmount":  "1353642000000",
+                      "gasAmountUSD":  "0.0031",
+                      "amountUSD":  "1685.0948",
+                      "value":  "0",
+                      "includedSteps":  [
+
+                                        ],
+                      "amount":  "2292917450665329220917",
+                      "timestamp":  1778670749
+                  },
+    "feeCosts":  [
+                     {
+                         "name":  "LIFI Fixed Fee",
+                         "description":  "Fixed LIFI fee, independent of any other fee",
+                         "percentage":  "0.0025",
+                         "token":  {
+                                       "chainId":  1672,
+                                       "address":  "0x0000000000000000000000000000000000000000",
+                                       "symbol":  "PROS",
+                                       "decimals":  18,
+                                       "name":  "Pharos",
+                                       "coinKey":  "PROS",
+                                       "logoURI":  "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/pharos.svg",
+                                       "priceUSD":  "0.776876"
+                                   },
+                         "amount":  "5748959861301235333",
+                         "amountUSD":  "4.4662",
+                         "included":  true,
+                         "feeSplit":  {
+                                          "integratorFee":  "0",
+                                          "lifiFee":  "5748959861301235333"
+                                      }
+                     },
+                     {
+                         "name":  "Bridge Fee",
+                         "description":  "Fee that General Message Passing protocol charges for the cross-chain transfer.",
+                         "percentage":  "0.0000",
+                         "token":  {
+                                       "chainId":  1672,
+                                       "address":  "0x0000000000000000000000000000000000000000",
+                                       "symbol":  "PROS",
+                                       "decimals":  18,
+                                       "name":  "Pharos",
+                                       "coinKey":  "PROS",
+                                       "logoURI":  "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/pharos.svg",
+                                       "priceUSD":  "0.776876"
+                                   },
+                         "amount":  "259010808684867077",
+                         "amountUSD":  "0.2012",
+                         "included":  false
+                     },
+                     {
+                         "name":  "Airlift Fee",
+                         "description":  "Fee charged by Glacis for using Airlift gateway.",
+                         "percentage":  "0.0004",
+                         "token":  {
+                                       "chainId":  1672,
+                                       "address":  "0x52C48d4213107b20bC583832b0d951FB9CA8F0B0",
+                                       "symbol":  "WPROS",
+                                       "decimals":  18,
+                                       "name":  "Wrapped Pharos",
+                                       "coinKey":  "WPROS",
+                                       "logoURI":  "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/chains/pharos.svg",
+                                       "priceUSD":  "0.6333268939639982"
+                                   },
+                         "amount":  "917533993863677159",
+                         "amountUSD":  "0.5811",
+                         "included":  true
+                     }
+                 ],
+    "lifiExplorerLink":  "https://scan.li.fi/tx/0xb1dc2f023c44d7f126ea047663de574263795537cc0134542a84bc9f1bc11c32",
+    "fromAddress":  "0x7cc6eed5fb840fb7a72ff8157a0c7c21158a978a",
+    "toAddress":  "0x7cc6eed5fb840fb7a72ff8157a0c7c21158a978a",
+    "tool":  "glacis",
+    "status":  "DONE",
+    "substatus":  "COMPLETED",
+    "substatusMessage":  "The transfer is complete.",
+    "metadata":  {
+                     "integrator":  "pros-arb-bridge"
+                 }
+}

@@ -1,0 +1,329 @@
+{
+  "result": "REPLAY_SUCCEEDED",
+  "originalFailedTx": "0xd5e49fc3e721a70059348b1186f3d7cfa14f52e7ac6af1fefb12eece4e6f862f",
+  "originalDispatcher": "0x937C492A77aE90DE971986d003fFbc5f8bb2232C",
+  "originalBlock": 15410765,
+  "originalBlockTimestamp": 1777381944,
+  "originalStatus": 0,
+  "nonce7SuccessTx": "0x277b88471c24df7cfdf04d0104c537353cb1aff12f928141ff1d9e64bde9c5e6",
+  "nonce7SuccessBlock": 15410766,
+  "nonce7SuccessBlockTimestamp": 1777381950,
+  "replayDispatcher": "0x387d113949a1a2D5Df01B869aa992e94Bd062035",
+  "replayIsUnrelated": true,
+  "signedFrom": "0x6A210A61dC8112C1344858d82B1dbDE850b957a1",
+  "targetTo": "0x597B2084f1a74df59f3431AbE38dBeEc42dFd1c2",
+  "deadline": "1777385542",
+  "replayTimestampSeconds": 1777381956,
+  "replayBeforeDeadline": true,
+  "exactCalldataHash": "0xd260079b740cab524ca61134953226d24ca93ceae58c54e319806e3ec008cf08",
+  "signedEthereumReplayTxHash": "0x809457ce6f65f78beb11604fd960308d2a207eeb80ef7a6311722c79f000092a",
+  "exactCalldataEqual": true,
+  "outer": {
+    "selector": "0x130dbfbb",
+    "signature": "SubmitTransaction(address,bytes)",
+    "dst": "0xa1A3Cc69c5E2fA553b521aCC3c5876cd375195e3"
+  },
+  "nested": {
+    "selector": "0xa05f1f2c",
+    "signature": "AddJoinCode(address,uint256,uint256,uint256)",
+    "args": [
+      "0x88e0B12bC374D9322f1F7E137a90888b10D5dF7a",
+      "2092741941",
+      "500",
+      "200"
+    ]
+  },
+  "substrateStatus": {
+    "status": "InBlock",
+    "hash": "0xc1420c3bbf4d186af7aac6d7f0c1208f01c3bb44356e362dcff950cae9a6b2f2"
+  },
+  "ethereumExecuted": [
+    {
+      "section": "ethereum",
+      "method": "Executed",
+      "data": "[\"0x387d113949a1a2d5df01b869aa992e94bd062035\",\"0x000000000000000000000000000000000000080a\",\"0x809457ce6f65f78beb11604fd960308d2a207eeb80ef7a6311722c79f000092a\",{\"succeed\":\"Returned\"},\"0x\"]",
+      "human": {
+        "method": "Executed",
+        "section": "ethereum",
+        "index": "0x3400",
+        "data": {
+          "from": "0x387d113949a1a2d5df01b869aa992e94bd062035",
+          "to": "0x000000000000000000000000000000000000080a",
+          "transactionHash": "0x809457ce6f65f78beb11604fd960308d2a207eeb80ef7a6311722c79f000092a",
+          "exitReason": {
+            "Succeed": "Returned"
+          },
+          "extraData": ""
+        }
+      }
+    }
+  ],
+  "before": {
+    "label": "before",
+    "block": "15410766",
+    "timestampMs": "1777381950000",
+    "callPermitNonceSignedFrom": "8",
+    "replayAccountBasic": {
+      "balance": "1000000000000000000000",
+      "nonce": "0"
+    },
+    "replaySystemAccount": {
+      "nonce": 0,
+      "providers": 1,
+      "data": {
+        "free": "1000000000000000000000",
+        "reserved": "0",
+        "frozen": "0",
+        "flags": "0"
+      }
+    },
+    "targetOwner": {
+      "raw": "0x0000000000000000000000006a210a61dc8112c1344858d82b1dbde850b957a1",
+      "decoded": [
+        "0x6A210A61dC8112C1344858d82B1dbDE850b957a1"
+      ]
+    },
+    "targetSignedFromIsMember": {
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000001",
+      "decoded": [
+        "true"
+      ]
+    },
+    "nestedOwner": {
+      "raw": "0x000000000000000000000000597b2084f1a74df59f3431abe38dbeec42dfd1c2",
+      "decoded": [
+        "0x597B2084f1a74df59f3431AbE38dBeEc42dFd1c2"
+      ]
+    },
+    "nestedMembers": {
+      "raw": "0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000597b2084f1a74df59f3431abe38dbeec42dfd1c2",
+      "decoded": [
+        "0x597B2084f1a74df59f3431AbE38dBeEc42dFd1c2"
+      ]
+    },
+    "joinCodeAccountBasic": {
+      "balance": "0",
+      "nonce": "0"
+    },
+    "joinCodeSystemAccount": {
+      "nonce": 0,
+      "providers": 0,
+      "data": {
+        "free": "0",
+        "reserved": "0",
+        "frozen": "0",
+        "flags": "170141183460469231731687303715884105728"
+      }
+    }
+  },
+  "after": {
+    "label": "after",
+    "block": "15410767",
+    "timestampMs": "1777381956000",
+    "callPermitNonceSignedFrom": "9",
+    "replayAccountBasic": {
+      "balance": "999962851000000000000",
+      "nonce": "1"
+    },
+    "replaySystemAccount": {
+      "nonce": 1,
+      "providers": 1,
+      "data": {
+        "free": "999962851000000000000",
+        "reserved": "0",
+        "frozen": "0",
+        "flags": "170141183460469231731687303715884105728"
+      }
+    },
+    "targetOwner": {
+      "raw": "0x0000000000000000000000006a210a61dc8112c1344858d82b1dbde850b957a1",
+      "decoded": [
+        "0x6A210A61dC8112C1344858d82B1dbDE850b957a1"
+      ]
+    },
+    "targetSignedFromIsMember": {
+      "raw": "0x0000000000000000000000000000000000000000000000000000000000000001",
+      "decoded": [
+        "true"
+      ]
+    },
+    "nestedOwner": {
+      "raw": "0x000000000000000000000000597b2084f1a74df59f3431abe38dbeec42dfd1c2",
+      "decoded": [
+        "0x597B2084f1a74df59f3431AbE38dBeEc42dFd1c2"
+      ]
+    },
+    "nestedMembers": {
+      "raw": "0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000597b2084f1a74df59f3431abe38dbeec42dfd1c2",
+      "decoded": [
+        "0x597B2084f1a74df59f3431AbE38dBeEc42dFd1c2"
+      ]
+    },
+    "joinCodeAccountBasic": {
+      "balance": "27861750000000000",
+      "nonce": "0"
+    },
+    "joinCodeSystemAccount": {
+      "nonce": 0,
+      "providers": 1,
+      "data": {
+        "free": "27861750000000000",
+        "reserved": "0",
+        "frozen": "0",
+        "flags": "170141183460469231731687303715884105728"
+      }
+    }
+  },
+  "stateDiff": {
+    "callPermitNonceSignedFrom": "8 -> 9",
+    "replayEthNonce": "0 -> 1",
+    "replayBalance": "1000000000000000000000 -> 999962851000000000000",
+    "joinCodeAccountBalance": "0 -> 27861750000000000",
+    "joinCodeSystemProviders": "0 -> 1"
+  },
+  "events": [
+    {
+      "section": "balances",
+      "method": "Upgraded",
+      "data": "[\"0x387d113949a1a2D5Df01B869aa992e94Bd062035\"]",
+      "human": {
+        "method": "Upgraded",
+        "section": "balances",
+        "index": "0x0a0e",
+        "data": {
+          "who": "0x387d113949a1a2D5Df01B869aa992e94Bd062035"
+        }
+      }
+    },
+    {
+      "section": "balances",
+      "method": "Withdraw",
+      "data": "[\"0x387d113949a1a2D5Df01B869aa992e94Bd062035\",\"0x0000000000000000071cc408df634000\"]",
+      "human": {
+        "method": "Withdraw",
+        "section": "balances",
+        "index": "0x0a08",
+        "data": {
+          "who": "0x387d113949a1a2D5Df01B869aa992e94Bd062035",
+          "amount": "512,500,000,000,000,000"
+        }
+      }
+    },
+    {
+      "section": "balances",
+      "method": "Deposit",
+      "data": "[\"0x387d113949a1a2D5Df01B869aa992e94Bd062035\",\"0x00000000000000000698c9374aa07000\"]",
+      "human": {
+        "method": "Deposit",
+        "section": "balances",
+        "index": "0x0a07",
+        "data": {
+          "who": "0x387d113949a1a2D5Df01B869aa992e94Bd062035",
+          "amount": "475,351,000,000,000,000"
+        }
+      }
+    },
+    {
+      "section": "system",
+      "method": "NewAccount",
+      "data": "[\"0x567b6dDb05396C0A83853B6f40D27450534C7963\"]",
+      "human": {
+        "method": "NewAccount",
+        "section": "system",
+        "index": "0x0003",
+        "data": {
+          "account": "0x567b6dDb05396C0A83853B6f40D27450534C7963"
+        }
+      }
+    },
+    {
+      "section": "balances",
+      "method": "Endowed",
+      "data": "[\"0x567b6dDb05396C0A83853B6f40D27450534C7963\",\"0x00000000000000000062fc1d2f921c00\"]",
+      "human": {
+        "method": "Endowed",
+        "section": "balances",
+        "index": "0x0a00",
+        "data": {
+          "account": "0x567b6dDb05396C0A83853B6f40D27450534C7963",
+          "freeBalance": "27,861,750,000,000,000"
+        }
+      }
+    },
+    {
+      "section": "balances",
+      "method": "Deposit",
+      "data": "[\"0x567b6dDb05396C0A83853B6f40D27450534C7963\",\"0x00000000000000000062fc1d2f921c00\"]",
+      "human": {
+        "method": "Deposit",
+        "section": "balances",
+        "index": "0x0a07",
+        "data": {
+          "who": "0x567b6dDb05396C0A83853B6f40D27450534C7963",
+          "amount": "27,861,750,000,000,000"
+        }
+      }
+    },
+    {
+      "section": "ethereum",
+      "method": "Executed",
+      "data": "[\"0x387d113949a1a2d5df01b869aa992e94bd062035\",\"0x000000000000000000000000000000000000080a\",\"0x809457ce6f65f78beb11604fd960308d2a207eeb80ef7a6311722c79f000092a\",{\"succeed\":\"Returned\"},\"0x\"]",
+      "human": {
+        "method": "Executed",
+        "section": "ethereum",
+        "index": "0x3400",
+        "data": {
+          "from": "0x387d113949a1a2d5df01b869aa992e94bd062035",
+          "to": "0x000000000000000000000000000000000000080a",
+          "transactionHash": "0x809457ce6f65f78beb11604fd960308d2a207eeb80ef7a6311722c79f000092a",
+          "exitReason": {
+            "Succeed": "Returned"
+          },
+          "extraData": ""
+        }
+      }
+    },
+    {
+      "section": "system",
+      "method": "ExtrinsicSuccess",
+      "data": "[{\"weight\":{\"refTime\":7429800000,\"proofSize\":29978},\"class\":\"Normal\",\"paysFee\":\"No\"}]",
+      "human": {
+        "method": "ExtrinsicSuccess",
+        "section": "system",
+        "index": "0x0000",
+        "data": {
+          "dispatchInfo": {
+            "weight": {
+              "refTime": "7,429,800,000",
+              "proofSize": "29,978"
+            },
+            "class": "Normal",
+            "paysFee": "No"
+          }
+        }
+      }
+    }
+  ],
+  "currentReceipts": [
+    {
+      "legacy": {
+        "statusCode": 1,
+        "usedGas": "0x00000000000000000000000000000000000000000000000000000000000488e8",
+        "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "logs": []
+      }
+    }
+  ],
+  "currentStatuses": [
+    {
+      "transactionHash": "0x809457ce6f65f78beb11604fd960308d2a207eeb80ef7a6311722c79f000092a",
+      "transactionIndex": 0,
+      "from": "0x387d113949a1a2d5df01b869aa992e94bd062035",
+      "to": "0x000000000000000000000000000000000000080a",
+      "contractAddress": null,
+      "logs": [],
+      "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ]
+}
+

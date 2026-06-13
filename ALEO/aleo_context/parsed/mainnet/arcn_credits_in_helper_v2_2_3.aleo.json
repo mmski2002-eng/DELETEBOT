@@ -1,0 +1,513 @@
+{
+  "program_id": "arcn_credits_in_helper_v2_2_3.aleo",
+  "calls_24h_or_metric_window": 1,
+  "imports": [
+    "arcn_access_manager_v1.aleo",
+    "arcn_compliance_v1.aleo",
+    "arcn_pool_v2_2_2.aleo",
+    "arcn_whitelist.aleo",
+    "credits.aleo",
+    "token_registry.aleo",
+    "wrapped_credits.aleo"
+  ],
+  "mappings": {},
+  "structs": {
+    "TokenMetadata": [
+      {
+        "name": "token_id",
+        "type": "field"
+      },
+      {
+        "name": "name",
+        "type": "u128"
+      },
+      {
+        "name": "symbol",
+        "type": "u128"
+      },
+      {
+        "name": "decimals",
+        "type": "u8"
+      },
+      {
+        "name": "supply",
+        "type": "u128"
+      },
+      {
+        "name": "max_supply",
+        "type": "u128"
+      },
+      {
+        "name": "admin",
+        "type": "address"
+      },
+      {
+        "name": "external_authorization_required",
+        "type": "boolean"
+      },
+      {
+        "name": "external_authorization_party",
+        "type": "address"
+      }
+    ],
+    "TokenOwner": [
+      {
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "name": "token_id",
+        "type": "field"
+      }
+    ],
+    "DepositValue": [
+      {
+        "name": "amount",
+        "type": "u128"
+      },
+      {
+        "name": "pool_id",
+        "type": "field"
+      }
+    ],
+    "DepositOwner": [
+      {
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "name": "salt",
+        "type": "field"
+      }
+    ],
+    "ProtocolFeeConfig": [
+      {
+        "name": "rate",
+        "type": "u16"
+      },
+      {
+        "name": "foundation",
+        "type": "address"
+      }
+    ]
+  },
+  "records": {},
+  "functions": {
+    "create_pool_credits_is_token1": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r2",
+          "type": "u128.public"
+        },
+        {
+          "register": "r3",
+          "type": "token_registry.aleo/Token.record"
+        },
+        {
+          "register": "r4",
+          "type": "u128.public"
+        },
+        {
+          "register": "r5",
+          "type": "boolean.public"
+        },
+        {
+          "register": "r6",
+          "type": "u16.public"
+        },
+        {
+          "register": "r7",
+          "type": "field.public"
+        },
+        {
+          "register": "r8",
+          "type": "u8.public"
+        },
+        {
+          "register": "r9",
+          "type": "u16.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r11",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r16",
+          "type": "token_registry.aleo/Token.record"
+        },
+        {
+          "register": "r14",
+          "type": "arcn_pool_v2_2_2.aleo/PoolAdmin.record"
+        },
+        {
+          "register": "r17",
+          "type": "arcn_pool_v2_2_2.aleo/LpTokenReceipt.record"
+        },
+        {
+          "register": "r19",
+          "type": "arcn_credits_in_helper_v2_2_3.aleo/create_pool_credits_is_token1.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "arcn_compliance_v1.aleo",
+        "arcn_pool_v2_2_2.aleo",
+        "credits.aleo",
+        "token_registry.aleo",
+        "wrapped_credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "wrapped_credits.aleo/deposit_credits_private.future"
+        },
+        {
+          "register": "r1",
+          "type": "arcn_pool_v2_2_2.aleo/create_pool.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "swap_amm_credits_in": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r3",
+          "type": "u128.public"
+        },
+        {
+          "register": "r4",
+          "type": "field.public"
+        },
+        {
+          "register": "r5",
+          "type": "boolean.public"
+        },
+        {
+          "register": "r6",
+          "type": "u128.public"
+        },
+        {
+          "register": "r7",
+          "type": "field.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r9",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r12",
+          "type": "token_registry.aleo/Token.record"
+        },
+        {
+          "register": "r14",
+          "type": "arcn_pool_v2_2_2.aleo/ExtraAmountVoucher.record"
+        },
+        {
+          "register": "r16",
+          "type": "arcn_credits_in_helper_v2_2_3.aleo/swap_amm_credits_in.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "arcn_compliance_v1.aleo",
+        "arcn_pool_v2_2_2.aleo",
+        "credits.aleo",
+        "token_registry.aleo",
+        "wrapped_credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "wrapped_credits.aleo/deposit_credits_private.future"
+        },
+        {
+          "register": "r1",
+          "type": "arcn_pool_v2_2_2.aleo/swap_amm.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "add_amm_liq_credits_is_token1": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r3",
+          "type": "u128.public"
+        },
+        {
+          "register": "r4",
+          "type": "token_registry.aleo/Token.record"
+        },
+        {
+          "register": "r5",
+          "type": "u128.public"
+        },
+        {
+          "register": "r6",
+          "type": "boolean.public"
+        },
+        {
+          "register": "r7",
+          "type": "field.public"
+        },
+        {
+          "register": "r8",
+          "type": "field.public"
+        },
+        {
+          "register": "r9",
+          "type": "field.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r11",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r15",
+          "type": "token_registry.aleo/Token.record"
+        },
+        {
+          "register": "r20",
+          "type": "arcn_pool_v2_2_2.aleo/LpTokenReceipt.record"
+        },
+        {
+          "register": "r17",
+          "type": "arcn_pool_v2_2_2.aleo/ExtraAmountVoucher.record"
+        },
+        {
+          "register": "r18",
+          "type": "arcn_pool_v2_2_2.aleo/ExtraAmountVoucher.record"
+        },
+        {
+          "register": "r22",
+          "type": "arcn_credits_in_helper_v2_2_3.aleo/add_amm_liq_credits_is_token1.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "arcn_compliance_v1.aleo",
+        "arcn_pool_v2_2_2.aleo",
+        "credits.aleo",
+        "token_registry.aleo",
+        "wrapped_credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "wrapped_credits.aleo/deposit_credits_private.future"
+        },
+        {
+          "register": "r1",
+          "type": "arcn_pool_v2_2_2.aleo/add_amm_liquidity.future"
+        },
+        {
+          "register": "r2",
+          "type": "arcn_pool_v2_2_2.aleo/transfer_lp_receipt_by_salt.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "remove_liq_credits_is_token1": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.private"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        },
+        {
+          "register": "r3",
+          "type": "u128.public"
+        },
+        {
+          "register": "r4",
+          "type": "u128.public"
+        },
+        {
+          "register": "r5",
+          "type": "field.public"
+        },
+        {
+          "register": "r6",
+          "type": "field.public"
+        },
+        {
+          "register": "r7",
+          "type": "boolean.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r17",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r20",
+          "type": "token_registry.aleo/Token.record"
+        },
+        {
+          "register": "r22",
+          "type": "arcn_pool_v2_2_2.aleo/ExtraAmountVoucher.record"
+        },
+        {
+          "register": "r23",
+          "type": "arcn_pool_v2_2_2.aleo/ExtraAmountVoucher.record"
+        },
+        {
+          "register": "r26",
+          "type": "arcn_credits_in_helper_v2_2_3.aleo/remove_liq_credits_is_token1.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "arcn_compliance_v1.aleo",
+        "arcn_pool_v2_2_2.aleo",
+        "credits.aleo",
+        "token_registry.aleo",
+        "wrapped_credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "arcn_pool_v2_2_2.aleo/remove_amm_liquidity_part.future"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "wrapped_credits.aleo/withdraw_credits_private.future"
+        },
+        {
+          "register": "r3",
+          "type": "token_registry.aleo/transfer_private.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "add_amm_liq_credits_is_token1",
+    "create_pool_credits_is_token1",
+    "remove_liq_credits_is_token1",
+    "swap_amm_credits_in"
+  ],
+  "cross_contract_refs": [
+    "arcn_compliance_v1.aleo",
+    "arcn_pool_v2_2_2.aleo",
+    "credits.aleo",
+    "token_registry.aleo",
+    "wrapped_credits.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "create_pool_credits_is_token1",
+    "swap_amm_credits_in",
+    "add_amm_liq_credits_is_token1",
+    "remove_liq_credits_is_token1"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [],
+    "future_outputs": [
+      {
+        "function": "create_pool_credits_is_token1",
+        "output": "arcn_credits_in_helper_v2_2_3.aleo/create_pool_credits_is_token1.future"
+      },
+      {
+        "function": "swap_amm_credits_in",
+        "output": "arcn_credits_in_helper_v2_2_3.aleo/swap_amm_credits_in.future"
+      },
+      {
+        "function": "add_amm_liq_credits_is_token1",
+        "output": "arcn_credits_in_helper_v2_2_3.aleo/add_amm_liq_credits_is_token1.future"
+      },
+      {
+        "function": "remove_liq_credits_is_token1",
+        "output": "arcn_credits_in_helper_v2_2_3.aleo/remove_liq_credits_is_token1.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

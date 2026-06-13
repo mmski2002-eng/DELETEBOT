@@ -1,0 +1,88 @@
+# PROMPT 3 — Custom Wasm integration audit
+
+Ты — security research agent для легального bug bounty / responsible disclosure.
+Работай только с локальным кодом, локальными тестами, локальной сетью или testnet. Не предлагай эксплуатацию mainnet, DoS публичной сети, кражу средств или действия против чужой инфраструктуры.
+
+Цель: проверить custom CosmWasm / wasmd integration в Archway.
+
+Контекст:
+Обычный CosmWasm уже много раз проверялся. Ищи именно Archway-specific изменения: wasm hooks, contract metadata, rewards attribution, custom gas meter, callbacks, fee grants, error handling, migrate/instantiate/execute differences.
+
+Сначала найди все места, где Archway меняет или оборачивает стандартный wasm behavior:
+- custom wasm keeper;
+- decorators/wrappers;
+- wasm hooks;
+- ante/post handlers;
+- custom gas meter;
+- contract metadata logic;
+- instantiate/execute/migrate hooks;
+- reply/submessage handling;
+- sudo/callback handling;
+- tests.
+
+Вопросы аудита:
+
+1. Entrypoints
+- Что происходит при instantiate?
+- Что происходит при execute?
+- Что происходит при migrate?
+- Что происходит при reply?
+- Что происходит при sudo?
+- Что происходит при failed submessage?
+- Что происходит при contract admin change?
+
+2. Authorization
+- Кто может установить metadata?
+- Кто может менять rewards receiver?
+- Кто считается владельцем/админом контракта?
+- Есть ли различие между creator, admin, sender, contract address?
+- Можно ли spoof sender/contract attribution?
+
+3. State consistency
+- Если wasm execution failed, какие Archway-specific state changes остаются?
+- Если metadata update failed, остаётся ли partial state?
+- Если migrate failed, меняются ли rewards/tracking данные?
+- Если callback failed, не меняется ли accounting?
+
+4. Edge cases
+- contract without metadata;
+- contract with changed admin;
+- migrated contract;
+- nested contract calls;
+- self-calls;
+- contract calling another contract;
+- submessage reply on error;
+- panic/out-of-gas;
+- invalid addresses;
+- blocked module accounts.
+
+Ищи:
+- authorization bypass;
+- incorrect contract attribution;
+- state changes after failed wasm execution;
+- rewards metadata spoofing;
+- admin/creator confusion;
+- unsafe migration behavior;
+- panic via contract-controlled input;
+- broken invariants between wasm state and rewards/tracking state.
+
+Формат finding:
+## Finding Candidate: <name>
+Severity guess:
+Confidence:
+Affected files:
+Summary:
+Attack preconditions:
+Technical details:
+Impact:
+PoC plan:
+Counterarguments:
+Suggested fix:
+
+В конце:
+- список Archway-specific wasm modifications;
+- топ-5 high-risk files;
+- confirmed findings;
+- weak leads;
+- tests to add.
+ Вконце создай отчет в файл на русском языке. 

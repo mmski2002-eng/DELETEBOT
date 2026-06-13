@@ -1,0 +1,234 @@
+{
+  "program_id": "arcn_puc_out_helper_swap_v2_2_6.aleo",
+  "calls_24h_or_metric_window": 26,
+  "imports": [
+    "arcn_access_manager_v1.aleo",
+    "arcn_pool_v2_2_2.aleo",
+    "arcn_whitelist.aleo",
+    "credits.aleo",
+    "token_registry.aleo",
+    "wrapped_credits.aleo"
+  ],
+  "mappings": {},
+  "structs": {
+    "TokenMetadata": [
+      {
+        "name": "token_id",
+        "type": "field"
+      },
+      {
+        "name": "name",
+        "type": "u128"
+      },
+      {
+        "name": "symbol",
+        "type": "u128"
+      },
+      {
+        "name": "decimals",
+        "type": "u8"
+      },
+      {
+        "name": "supply",
+        "type": "u128"
+      },
+      {
+        "name": "max_supply",
+        "type": "u128"
+      },
+      {
+        "name": "admin",
+        "type": "address"
+      },
+      {
+        "name": "external_authorization_required",
+        "type": "boolean"
+      },
+      {
+        "name": "external_authorization_party",
+        "type": "address"
+      }
+    ],
+    "TokenOwner": [
+      {
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "name": "token_id",
+        "type": "field"
+      }
+    ],
+    "ProtocolFeeConfig": [
+      {
+        "name": "rate",
+        "type": "u16"
+      },
+      {
+        "name": "foundation",
+        "type": "address"
+      }
+    ]
+  },
+  "records": {},
+  "functions": {
+    "withdraw_protocol_fee": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "arcn_puc_out_helper_swap_v2_2_6.aleo/withdraw_protocol_fee.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "arcn_access_manager_v1.aleo",
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "arcn_access_manager_v1.aleo/check_access_public.future"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/transfer_public.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "swap_amm_credits_out": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.private"
+        },
+        {
+          "register": "r3",
+          "type": "boolean.public"
+        },
+        {
+          "register": "r4",
+          "type": "u128.public"
+        },
+        {
+          "register": "r5",
+          "type": "u128.public"
+        },
+        {
+          "register": "r6",
+          "type": "field.public"
+        },
+        {
+          "register": "r7",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r20",
+          "type": "arcn_pool_v2_2_2.aleo/ExtraAmountVoucher.record"
+        },
+        {
+          "register": "r22",
+          "type": "arcn_puc_out_helper_swap_v2_2_6.aleo/swap_amm_credits_out.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "arcn_pool_v2_2_2.aleo",
+        "credits.aleo",
+        "token_registry.aleo",
+        "wrapped_credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "token_registry.aleo/transfer_from_public_to_private.future"
+        },
+        {
+          "register": "r1",
+          "type": "arcn_pool_v2_2_2.aleo/swap_amm.future"
+        },
+        {
+          "register": "r2",
+          "type": "wrapped_credits.aleo/withdraw_credits_private.future"
+        },
+        {
+          "register": "r3",
+          "type": "credits.aleo/transfer_private_to_public.future"
+        },
+        {
+          "register": "r4",
+          "type": "credits.aleo/transfer_public_as_signer.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "swap_amm_credits_out",
+    "withdraw_protocol_fee"
+  ],
+  "cross_contract_refs": [
+    "arcn_access_manager_v1.aleo",
+    "arcn_pool_v2_2_2.aleo",
+    "credits.aleo",
+    "token_registry.aleo",
+    "wrapped_credits.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "withdraw_protocol_fee",
+    "swap_amm_credits_out"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [],
+    "future_outputs": [
+      {
+        "function": "withdraw_protocol_fee",
+        "output": "arcn_puc_out_helper_swap_v2_2_6.aleo/withdraw_protocol_fee.future"
+      },
+      {
+        "function": "swap_amm_credits_out",
+        "output": "arcn_puc_out_helper_swap_v2_2_6.aleo/swap_amm_credits_out.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

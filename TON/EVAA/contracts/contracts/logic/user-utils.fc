@@ -1,0 +1,464 @@
+;; This file is licensed under the Business Source License (BUSL).
+;; See the LICENSE.md file in the project root for more information.
+
+#include "../external/stdlib.fc";
+#include "../data/basic-types.fc";
+#include "../data/prices-packed.fc";
+#include "../data/asset-config-packer.fc";
+#include "master-utils.fc";
+#include "utils.fc";
+
+;; --------------- principals dictionary functions ---------------
+
+int get_principal(cell principals, int asset_id) {
+  (slice cs, int f) = principals.udict_get?(256, asset_id);
+  if (f) {
+    return cs.preload_principal();
+  } else {
+    return 0;
+    ;; Default to zero,
+    ;; so it doesn't have to store all possible assets from the start
+    ;; and the supported assets can be extended by changing master's config
+  }
+}
+
+(cell, ()) ~set_principal(cell principals, int asset_id, int new_principal) {
+  return (
+    principals.udict_set_builder(256, asset_id,
+      begin_cell().store_principal(new_principal)),
+    ()
+  );
+}
+
+(int, int, int, int) get_borrow_position_if_exist(cell principals, int asset_id) {
+  (slice cs, int f) = principals.udict_get?(256, asset_id);
+  if (f) {
+    int principal = cs~load_principal();
+    if (cs.slice_empty?()) {
+      return (principal, -1, 0, 0);
+    } else {
+      int origination_fee_taken = cs~load_amount();
+      int amount_borrowed_without_fee = cs~load_amount();
+      int last_borrow_mc_block_seqno = cs~load_uint(64);
+      ;; origination_fee_taken always positive (and in current value!) so we can use second field as flag with -1 to determine if its borrow position
+      return (principal, origination_fee_taken, amount_borrowed_without_fee, last_borrow_mc_block_seqno);
+    }
+  } else {
+    return (0, -1, 0, 0);
+  }
+}
+
+(cell, ()) ~set_borrow_position(cell principals, int asset_id, int new_principal, int origination_fee_taken, int amount_borrowed_without_fee, int last_borrow_mc_block_seqno) {
+  ;;will be reverted on the next user transaction ; its users fault not to repay the dept with the next tx
+  return (
+    principals.udict_set_builder(256, asset_id,
+      begin_cell()
+        .store_principal(new_principal)
+        .store_amount(origination_fee_taken)
+        .store_amount(amount_borrowed_without_fee)
+        .store_uint(last_borrow_mc_block_seqno, 64)),
+    ()
+  );
+}
+
+int packed_principal:unpack(slice principal_packed) {
+  return principal_packed.preload_principal();
+}
+
+(int, slice, int) principals:get_min?(cell principals) {
+  (int asset_id, slice principal_packed, int flag) = principals.udict_get_min?(256);
+  return (asset_id, principal_packed, flag);
+}
+
+(int, slice, int) principals:get_next?(cell principals, int asset_id) {
+  return principals.udict_get_next?(256, asset_id);
+}
+
+(int, int) get_reward(cell rewards, int asset_id) inline {
+  (slice rewards_packed, int found) = rewards.udict_get?(256, asset_id);
+  int tracking_index = 0;
+  int tracking_accrued = 0;
+  if (found) {
+    tracking_index = rewards_packed~load_tracking_index();
+    tracking_accrued = rewards_packed.preload_tracking_index();
+  }
+  return (tracking_index, tracking_accrued);
+}
+
+(cell, ()) ~set_reward(cell rewards, int asset_id, int tracking_index, int tracking_accrued) inline {
+  return (
+    rewards.udict_set_builder(256, asset_id,
+      begin_cell().store_uint(tracking_index, 64).store_uint(tracking_accrued, 64)),
+    ()
+  );
+}
+
+(int) determine_he_category(tuple categories, tuple limit) inline {
+  int res = -1;
+  int i = 0;
+  repeat (categories.tuple_length()) {
+    if (limit.at(i) == -1) {
+      int cat = categories.at(i);
+      if (cat > 0) {
+        if (res == -1) {
+          res = cat;
+        } else {
+          if (res != cat) {
+            return -1;
+          }
+        }
+      } else {
+        return -1;
+      }
+    }
+    i += 1;
+  }
+  return res;
+}
+
+(int, int) calculate_borrow_limit(tuple he_cats, tuple limit, tuple he_limit) {
+  int he_cat = determine_he_category(he_cats, limit);
+  int borrow_limit = 0;
+
+  int i = 0;
+  repeat (he_cats.tuple_length()) {
+    int lim = limit.at(i);
+    if (lim >= 0) {
+      borrow_limit += (he_cat == he_cats.at(i) ? he_limit.at(i) : lim);
+    }
+    i += 1;
+  }
+
+  return (borrow_limit, he_cat);
+}
+
+(int, int) account_health_calc(
+  cell asset_config_collection,
+  cell asset_dynamics_collection,
+  cell user_principals,
+  cell prices_packed
+) {
+  int borrow_amount = 0;
+
+  tuple he_cats = empty_tuple();
+  tuple limit = empty_tuple();
+  tuple he_limit = empty_tuple();
+
+  (int asset_id, slice asset_value_principal_packed, int flag) = user_principals.principals:get_min?();
+  while (flag) {
+    int asset_value_principal = asset_value_principal_packed.packed_principal:unpack();
+
+    if (asset_value_principal) { ;; != 0
+
+      int price = prices_packed.prices_packed:get?(asset_id); 
+
+      if (price == -1) {
+        return (0, false);
+      }
+
+      var (asset_s_rate, asset_b_rate, total_supply_principal, total_borrow_principal, last_accrual, token_balance, _, _, _) = asset_dynamics_collection.asset_dynamics_collection:get_unpacked(asset_id);
+
+      (int jw_address_hash, int decimals, _, int liquidation_threshold, _, int base_borrow_rate, int borrow_rate_slope_low, int borrow_rate_slope_high, int supply_rate_slope_low, int supply_rate_slope_high, int target_utilization, _, _, _, _, _, _, _, _,
+      _, int he_category, _, int he_liquidation_threshold) = asset_config_collection.asset_config_collection:get_unpacked(asset_id);
+
+      he_cats~tpush(he_category);
+
+      if (asset_value_principal < 0) {
+        borrow_amount += present_value_borrow_calc(asset_b_rate, muldivc(- asset_value_principal, price, fast_dec_pow(decimals)));
+        limit~tpush(-1);
+        he_limit~tpush(-1);
+      } else {
+        ;; borrow_limit +=
+        limit~tpush(present_value_supply_calc(asset_s_rate, asset_value_principal * price * liquidation_threshold / fast_dec_pow(decimals) / constants::asset_coefficient_scale));
+        he_limit~tpush(present_value_supply_calc(asset_s_rate, asset_value_principal * price * he_liquidation_threshold / fast_dec_pow(decimals) / constants::asset_coefficient_scale));
+      }
+
+    }
+
+    (asset_id, asset_value_principal_packed, flag) = user_principals.principals:get_next?(asset_id);
+  }
+
+  (int borrow_limit, _) = calculate_borrow_limit(he_cats, limit, he_limit);
+
+  return (constants::factor_scale - muldiv(borrow_limit, constants::factor_scale, borrow_amount), true);
+}
+
+(int) check_not_in_debt_at_all (
+  cell user_principals
+) {
+  ;; this function checks if the user has any debt
+  (int asset_id, slice asset_value_principal_packed, int flag) = user_principals.principals:get_min?();
+  while (flag) {
+    int asset_value_principal = asset_value_principal_packed.packed_principal:unpack();
+    if (asset_value_principal < 0) {
+      return false; ;; user has debt in at least one asset
+    }
+    (asset_id, asset_value_principal_packed, flag) = user_principals.principals:get_next?(asset_id);
+  }
+  return true;
+}
+
+(int, int, int, int) is_liquidatable(
+  cell asset_config_collection,
+  cell asset_dynamics_collection,
+  cell user_principals,
+  cell prices_packed
+) {
+  int borrow_amount = 0;
+  int supply_amount = 0;
+
+  tuple he_cats = empty_tuple();
+  tuple limit = empty_tuple();
+  tuple he_limit = empty_tuple();
+
+  (int asset_id, slice asset_value_principal_packed, int flag) = user_principals.principals:get_min?();
+  while (flag) {
+    int asset_value_principal = asset_value_principal_packed.packed_principal:unpack();
+
+    if (asset_value_principal) { ;; != 0
+
+      int price = prices_packed.prices_packed:get?(asset_id);
+
+      if (price == -1) {
+        return (false, false, 0, 0);
+      }
+
+      var (asset_s_rate, asset_b_rate, total_supply_principal, total_borrow_principal, last_accrual, token_balance, _, _, _) = asset_dynamics_collection.asset_dynamics_collection:get_unpacked(asset_id);
+
+      (int jw_address_hash, int decimals, _, int liquidation_threshold, _, int base_borrow_rate, int borrow_rate_slope_low, int borrow_rate_slope_high, int supply_rate_slope_low, int supply_rate_slope_high, int target_utilization, int origination_fee, _, _, _, _, _, _, _,
+        _, int he_category, _, int he_liquidation_threshold) = asset_config_collection.asset_config_collection:get_unpacked(asset_id);
+
+      he_cats~tpush(he_category);
+
+      if (asset_value_principal < 0) {
+        borrow_amount += present_value_borrow_calc(asset_b_rate, muldivc(- asset_value_principal, price, fast_dec_pow(decimals)));
+        limit~tpush(-1);
+        he_limit~tpush(-1);
+      } else {
+        limit~tpush(present_value_supply_calc(asset_s_rate, asset_value_principal * price * liquidation_threshold / fast_dec_pow(decimals) / constants::asset_coefficient_scale));
+        he_limit~tpush(present_value_supply_calc(asset_s_rate, asset_value_principal * price * he_liquidation_threshold / fast_dec_pow(decimals) / constants::asset_coefficient_scale));
+        supply_amount += present_value_supply_calc(asset_s_rate, asset_value_principal * price / fast_dec_pow(decimals));
+      }
+
+    }
+
+    (asset_id, asset_value_principal_packed, flag) = user_principals.principals:get_next?(asset_id);
+  }
+
+  (int borrow_limit, _) = calculate_borrow_limit(he_cats, limit, he_limit);
+
+  return (borrow_limit < borrow_amount, true, supply_amount, borrow_amount);
+}
+
+(int, int, int) get_available_to_borrow(
+  cell asset_config_collection, cell asset_dynamics_collection,
+  cell user_principals, cell prices_packed
+) {
+  int borrow_amount = 0;
+
+  tuple he_cats = empty_tuple();
+  tuple limit = empty_tuple();
+  tuple he_limit = empty_tuple();
+
+  (int asset_id, slice asset_value_principal_packed, int flag) =  user_principals.principals:get_min?();
+  while (flag) {
+    int asset_value_principal = asset_value_principal_packed.packed_principal:unpack();
+
+    if (asset_value_principal) { ;; != 0
+
+      int price = prices_packed.prices_packed:get?(asset_id);
+      if (price == -1) {
+        ;; if prices are not ok, result shall be -1, and therefore is_borrow_collateralized will return false
+        return (-1, false, -1);
+      }
+
+      var (asset_s_rate, asset_b_rate, total_supply_principal, total_borrow_principal, last_accrual, token_balance, _, _, _) = asset_dynamics_collection.asset_dynamics_collection:get_unpacked(asset_id);
+
+      (int jw_address_hash, int decimals, int collateral_factor, _, _, int base_borrow_rate, int borrow_rate_slope_low, int borrow_rate_slope_high, int supply_rate_slope_low, int supply_rate_slope_high, int target_utilization, int origination_fee, _, _, _, _, _, _, _,
+        _, int he_category, int he_collateral_factor, _) = asset_config_collection.asset_config_collection:get_unpacked(asset_id);
+
+      he_cats~tpush(he_category);
+
+      if (asset_value_principal < 0) {
+        borrow_amount += muldivc(present_value_borrow_calc(asset_b_rate, - asset_value_principal), price, fast_dec_pow(decimals));
+        limit~tpush(-1);
+        he_limit~tpush(-1);
+      } else {
+        int supplied_asset_in_dollars = muldiv(present_value_supply_calc(asset_s_rate, asset_value_principal), price, fast_dec_pow(decimals));
+        ;; borrow_limit +=
+        limit~tpush(muldiv(supplied_asset_in_dollars, collateral_factor, constants::asset_coefficient_scale));
+        he_limit~tpush(muldiv(supplied_asset_in_dollars, he_collateral_factor, constants::asset_coefficient_scale));
+      }
+
+    }
+
+    (asset_id, asset_value_principal_packed, flag) = user_principals.principals:get_next?(asset_id);
+  }
+
+  (int borrow_limit, int he_cat) = calculate_borrow_limit(he_cats, limit, he_limit);
+
+  return (borrow_limit - borrow_amount, true, he_cat);
+}
+
+(int, int) is_borrow_collateralized (
+  cell asset_config_collection, cell asset_dynamics_collection,
+  cell user_principals, cell prices_packed
+) {
+  if(check_not_in_debt_at_all(user_principals)){
+    ;; user hasn't borrowed any asset so we can ignore the borrow check
+    return (true, true);
+  }
+
+  (int avail, int enough_price_data, _) = (get_available_to_borrow(
+      asset_config_collection, asset_dynamics_collection,
+      user_principals, prices_packed
+    ));
+
+  ;; if prices are not ok, avail shall be -1, and therefore this will return false
+  return (avail >= 0, enough_price_data);
+}
+
+(int) get_account_asset_balance (
+  int asset_id,
+  int s_rate, int b_rate,
+  cell user_principals
+) {
+  int asset_value_principal = user_principals.get_principal(asset_id);
+  return present_value(s_rate, b_rate, asset_value_principal);
+}
+
+(int, int, int) get_agregated_balances(
+  cell asset_config_collection,
+  cell asset_dynamics_collection,
+  cell user_principals,
+  cell prices_packed
+) {
+  int user_total_supply = 0;
+  int user_total_borrow = 0;
+
+  (int asset_id, slice asset_value_principal_packed, int flag) =  user_principals.principals:get_min?();
+  while (flag) {
+    int asset_value_principal = asset_value_principal_packed.packed_principal:unpack();
+
+    if (asset_value_principal) {
+
+      int price = prices_packed.prices_packed:get?(asset_id);
+
+      if (price == -1) {
+        return (0, 0, false);
+      }
+
+      var (asset_s_rate, asset_b_rate, total_supply_principal, total_borrow_principal, last_accrual, token_balance, _, _, _) = asset_dynamics_collection.asset_dynamics_collection:get_unpacked(asset_id);
+
+      (int jw_address_hash, int decimals, _, _, _, int base_borrow_rate, int borrow_rate_slope_low, int borrow_rate_slope_high, int supply_rate_slope_low, int supply_rate_slope_high, int target_utilization, int origination_fee, _, _, _, _, _, _, _,
+      _, _, _, _) = asset_config_collection.asset_config_collection:get_unpacked(asset_id);
+
+      if (asset_value_principal < 0) {
+        user_total_borrow += muldivc(present_value_borrow_calc(asset_b_rate, - asset_value_principal), price, fast_dec_pow(decimals));
+      } else {
+        user_total_supply += muldiv(present_value_supply_calc(asset_s_rate, asset_value_principal), price, fast_dec_pow(decimals));
+      }
+
+    }
+    (asset_id, asset_value_principal_packed, flag) = user_principals.principals:get_next?(asset_id);
+  }
+  return (user_total_supply, user_total_borrow, true);
+}
+
+(int, int) calculate_maximum_withdraw_amount(
+  cell asset_config_collection, cell asset_dynamics_collection,
+  cell user_principals, cell prices_packed, int asset_id, int old_principal
+) {
+  int withdraw_amount_max = 0;
+  (_, int decimals, int collateral_factor, _, _, _, _, _, _, _, _, _, int dust, _, _, _, _, _, _,
+    _, int he_category, int he_collateral_factor, _) = asset_config_collection.asset_config_collection:get_unpacked(asset_id);
+  
+  if (old_principal > dust) { 
+    
+    var (asset_s_rate, asset_b_rate, _, _, _, _, _, _, _) = asset_dynamics_collection.asset_dynamics_collection:get_unpacked(asset_id);
+    int old_present_value = present_value(asset_s_rate, asset_b_rate, old_principal);
+
+    if(check_not_in_debt_at_all(user_principals)){
+      ;; user hasn't borrowed any asset so we can set withdraw max as balance of asset
+      withdraw_amount_max = old_present_value; ;; withdraw all positive principal without prices if user has no debt
+    } else {
+      int price = prices_packed.prices_packed:get?(asset_id); 
+
+      if (price == -1) {
+        return (0, false);
+      }
+
+      int max_amount_to_reclaim = 0;
+      if (collateral_factor == 0) {
+        max_amount_to_reclaim = old_present_value;
+      }
+      ;; if price == 0 then max_amount_to_reclaim = 0, as defined above
+      elseif (price > 0) {
+        (int borrowable, int prices_ok, int he_cat) = get_available_to_borrow(asset_config_collection, asset_dynamics_collection, user_principals, prices_packed);
+        ifnot (prices_ok) {
+          return (0, false);
+        }
+
+        if ((he_cat > 0) & (he_category == he_cat)) {
+          collateral_factor = he_collateral_factor;
+        }
+
+        max_amount_to_reclaim =
+          max(0, muldiv(
+            muldiv(borrowable, constants::asset_coefficient_scale, collateral_factor), ;; * asset_parameter_scale / CF_i
+            fast_dec_pow(decimals), price ;; * asset_scale_i / price_i
+          ) - present_value_supply_calc(asset_s_rate, dust) / 2); 
+      }
+
+      withdraw_amount_max = min( 
+        max_amount_to_reclaim,
+        old_present_value
+      );
+    }
+  } else {
+    int price = prices_packed.prices_packed:get?(asset_id);
+
+    if (price == -1) {
+      return (0, false);
+    }
+
+    (withdraw_amount_max, int enough_price_data, _) = get_available_to_borrow(
+      asset_config_collection, asset_dynamics_collection,
+      user_principals, prices_packed);
+
+    ifnot (enough_price_data) {
+      return (0, false);
+    }
+
+    withdraw_amount_max = withdraw_amount_max.muldiv(
+      fast_dec_pow(decimals),
+      price
+    );
+  }
+  return (withdraw_amount_max, true);
+}
+
+(int, int) accrue_user_indexes(int base_tracking_index, int base_tracking_accrued, int tracking_supply_index, int tracking_borrow_index, int old_principal, int new_principal) {
+  if (old_principal >= 0) {
+    int index_delta = tracking_supply_index - base_tracking_index;
+    base_tracking_accrued += muldiv(old_principal, index_delta, constants::tracking_index_scale);
+  } else {
+    int index_delta = tracking_borrow_index - base_tracking_index;
+    base_tracking_accrued += muldiv(- old_principal, index_delta, constants::tracking_index_scale);
+  }
+
+  if (new_principal >= 0) {
+    base_tracking_index = tracking_supply_index;
+  } else {
+    base_tracking_index = tracking_borrow_index;
+  }
+  return (base_tracking_index, base_tracking_accrued);
+}
+
+int get_last_mc_block_seqno() impure inline {
+    tuple prev_mc_blocks = get_prev_mc_blocks();
+    ;; [ last_mc_blocks:[BlockId0, BlockId1, ..., BlockId15]  prev_key_block:BlockId ] : PrevBlocksInfo
+    tuple last_mc_block = prev_mc_blocks.at(0);
+    ;; [ wc:Integer shard:Integer seqno:Integer root_hash:Integer file_hash:Integer ] = BlockId;
+    return last_mc_block.at(2);
+}

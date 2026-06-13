@@ -1,0 +1,543 @@
+{
+  "result": "SELLER_CONTROLLED_REPLAY_CRITICAL_SUCCEEDED",
+  "note": "Only signed nonce 0 can pass CallPermit validation while nonce is 0 and then revert inside acceptOffer. Nonces 1..N are intentionally public future-nonce failures until prior replay advances the nonce.",
+  "accounts": {
+    "seller": "0xE2823B3C9Eef89520617589c2056Fde633B61C53",
+    "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+    "replayDispatcher": "0x387d113949a1a2D5Df01B869aa992e94Bd062035",
+    "forkAdmin": "0x48a9817eD1cF863600b2d570C5bB59A7873847c4"
+  },
+  "contracts": {
+    "callPermit": "0x000000000000000000000000000000000000080a",
+    "marketplaceV9": "0x683724817a7d526d6256Aec0D6f8ddF541b924de",
+    "paymentToken": "0xAcc15dC74880C9944775448304B263D191c6077F",
+    "erc721Collection": "0x104b904e19fBDa76bb864731A2C9E01E6b41f855",
+    "tokenIds": [
+      "1549",
+      "1551",
+      "1552",
+      "1553"
+    ]
+  },
+  "pricePerToken": "100000000000000000000",
+  "totalPrice": "400000000000000000000",
+  "setupTxs": {
+    "offerTxs": [
+      {
+        "tokenId": "1549",
+        "txHash": "0xfa271e6337dd395f2f10fe9c5dc9765ce482fa432e6c4ae68acb8985124912b2"
+      },
+      {
+        "tokenId": "1551",
+        "txHash": "0x6169252ccb70d09457f3f236d74ec05760d494e4aa3fc7ac1f100d84d5878699"
+      },
+      {
+        "tokenId": "1552",
+        "txHash": "0xe22787988acd0cfbcfee963549cad5cf8030ab1fcb3c16848206c0f2bdb514f3"
+      },
+      {
+        "tokenId": "1553",
+        "txHash": "0xaf87debaa414bae787394e6ae95b3a9bbf178f0d281c1c4837d0f5e53bcdde18"
+      }
+    ],
+    "sellerRevokeApproval": "0xa5f50208251ec512d8ad4a8c08e74bd8ad4e8d34efaf65a23b73b82702fc4aa1",
+    "sellerRestoreApproval": "0x215959a0d9eec52677fbe608d9fa91d6f28ee2fce8eb5f0ed78eb51bae6d04e8"
+  },
+  "permits": [
+    {
+      "tokenId": "1549",
+      "signedNonce": "0",
+      "acceptOfferData": "0x273499f0000000000000000000000000104b904e19fbda76bb864731a2c9e01e6b41f855000000000000000000000000000000000000000000000000000000000000060d0000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000d0e74c0f8c790c89945b852fa8a5708516641d40000000000000000000000000000000000000000000000000000000000000000",
+      "acceptOfferCalldataHash": "0x676f2cec04dc4d8d554ca1c253af4451c3a2d3a78faf7d00e76c559c344878bb",
+      "dispatchCalldata": "0xb5ea0966000000000000000000000000e2823b3c9eef89520617589c2056fde633b61c53000000000000000000000000683724817a7d526d6256aec0d6f8ddf541b924de0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000004c4b40000000000000000000000000000000000000000000000000000000006a034760000000000000000000000000000000000000000000000000000000000000001c19f793864acd5d03eb54f91c09043cdcd3cd8cce796ff7989eacfce1f14d41bd64a04926317876aef6d775fbfc51e19f4a776591e0ab3e2edf766cdb82d2384000000000000000000000000000000000000000000000000000000000000000a4273499f0000000000000000000000000104b904e19fbda76bb864731a2c9e01e6b41f855000000000000000000000000000000000000000000000000000000000000060d0000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000d0e74c0f8c790c89945b852fa8a5708516641d4000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "dispatchCalldataHash": "0xab9ad1209f5e08146c2c11c778424b3f52b56dc20f1368c71fe8b4b5f5b68c91",
+      "v": 28,
+      "r": "0x19f793864acd5d03eb54f91c09043cdcd3cd8cce796ff7989eacfce1f14d41bd",
+      "s": "0x64a04926317876aef6d775fbfc51e19f4a776591e0ab3e2edf766cdb82d23840"
+    },
+    {
+      "tokenId": "1551",
+      "signedNonce": "1",
+      "acceptOfferData": "0x273499f0000000000000000000000000104b904e19fbda76bb864731a2c9e01e6b41f855000000000000000000000000000000000000000000000000000000000000060f0000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000d0e74c0f8c790c89945b852fa8a5708516641d40000000000000000000000000000000000000000000000000000000000000000",
+      "acceptOfferCalldataHash": "0x04b0022ab6459bbec0eeaef2a16f37f3bbdb18da7066a7709a6da2fc33b90a77",
+      "dispatchCalldata": "0xb5ea0966000000000000000000000000e2823b3c9eef89520617589c2056fde633b61c53000000000000000000000000683724817a7d526d6256aec0d6f8ddf541b924de0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000004c4b40000000000000000000000000000000000000000000000000000000006a034760000000000000000000000000000000000000000000000000000000000000001c59413fdf88f56ba94c7be2ffe14974170b81bd939287818274c5518f68d950de011bdfa52971a57ab5c5e27013356b998708a739de534a8c3262336068a8365700000000000000000000000000000000000000000000000000000000000000a4273499f0000000000000000000000000104b904e19fbda76bb864731a2c9e01e6b41f855000000000000000000000000000000000000000000000000000000000000060f0000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000d0e74c0f8c790c89945b852fa8a5708516641d4000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "dispatchCalldataHash": "0x5b1753d658011816222445d525d75810a964700aa506d633ecb2df3b0a654ad5",
+      "v": 28,
+      "r": "0x59413fdf88f56ba94c7be2ffe14974170b81bd939287818274c5518f68d950de",
+      "s": "0x011bdfa52971a57ab5c5e27013356b998708a739de534a8c3262336068a83657"
+    },
+    {
+      "tokenId": "1552",
+      "signedNonce": "2",
+      "acceptOfferData": "0x273499f0000000000000000000000000104b904e19fbda76bb864731a2c9e01e6b41f85500000000000000000000000000000000000000000000000000000000000006100000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000d0e74c0f8c790c89945b852fa8a5708516641d40000000000000000000000000000000000000000000000000000000000000000",
+      "acceptOfferCalldataHash": "0x43fb0a8c4726a2fce9d9e4e098c2171d300a8038d07ccd4172643f4d36737c7f",
+      "dispatchCalldata": "0xb5ea0966000000000000000000000000e2823b3c9eef89520617589c2056fde633b61c53000000000000000000000000683724817a7d526d6256aec0d6f8ddf541b924de0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000004c4b40000000000000000000000000000000000000000000000000000000006a034760000000000000000000000000000000000000000000000000000000000000001c606de58fa3c9c9b852bba2d9bfd7fa2e8bce9158f00aef4119b67efc66cfddd9400a59698d4be8b2cbcb98d56d5bd00d38df6990f9b771d27f002f61ba1893e700000000000000000000000000000000000000000000000000000000000000a4273499f0000000000000000000000000104b904e19fbda76bb864731a2c9e01e6b41f85500000000000000000000000000000000000000000000000000000000000006100000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000d0e74c0f8c790c89945b852fa8a5708516641d4000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "dispatchCalldataHash": "0x89d737678a923695de1296b47bdfec5afa1c88dfd746394e7dda4b47775baf81",
+      "v": 28,
+      "r": "0x606de58fa3c9c9b852bba2d9bfd7fa2e8bce9158f00aef4119b67efc66cfddd9",
+      "s": "0x400a59698d4be8b2cbcb98d56d5bd00d38df6990f9b771d27f002f61ba1893e7"
+    },
+    {
+      "tokenId": "1553",
+      "signedNonce": "3",
+      "acceptOfferData": "0x273499f0000000000000000000000000104b904e19fbda76bb864731a2c9e01e6b41f85500000000000000000000000000000000000000000000000000000000000006110000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000d0e74c0f8c790c89945b852fa8a5708516641d40000000000000000000000000000000000000000000000000000000000000000",
+      "acceptOfferCalldataHash": "0x52f1730358c3200ede7ed83863dbeba8a9cc442304cf795ae684106eb02505af",
+      "dispatchCalldata": "0xb5ea0966000000000000000000000000e2823b3c9eef89520617589c2056fde633b61c53000000000000000000000000683724817a7d526d6256aec0d6f8ddf541b924de0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000012000000000000000000000000000000000000000000000000000000000004c4b40000000000000000000000000000000000000000000000000000000006a034760000000000000000000000000000000000000000000000000000000000000001b543e7639249a4a71b9bc8897edd97e56c6a5bedae9464b2fa65d50e84095d3b8759642231eba4748e196bcce4e3c6c1f1952dad6af3944bfb93a579e4786beb700000000000000000000000000000000000000000000000000000000000000a4273499f0000000000000000000000000104b904e19fbda76bb864731a2c9e01e6b41f85500000000000000000000000000000000000000000000000000000000000006110000000000000000000000000000000000000000000000056bc75e2d631000000000000000000000000000000d0e74c0f8c790c89945b852fa8a5708516641d4000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "dispatchCalldataHash": "0x025d65c59b3ec69ee08b368421d1e76ff7d55de91e3182d62d2f32b7c943eeb5",
+      "v": 27,
+      "r": "0x543e7639249a4a71b9bc8897edd97e56c6a5bedae9464b2fa65d50e84095d3b8",
+      "s": "0x759642231eba4748e196bcce4e3c6c1f1952dad6af3944bfb93a579e4786beb7"
+    }
+  ],
+  "failedPublishes": [
+    {
+      "tokenId": "1549",
+      "signedNonce": "0",
+      "txHash": "0x294760798292059792ed1b994bfacb97e177a9315ff2cbd694bb3e81aa3e3b6c",
+      "txInputHash": "0xab9ad1209f5e08146c2c11c778424b3f52b56dc20f1368c71fe8b4b5f5b68c91",
+      "ethereumExecuted": [
+        {
+          "from": "0xe2823b3c9eef89520617589c2056fde633b61c53",
+          "to": "0x000000000000000000000000000000000000080a",
+          "transactionHash": "0x294760798292059792ed1b994bfacb97e177a9315ff2cbd694bb3e81aa3e3b6c",
+          "exitReason": {
+            "Revert": "Reverted"
+          },
+          "extraData": "Marketplace not approved to tr",
+          "decodedRevert": "Marketplace not approved to tr"
+        }
+      ],
+      "nonceAfter": "0"
+    },
+    {
+      "tokenId": "1551",
+      "signedNonce": "1",
+      "txHash": "0x67f746f39c4dbeded95ca280ef48327e4deb9c517c9c7f25697d500e8e43c521",
+      "txInputHash": "0x5b1753d658011816222445d525d75810a964700aa506d633ecb2df3b0a654ad5",
+      "ethereumExecuted": [
+        {
+          "from": "0xe2823b3c9eef89520617589c2056fde633b61c53",
+          "to": "0x000000000000000000000000000000000000080a",
+          "transactionHash": "0x67f746f39c4dbeded95ca280ef48327e4deb9c517c9c7f25697d500e8e43c521",
+          "exitReason": {
+            "Revert": "Reverted"
+          },
+          "extraData": "Invalid permit",
+          "decodedRevert": "Invalid permit"
+        }
+      ],
+      "nonceAfter": "0"
+    },
+    {
+      "tokenId": "1552",
+      "signedNonce": "2",
+      "txHash": "0xa86983ba36e0d461a6b6a3440d3acb92db68fd59f8080c07ba5b11e8c30ce681",
+      "txInputHash": "0x89d737678a923695de1296b47bdfec5afa1c88dfd746394e7dda4b47775baf81",
+      "ethereumExecuted": [
+        {
+          "from": "0xe2823b3c9eef89520617589c2056fde633b61c53",
+          "to": "0x000000000000000000000000000000000000080a",
+          "transactionHash": "0xa86983ba36e0d461a6b6a3440d3acb92db68fd59f8080c07ba5b11e8c30ce681",
+          "exitReason": {
+            "Revert": "Reverted"
+          },
+          "extraData": "Invalid permit",
+          "decodedRevert": "Invalid permit"
+        }
+      ],
+      "nonceAfter": "0"
+    },
+    {
+      "tokenId": "1553",
+      "signedNonce": "3",
+      "txHash": "0x196059cd522261f36a8b6ae11aa89a154de0ad03577faa860f0dc54bb6793f4f",
+      "txInputHash": "0x025d65c59b3ec69ee08b368421d1e76ff7d55de91e3182d62d2f32b7c943eeb5",
+      "ethereumExecuted": [
+        {
+          "from": "0xe2823b3c9eef89520617589c2056fde633b61c53",
+          "to": "0x000000000000000000000000000000000000080a",
+          "transactionHash": "0x196059cd522261f36a8b6ae11aa89a154de0ad03577faa860f0dc54bb6793f4f",
+          "exitReason": {
+            "Revert": "Reverted"
+          },
+          "extraData": "Invalid permit",
+          "decodedRevert": "Invalid permit"
+        }
+      ],
+      "nonceAfter": "0"
+    }
+  ],
+  "replays": [
+    {
+      "tokenId": "1549",
+      "signedNonce": "0",
+      "txHash": "0xafb8b1e52a703fcc4956ab2c5713ff38afff59be1fef070a35e0ba6846caef9d",
+      "txInputHash": "0xab9ad1209f5e08146c2c11c778424b3f52b56dc20f1368c71fe8b4b5f5b68c91",
+      "exactSameCalldataReused": true,
+      "nonceBefore": "0",
+      "nonceAfter": "1",
+      "ethereumExecuted": [
+        {
+          "from": "0x387d113949a1a2d5df01b869aa992e94bd062035",
+          "to": "0x000000000000000000000000000000000000080a",
+          "transactionHash": "0xafb8b1e52a703fcc4956ab2c5713ff38afff59be1fef070a35e0ba6846caef9d",
+          "exitReason": {
+            "Succeed": "Returned"
+          },
+          "extraData": "",
+          "decodedRevert": ""
+        }
+      ],
+      "sellerPaymentDelta": "100000000000000000000",
+      "buyerPaymentDelta": "100000000000000000000",
+      "nftOwnerAfter": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4"
+    },
+    {
+      "tokenId": "1551",
+      "signedNonce": "1",
+      "txHash": "0x068744d05731b6b2e33b0d498d1c14b40898629b0ba4eb26c0fd980ccf65063a",
+      "txInputHash": "0x5b1753d658011816222445d525d75810a964700aa506d633ecb2df3b0a654ad5",
+      "exactSameCalldataReused": true,
+      "nonceBefore": "1",
+      "nonceAfter": "2",
+      "ethereumExecuted": [
+        {
+          "from": "0x387d113949a1a2d5df01b869aa992e94bd062035",
+          "to": "0x000000000000000000000000000000000000080a",
+          "transactionHash": "0x068744d05731b6b2e33b0d498d1c14b40898629b0ba4eb26c0fd980ccf65063a",
+          "exitReason": {
+            "Succeed": "Returned"
+          },
+          "extraData": "",
+          "decodedRevert": ""
+        }
+      ],
+      "sellerPaymentDelta": "100000000000000000000",
+      "buyerPaymentDelta": "100000000000000000000",
+      "nftOwnerAfter": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4"
+    },
+    {
+      "tokenId": "1552",
+      "signedNonce": "2",
+      "txHash": "0x4009fa12747d39840e3d23d3f640c64965bede97a1c293f48851ce88740f2f84",
+      "txInputHash": "0x89d737678a923695de1296b47bdfec5afa1c88dfd746394e7dda4b47775baf81",
+      "exactSameCalldataReused": true,
+      "nonceBefore": "2",
+      "nonceAfter": "3",
+      "ethereumExecuted": [
+        {
+          "from": "0x387d113949a1a2d5df01b869aa992e94bd062035",
+          "to": "0x000000000000000000000000000000000000080a",
+          "transactionHash": "0x4009fa12747d39840e3d23d3f640c64965bede97a1c293f48851ce88740f2f84",
+          "exitReason": {
+            "Succeed": "Returned"
+          },
+          "extraData": "",
+          "decodedRevert": ""
+        }
+      ],
+      "sellerPaymentDelta": "100000000000000000000",
+      "buyerPaymentDelta": "100000000000000000000",
+      "nftOwnerAfter": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4"
+    },
+    {
+      "tokenId": "1553",
+      "signedNonce": "3",
+      "txHash": "0x1e3e6717969c4a7927b6b4579b90832e44583b5344f1a156af828e66ca9c6fbe",
+      "txInputHash": "0x025d65c59b3ec69ee08b368421d1e76ff7d55de91e3182d62d2f32b7c943eeb5",
+      "exactSameCalldataReused": true,
+      "nonceBefore": "3",
+      "nonceAfter": "4",
+      "ethereumExecuted": [
+        {
+          "from": "0x387d113949a1a2d5df01b869aa992e94bd062035",
+          "to": "0x000000000000000000000000000000000000080a",
+          "transactionHash": "0x1e3e6717969c4a7927b6b4579b90832e44583b5344f1a156af828e66ca9c6fbe",
+          "exitReason": {
+            "Succeed": "Returned"
+          },
+          "extraData": "",
+          "decodedRevert": ""
+        }
+      ],
+      "sellerPaymentDelta": "100000000000000000000",
+      "buyerPaymentDelta": "100000000000000000000",
+      "nftOwnerAfter": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4"
+    }
+  ],
+  "atomicity": {
+    "nonceUnchangedAcrossFailedPublishes": true,
+    "wglmrRolledBackAcrossFailedPublishes": true,
+    "nftRolledBackAcrossFailedPublishes": true,
+    "offersNotAcceptedAcrossFailedPublishes": true
+  },
+  "snapshots": {
+    "afterOffers": {
+      "label": "after all offers and initial approval",
+      "block": "15592240",
+      "timestampMs": "1778596176000",
+      "callPermitNonce": "0",
+      "sellerApprovedForMarketplace": true,
+      "sellerNftBalance": "4",
+      "buyerNftBalance": "0",
+      "sellerWglmrBalance": "100000000000000000000",
+      "buyerWglmrBalance": "400000000000000000000",
+      "buyerMarketplaceAllowance": "400000000000000000000",
+      "ownerByToken": {
+        "1549": "0xE2823B3C9Eef89520617589c2056Fde633B61C53",
+        "1551": "0xE2823B3C9Eef89520617589c2056Fde633B61C53",
+        "1552": "0xE2823B3C9Eef89520617589c2056Fde633B61C53",
+        "1553": "0xE2823B3C9Eef89520617589c2056Fde633B61C53"
+      },
+      "offersByToken": {
+        "1549": [
+          {
+            "price": "100000000000000000000",
+            "accepted": false,
+            "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+            "escrowed": false
+          }
+        ],
+        "1551": [
+          {
+            "price": "100000000000000000000",
+            "accepted": false,
+            "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+            "escrowed": false
+          }
+        ],
+        "1552": [
+          {
+            "price": "100000000000000000000",
+            "accepted": false,
+            "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+            "escrowed": false
+          }
+        ],
+        "1553": [
+          {
+            "price": "100000000000000000000",
+            "accepted": false,
+            "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+            "escrowed": false
+          }
+        ]
+      }
+    },
+    "beforeFailed": {
+      "label": "seller revoked approval / before public failed publishes",
+      "block": "15592241",
+      "timestampMs": "1778596182000",
+      "callPermitNonce": "0",
+      "sellerApprovedForMarketplace": false,
+      "sellerNftBalance": "4",
+      "buyerNftBalance": "0",
+      "sellerWglmrBalance": "100000000000000000000",
+      "buyerWglmrBalance": "400000000000000000000",
+      "buyerMarketplaceAllowance": "400000000000000000000",
+      "ownerByToken": {
+        "1549": "0xE2823B3C9Eef89520617589c2056Fde633B61C53",
+        "1551": "0xE2823B3C9Eef89520617589c2056Fde633B61C53",
+        "1552": "0xE2823B3C9Eef89520617589c2056Fde633B61C53",
+        "1553": "0xE2823B3C9Eef89520617589c2056Fde633B61C53"
+      },
+      "offersByToken": {
+        "1549": [
+          {
+            "price": "100000000000000000000",
+            "accepted": false,
+            "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+            "escrowed": false
+          }
+        ],
+        "1551": [
+          {
+            "price": "100000000000000000000",
+            "accepted": false,
+            "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+            "escrowed": false
+          }
+        ],
+        "1552": [
+          {
+            "price": "100000000000000000000",
+            "accepted": false,
+            "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+            "escrowed": false
+          }
+        ],
+        "1553": [
+          {
+            "price": "100000000000000000000",
+            "accepted": false,
+            "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+            "escrowed": false
+          }
+        ]
+      }
+    },
+    "afterFailed": {
+      "label": "after all failed/public dispatch attempts",
+      "block": "15592245",
+      "timestampMs": "1778596206000",
+      "callPermitNonce": "0",
+      "sellerApprovedForMarketplace": false,
+      "sellerNftBalance": "4",
+      "buyerNftBalance": "0",
+      "sellerWglmrBalance": "100000000000000000000",
+      "buyerWglmrBalance": "400000000000000000000",
+      "buyerMarketplaceAllowance": "400000000000000000000",
+      "ownerByToken": {
+        "1549": "0xE2823B3C9Eef89520617589c2056Fde633B61C53",
+        "1551": "0xE2823B3C9Eef89520617589c2056Fde633B61C53",
+        "1552": "0xE2823B3C9Eef89520617589c2056Fde633B61C53",
+        "1553": "0xE2823B3C9Eef89520617589c2056Fde633B61C53"
+      },
+      "offersByToken": {
+        "1549": [
+          {
+            "price": "100000000000000000000",
+            "accepted": false,
+            "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+            "escrowed": false
+          }
+        ],
+        "1551": [
+          {
+            "price": "100000000000000000000",
+            "accepted": false,
+            "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+            "escrowed": false
+          }
+        ],
+        "1552": [
+          {
+            "price": "100000000000000000000",
+            "accepted": false,
+            "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+            "escrowed": false
+          }
+        ],
+        "1553": [
+          {
+            "price": "100000000000000000000",
+            "accepted": false,
+            "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+            "escrowed": false
+          }
+        ]
+      }
+    },
+    "beforeReplay": {
+      "label": "seller restored approval / before mass replay",
+      "block": "15592246",
+      "timestampMs": "1778596212000",
+      "callPermitNonce": "0",
+      "sellerApprovedForMarketplace": true,
+      "sellerNftBalance": "4",
+      "buyerNftBalance": "0",
+      "sellerWglmrBalance": "100000000000000000000",
+      "buyerWglmrBalance": "400000000000000000000",
+      "buyerMarketplaceAllowance": "400000000000000000000",
+      "ownerByToken": {
+        "1549": "0xE2823B3C9Eef89520617589c2056Fde633B61C53",
+        "1551": "0xE2823B3C9Eef89520617589c2056Fde633B61C53",
+        "1552": "0xE2823B3C9Eef89520617589c2056Fde633B61C53",
+        "1553": "0xE2823B3C9Eef89520617589c2056Fde633B61C53"
+      },
+      "offersByToken": {
+        "1549": [
+          {
+            "price": "100000000000000000000",
+            "accepted": false,
+            "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+            "escrowed": false
+          }
+        ],
+        "1551": [
+          {
+            "price": "100000000000000000000",
+            "accepted": false,
+            "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+            "escrowed": false
+          }
+        ],
+        "1552": [
+          {
+            "price": "100000000000000000000",
+            "accepted": false,
+            "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+            "escrowed": false
+          }
+        ],
+        "1553": [
+          {
+            "price": "100000000000000000000",
+            "accepted": false,
+            "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+            "escrowed": false
+          }
+        ]
+      }
+    },
+    "afterReplay": {
+      "label": "after mass exact calldata replay",
+      "block": "15592250",
+      "timestampMs": "1778596236000",
+      "callPermitNonce": "4",
+      "sellerApprovedForMarketplace": true,
+      "sellerNftBalance": "0",
+      "buyerNftBalance": "4",
+      "sellerWglmrBalance": "500000000000000000000",
+      "buyerWglmrBalance": "0",
+      "buyerMarketplaceAllowance": "0",
+      "ownerByToken": {
+        "1549": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+        "1551": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+        "1552": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+        "1553": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4"
+      },
+      "offersByToken": {
+        "1549": [
+          {
+            "price": "100000000000000000000",
+            "accepted": true,
+            "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+            "escrowed": false
+          }
+        ],
+        "1551": [
+          {
+            "price": "100000000000000000000",
+            "accepted": true,
+            "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+            "escrowed": false
+          }
+        ],
+        "1552": [
+          {
+            "price": "100000000000000000000",
+            "accepted": true,
+            "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+            "escrowed": false
+          }
+        ],
+        "1553": [
+          {
+            "price": "100000000000000000000",
+            "accepted": true,
+            "buyer": "0x0d0E74c0f8c790C89945B852fa8A5708516641D4",
+            "escrowed": false
+          }
+        ]
+      }
+    }
+  },
+  "summary": {
+    "finalNonce": "4",
+    "sellerTotalPayment": "400000000000000000000",
+    "buyerTotalPayment": "400000000000000000000",
+    "allOffersAccepted": true,
+    "replayOk": true
+  }
+}

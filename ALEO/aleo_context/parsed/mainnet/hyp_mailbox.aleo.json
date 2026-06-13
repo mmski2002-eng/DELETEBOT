@@ -1,0 +1,728 @@
+{
+  "program_id": "hyp_mailbox.aleo",
+  "calls_24h_or_metric_window": 10,
+  "imports": [
+    "hyp_ism_manager.aleo",
+    "hyp_multisig_core.aleo"
+  ],
+  "mappings": {
+    "deliveries": {
+      "key": "DeliveryKey.public",
+      "value": "Delivery.public"
+    },
+    "dispatch_events": {
+      "key": "u32.public",
+      "value": "Message.public"
+    },
+    "dispatch_id_events": {
+      "key": "u32.public",
+      "value": "[u128"
+    },
+    "process_events": {
+      "key": "u32.public",
+      "value": "[u128"
+    },
+    "mailbox": {
+      "key": "boolean.public",
+      "value": "Mailbox.public"
+    },
+    "process_event_index": {
+      "key": "u32.public",
+      "value": "u32.public"
+    },
+    "dispatch_event_index": {
+      "key": "u32.public",
+      "value": "u32.public"
+    },
+    "registered_applications": {
+      "key": "address.public",
+      "value": "[u8"
+    }
+  },
+  "structs": {
+    "Mailbox": [
+      {
+        "name": "local_domain",
+        "type": "u32"
+      },
+      {
+        "name": "nonce",
+        "type": "u32"
+      },
+      {
+        "name": "process_count",
+        "type": "u32"
+      },
+      {
+        "name": "default_ism",
+        "type": "address"
+      },
+      {
+        "name": "default_hook",
+        "type": "address"
+      },
+      {
+        "name": "required_hook",
+        "type": "address"
+      },
+      {
+        "name": "dispatch_proxy",
+        "type": "address"
+      },
+      {
+        "name": "mailbox_owner",
+        "type": "address"
+      }
+    ],
+    "Message": [
+      {
+        "name": "version",
+        "type": "u8"
+      },
+      {
+        "name": "nonce",
+        "type": "u32"
+      },
+      {
+        "name": "origin_domain",
+        "type": "u32"
+      },
+      {
+        "name": "sender",
+        "type": "[u8"
+      },
+      {
+        "name": "destination_domain",
+        "type": "u32"
+      },
+      {
+        "name": "recipient",
+        "type": "[u8"
+      },
+      {
+        "name": "body",
+        "type": "[u128"
+      }
+    ],
+    "Delivery": [
+      {
+        "name": "processor",
+        "type": "address"
+      },
+      {
+        "name": "block_number",
+        "type": "u32"
+      }
+    ],
+    "DeliveryKey": [
+      {
+        "name": "id",
+        "type": "[u128"
+      }
+    ],
+    "ChecksumEdition": [
+      {
+        "name": "checksum",
+        "type": "[u8"
+      },
+      {
+        "name": "edition",
+        "type": "u16"
+      }
+    ],
+    "WalletEcdsaSigner": [
+      {
+        "name": "wallet_id",
+        "type": "address"
+      },
+      {
+        "name": "ecdsa_signer",
+        "type": "[u8"
+      }
+    ],
+    "WalletSigningOpId": [
+      {
+        "name": "wallet_id",
+        "type": "address"
+      },
+      {
+        "name": "signing_op_id",
+        "type": "field"
+      }
+    ],
+    "AdminOp": [
+      {
+        "name": "op",
+        "type": "u8"
+      },
+      {
+        "name": "threshold",
+        "type": "u8"
+      },
+      {
+        "name": "aleo_signer",
+        "type": "address"
+      },
+      {
+        "name": "ecdsa_signer",
+        "type": "[u8"
+      }
+    ],
+    "EthAddress": [
+      {
+        "name": "bytes",
+        "type": "[u8"
+      }
+    ]
+  },
+  "records": {},
+  "functions": {
+    "init": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u32.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "hyp_mailbox.aleo/init.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u32.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "mailbox"
+      ],
+      "finalize_state_writes": [
+        "mailbox"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "get_address": {
+      "inputs": [],
+      "outputs": [],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "set_dispatch_proxy": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "hyp_mailbox.aleo/set_dispatch_proxy.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "mailbox"
+      ],
+      "finalize_state_writes": [
+        "mailbox"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "set_owner": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "hyp_mailbox.aleo/set_owner.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "mailbox"
+      ],
+      "finalize_state_writes": [
+        "mailbox"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "set_default_ism": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "hyp_mailbox.aleo/set_default_ism.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "mailbox"
+      ],
+      "finalize_state_writes": [
+        "mailbox"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "set_default_hook": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "hyp_mailbox.aleo/set_default_hook.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "mailbox"
+      ],
+      "finalize_state_writes": [
+        "mailbox"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "set_required_hook": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "hyp_mailbox.aleo/set_required_hook.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "mailbox"
+      ],
+      "finalize_state_writes": [
+        "mailbox"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "register_application": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "[u8"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "hyp_mailbox.aleo/register_application.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "[u8"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "mailbox",
+        "registered_applications"
+      ],
+      "finalize_state_writes": [
+        "registered_applications"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "process": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "Message.public"
+        },
+        {
+          "register": "r2",
+          "type": "u32.public"
+        },
+        {
+          "register": "r3",
+          "type": "[u128"
+        },
+        {
+          "register": "r4",
+          "type": "[u8"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r6",
+          "type": "hyp_mailbox.aleo/process.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "hyp_ism_manager.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "Message.public"
+        },
+        {
+          "register": "r2",
+          "type": "u32.public"
+        },
+        {
+          "register": "r3",
+          "type": "[u128"
+        },
+        {
+          "register": "r4",
+          "type": "address.public"
+        },
+        {
+          "register": "r5",
+          "type": "hyp_ism_manager.aleo/verify.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "deliveries",
+        "mailbox"
+      ],
+      "finalize_state_writes": [
+        "deliveries",
+        "mailbox",
+        "process_event_index",
+        "process_events"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "and",
+        "assert.eq",
+        "gte",
+        "is.eq",
+        "lte",
+        "or",
+        "ternary"
+      ],
+      "snark_verify": false
+    },
+    "dispatch": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u32.public"
+        },
+        {
+          "register": "r1",
+          "type": "[u8"
+        },
+        {
+          "register": "r2",
+          "type": "[u128"
+        },
+        {
+          "register": "r3",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "hyp_mailbox.aleo/dispatch.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u32.public"
+        },
+        {
+          "register": "r1",
+          "type": "[u8"
+        },
+        {
+          "register": "r2",
+          "type": "[u128"
+        },
+        {
+          "register": "r3",
+          "type": "address.public"
+        },
+        {
+          "register": "r4",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "mailbox"
+      ],
+      "finalize_state_writes": [
+        "dispatch_event_index",
+        "dispatch_events",
+        "dispatch_id_events",
+        "mailbox"
+      ],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "gt"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "dispatch",
+    "init",
+    "process",
+    "register_application",
+    "set_default_hook",
+    "set_default_ism",
+    "set_dispatch_proxy",
+    "set_owner",
+    "set_required_hook"
+  ],
+  "cross_contract_refs": [
+    "hyp_ism_manager.aleo",
+    "hyp_multisig_core.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "init",
+    "set_dispatch_proxy",
+    "set_owner",
+    "set_default_ism",
+    "set_default_hook",
+    "set_required_hook",
+    "register_application",
+    "process",
+    "dispatch"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [
+      "deliveries",
+      "dispatch_event_index",
+      "dispatch_events",
+      "dispatch_id_events",
+      "mailbox",
+      "process_event_index",
+      "process_events",
+      "registered_applications"
+    ],
+    "future_outputs": [
+      {
+        "function": "init",
+        "output": "hyp_mailbox.aleo/init.future"
+      },
+      {
+        "function": "set_dispatch_proxy",
+        "output": "hyp_mailbox.aleo/set_dispatch_proxy.future"
+      },
+      {
+        "function": "set_owner",
+        "output": "hyp_mailbox.aleo/set_owner.future"
+      },
+      {
+        "function": "set_default_ism",
+        "output": "hyp_mailbox.aleo/set_default_ism.future"
+      },
+      {
+        "function": "set_default_hook",
+        "output": "hyp_mailbox.aleo/set_default_hook.future"
+      },
+      {
+        "function": "set_required_hook",
+        "output": "hyp_mailbox.aleo/set_required_hook.future"
+      },
+      {
+        "function": "register_application",
+        "output": "hyp_mailbox.aleo/register_application.future"
+      },
+      {
+        "function": "process",
+        "output": "hyp_mailbox.aleo/process.future"
+      },
+      {
+        "function": "dispatch",
+        "output": "hyp_mailbox.aleo/dispatch.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

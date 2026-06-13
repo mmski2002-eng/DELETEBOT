@@ -1,0 +1,1213 @@
+{
+  "program_id": "zk_pay_proofs_privacy_wallet_v6.aleo",
+  "calls_24h_or_metric_window": 2,
+  "imports": [
+    "credits.aleo",
+    "merkle_tree.aleo",
+    "test_usad_freezelist.aleo",
+    "test_usad_multisig_core.aleo",
+    "test_usad_stablecoin.aleo",
+    "test_usdcx_freezelist.aleo",
+    "test_usdcx_multisig_core.aleo",
+    "test_usdcx_stablecoin.aleo"
+  ],
+  "mappings": {
+    "oracle_address": {
+      "key": "u8.public",
+      "value": "address.public"
+    }
+  },
+  "structs": {
+    "OracleQuote": [
+      {
+        "name": "original_amount_micro",
+        "type": "u64"
+      },
+      {
+        "name": "converted_amount_micro",
+        "type": "u64"
+      },
+      {
+        "name": "from_token_type",
+        "type": "u8"
+      },
+      {
+        "name": "to_token_type",
+        "type": "u8"
+      },
+      {
+        "name": "expires_at",
+        "type": "u32"
+      }
+    ]
+  },
+  "records": {
+    "PayerReceipt": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "merchant",
+        "type": "address.private"
+      },
+      {
+        "name": "receipt_hash",
+        "type": "field.private"
+      },
+      {
+        "name": "invoice_hash",
+        "type": "field.private"
+      },
+      {
+        "name": "amount",
+        "type": "u64.private"
+      },
+      {
+        "name": "token_type",
+        "type": "u8.private"
+      },
+      {
+        "name": "payer_note",
+        "type": "field.private"
+      },
+      {
+        "name": "timestamp",
+        "type": "u64.private"
+      }
+    ],
+    "MerchantReceipt": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "receipt_hash",
+        "type": "field.private"
+      },
+      {
+        "name": "invoice_hash",
+        "type": "field.private"
+      },
+      {
+        "name": "amount",
+        "type": "u64.private"
+      },
+      {
+        "name": "token_type",
+        "type": "u8.private"
+      },
+      {
+        "name": "merchant_note",
+        "type": "field.private"
+      }
+    ],
+    "BurnerWalletRecord": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "burner_address",
+        "type": "address.private"
+      },
+      {
+        "name": "password_part",
+        "type": "field.private"
+      },
+      {
+        "name": "pk_part_1",
+        "type": "field.private"
+      },
+      {
+        "name": "pk_part_2",
+        "type": "field.private"
+      },
+      {
+        "name": "pk_part_3",
+        "type": "field.private"
+      },
+      {
+        "name": "pk_part_4",
+        "type": "field.private"
+      },
+      {
+        "name": "pk_part_5",
+        "type": "field.private"
+      },
+      {
+        "name": "pk_part_6",
+        "type": "field.private"
+      },
+      {
+        "name": "pk_part_7",
+        "type": "field.private"
+      },
+      {
+        "name": "pk_part_8",
+        "type": "field.private"
+      },
+      {
+        "name": "pk_part_9",
+        "type": "field.private"
+      },
+      {
+        "name": "pk_part_10",
+        "type": "field.private"
+      }
+    ],
+    "CardProfileRecord": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "card_number_hash",
+        "type": "field.private"
+      },
+      {
+        "name": "profile_version",
+        "type": "u8.private"
+      },
+      {
+        "name": "encrypted_card_number",
+        "type": "[field"
+      },
+      {
+        "name": "encrypted_card_address",
+        "type": "[field"
+      },
+      {
+        "name": "encrypted_label",
+        "type": "[field"
+      },
+      {
+        "name": "encrypted_hint",
+        "type": "[field"
+      }
+    ],
+    "GiftCardRecord": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "gift_card_address",
+        "type": "address.private"
+      },
+      {
+        "name": "gift_private_key",
+        "type": "[field"
+      },
+      {
+        "name": "label",
+        "type": "field.private"
+      }
+    ]
+  },
+  "functions": {
+    "backup_password": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "BurnerWalletRecord.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "backup_burner_wallet": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "field.private"
+        },
+        {
+          "register": "r2",
+          "type": "field.private"
+        },
+        {
+          "register": "r3",
+          "type": "field.private"
+        },
+        {
+          "register": "r4",
+          "type": "field.private"
+        },
+        {
+          "register": "r5",
+          "type": "field.private"
+        },
+        {
+          "register": "r6",
+          "type": "field.private"
+        },
+        {
+          "register": "r7",
+          "type": "field.private"
+        },
+        {
+          "register": "r8",
+          "type": "field.private"
+        },
+        {
+          "register": "r9",
+          "type": "field.private"
+        },
+        {
+          "register": "r10",
+          "type": "field.private"
+        },
+        {
+          "register": "r11",
+          "type": "field.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r12",
+          "type": "BurnerWalletRecord.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "create_card_profile": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.private"
+        },
+        {
+          "register": "r1",
+          "type": "u8.public"
+        },
+        {
+          "register": "r2",
+          "type": "[field"
+        },
+        {
+          "register": "r3",
+          "type": "[field"
+        },
+        {
+          "register": "r4",
+          "type": "[field"
+        },
+        {
+          "register": "r5",
+          "type": "[field"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r6",
+          "type": "CardProfileRecord.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "create_gift_card_record": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "[field"
+        },
+        {
+          "register": "r2",
+          "type": "field.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "GiftCardRecord.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "delete_card_profile": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "CardProfileRecord.record"
+        }
+      ],
+      "outputs": [],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "set_oracle_address": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "zk_pay_proofs_privacy_wallet_v6.aleo/set_oracle_address.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [
+        "oracle_address"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "pay_invoice_credits_via_usdcx": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "test_usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r1",
+          "type": "address.private"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.private"
+        },
+        {
+          "register": "r4",
+          "type": "u128.private"
+        },
+        {
+          "register": "r5",
+          "type": "field.private"
+        },
+        {
+          "register": "r6",
+          "type": "field.private"
+        },
+        {
+          "register": "r7",
+          "type": "field.private"
+        },
+        {
+          "register": "r8",
+          "type": "field.private"
+        },
+        {
+          "register": "r9",
+          "type": "field.public"
+        },
+        {
+          "register": "r10",
+          "type": "[test_usdcx_stablecoin.aleo/MerkleProof"
+        },
+        {
+          "register": "r11",
+          "type": "signature.private"
+        },
+        {
+          "register": "r12",
+          "type": "u32.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r14",
+          "type": "test_usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r15",
+          "type": "test_usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r13",
+          "type": "test_usdcx_stablecoin.aleo/ComplianceRecord.record"
+        },
+        {
+          "register": "r30",
+          "type": "PayerReceipt.record"
+        },
+        {
+          "register": "r32",
+          "type": "MerchantReceipt.record"
+        },
+        {
+          "register": "r33",
+          "type": "zk_pay_proofs_privacy_wallet_v6.aleo/pay_invoice_credits_via_usdcx.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "test_usdcx_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "test_usdcx_stablecoin.aleo/transfer_private.future"
+        },
+        {
+          "register": "r1",
+          "type": "signature.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        },
+        {
+          "register": "r3",
+          "type": "u32.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "oracle_address"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "pay_invoice_credits_via_usad": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "test_usad_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r1",
+          "type": "address.private"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.private"
+        },
+        {
+          "register": "r4",
+          "type": "u128.private"
+        },
+        {
+          "register": "r5",
+          "type": "field.private"
+        },
+        {
+          "register": "r6",
+          "type": "field.private"
+        },
+        {
+          "register": "r7",
+          "type": "field.private"
+        },
+        {
+          "register": "r8",
+          "type": "field.private"
+        },
+        {
+          "register": "r9",
+          "type": "field.public"
+        },
+        {
+          "register": "r10",
+          "type": "[test_usad_stablecoin.aleo/MerkleProof"
+        },
+        {
+          "register": "r11",
+          "type": "signature.private"
+        },
+        {
+          "register": "r12",
+          "type": "u32.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r14",
+          "type": "test_usad_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r15",
+          "type": "test_usad_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r13",
+          "type": "test_usad_stablecoin.aleo/ComplianceRecord.record"
+        },
+        {
+          "register": "r30",
+          "type": "PayerReceipt.record"
+        },
+        {
+          "register": "r32",
+          "type": "MerchantReceipt.record"
+        },
+        {
+          "register": "r33",
+          "type": "zk_pay_proofs_privacy_wallet_v6.aleo/pay_invoice_credits_via_usad.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "test_usad_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "test_usad_stablecoin.aleo/transfer_private.future"
+        },
+        {
+          "register": "r1",
+          "type": "signature.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        },
+        {
+          "register": "r3",
+          "type": "u32.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "oracle_address"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "pay_invoice_usdcx_via_credits": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r1",
+          "type": "address.private"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "u128.private"
+        },
+        {
+          "register": "r4",
+          "type": "u64.private"
+        },
+        {
+          "register": "r5",
+          "type": "field.private"
+        },
+        {
+          "register": "r6",
+          "type": "field.private"
+        },
+        {
+          "register": "r7",
+          "type": "field.private"
+        },
+        {
+          "register": "r8",
+          "type": "field.private"
+        },
+        {
+          "register": "r9",
+          "type": "field.public"
+        },
+        {
+          "register": "r10",
+          "type": "signature.private"
+        },
+        {
+          "register": "r11",
+          "type": "u32.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r12",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r13",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r26",
+          "type": "PayerReceipt.record"
+        },
+        {
+          "register": "r27",
+          "type": "MerchantReceipt.record"
+        },
+        {
+          "register": "r28",
+          "type": "zk_pay_proofs_privacy_wallet_v6.aleo/pay_invoice_usdcx_via_credits.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "signature.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "u32.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "oracle_address"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "pay_invoice_usdcx_via_usad": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "test_usad_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r1",
+          "type": "address.private"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "u128.private"
+        },
+        {
+          "register": "r4",
+          "type": "u128.private"
+        },
+        {
+          "register": "r5",
+          "type": "field.private"
+        },
+        {
+          "register": "r6",
+          "type": "field.private"
+        },
+        {
+          "register": "r7",
+          "type": "field.private"
+        },
+        {
+          "register": "r8",
+          "type": "field.private"
+        },
+        {
+          "register": "r9",
+          "type": "field.public"
+        },
+        {
+          "register": "r10",
+          "type": "[test_usad_stablecoin.aleo/MerkleProof"
+        },
+        {
+          "register": "r11",
+          "type": "signature.private"
+        },
+        {
+          "register": "r12",
+          "type": "u32.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r14",
+          "type": "test_usad_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r15",
+          "type": "test_usad_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r13",
+          "type": "test_usad_stablecoin.aleo/ComplianceRecord.record"
+        },
+        {
+          "register": "r31",
+          "type": "PayerReceipt.record"
+        },
+        {
+          "register": "r33",
+          "type": "MerchantReceipt.record"
+        },
+        {
+          "register": "r34",
+          "type": "zk_pay_proofs_privacy_wallet_v6.aleo/pay_invoice_usdcx_via_usad.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "test_usad_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "test_usad_stablecoin.aleo/transfer_private.future"
+        },
+        {
+          "register": "r1",
+          "type": "signature.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        },
+        {
+          "register": "r3",
+          "type": "u32.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "oracle_address"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "pay_invoice_usad_via_credits": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r1",
+          "type": "address.private"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "u128.private"
+        },
+        {
+          "register": "r4",
+          "type": "u64.private"
+        },
+        {
+          "register": "r5",
+          "type": "field.private"
+        },
+        {
+          "register": "r6",
+          "type": "field.private"
+        },
+        {
+          "register": "r7",
+          "type": "field.private"
+        },
+        {
+          "register": "r8",
+          "type": "field.private"
+        },
+        {
+          "register": "r9",
+          "type": "field.public"
+        },
+        {
+          "register": "r10",
+          "type": "signature.private"
+        },
+        {
+          "register": "r11",
+          "type": "u32.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r12",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r13",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r26",
+          "type": "PayerReceipt.record"
+        },
+        {
+          "register": "r27",
+          "type": "MerchantReceipt.record"
+        },
+        {
+          "register": "r28",
+          "type": "zk_pay_proofs_privacy_wallet_v6.aleo/pay_invoice_usad_via_credits.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "signature.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        },
+        {
+          "register": "r2",
+          "type": "u32.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "oracle_address"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    },
+    "pay_invoice_usad_via_usdcx": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "test_usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r1",
+          "type": "address.private"
+        },
+        {
+          "register": "r2",
+          "type": "address.public"
+        },
+        {
+          "register": "r3",
+          "type": "u128.private"
+        },
+        {
+          "register": "r4",
+          "type": "u128.private"
+        },
+        {
+          "register": "r5",
+          "type": "field.private"
+        },
+        {
+          "register": "r6",
+          "type": "field.private"
+        },
+        {
+          "register": "r7",
+          "type": "field.private"
+        },
+        {
+          "register": "r8",
+          "type": "field.private"
+        },
+        {
+          "register": "r9",
+          "type": "field.public"
+        },
+        {
+          "register": "r10",
+          "type": "[test_usdcx_stablecoin.aleo/MerkleProof"
+        },
+        {
+          "register": "r11",
+          "type": "signature.private"
+        },
+        {
+          "register": "r12",
+          "type": "u32.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r14",
+          "type": "test_usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r15",
+          "type": "test_usdcx_stablecoin.aleo/Token.record"
+        },
+        {
+          "register": "r13",
+          "type": "test_usdcx_stablecoin.aleo/ComplianceRecord.record"
+        },
+        {
+          "register": "r31",
+          "type": "PayerReceipt.record"
+        },
+        {
+          "register": "r33",
+          "type": "MerchantReceipt.record"
+        },
+        {
+          "register": "r34",
+          "type": "zk_pay_proofs_privacy_wallet_v6.aleo/pay_invoice_usad_via_usdcx.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "test_usdcx_stablecoin.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "test_usdcx_stablecoin.aleo/transfer_private.future"
+        },
+        {
+          "register": "r1",
+          "type": "signature.public"
+        },
+        {
+          "register": "r2",
+          "type": "field.public"
+        },
+        {
+          "register": "r3",
+          "type": "u32.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "oracle_address"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": true,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "lte"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "pay_invoice_credits_via_usad",
+    "pay_invoice_credits_via_usdcx",
+    "pay_invoice_usad_via_credits",
+    "pay_invoice_usad_via_usdcx",
+    "pay_invoice_usdcx_via_credits",
+    "pay_invoice_usdcx_via_usad",
+    "set_oracle_address"
+  ],
+  "cross_contract_refs": [
+    "credits.aleo",
+    "test_usad_stablecoin.aleo",
+    "test_usdcx_stablecoin.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "delete_card_profile",
+    "set_oracle_address",
+    "pay_invoice_credits_via_usdcx",
+    "pay_invoice_credits_via_usad",
+    "pay_invoice_usdcx_via_credits",
+    "pay_invoice_usdcx_via_usad",
+    "pay_invoice_usad_via_credits",
+    "pay_invoice_usad_via_usdcx"
+  ],
+  "state_commitment_surfaces": {
+    "records": [
+      "BurnerWalletRecord",
+      "CardProfileRecord",
+      "GiftCardRecord",
+      "MerchantReceipt",
+      "PayerReceipt"
+    ],
+    "mappings": [
+      "oracle_address"
+    ],
+    "future_outputs": [
+      {
+        "function": "set_oracle_address",
+        "output": "zk_pay_proofs_privacy_wallet_v6.aleo/set_oracle_address.future"
+      },
+      {
+        "function": "pay_invoice_credits_via_usdcx",
+        "output": "zk_pay_proofs_privacy_wallet_v6.aleo/pay_invoice_credits_via_usdcx.future"
+      },
+      {
+        "function": "pay_invoice_credits_via_usad",
+        "output": "zk_pay_proofs_privacy_wallet_v6.aleo/pay_invoice_credits_via_usad.future"
+      },
+      {
+        "function": "pay_invoice_usdcx_via_credits",
+        "output": "zk_pay_proofs_privacy_wallet_v6.aleo/pay_invoice_usdcx_via_credits.future"
+      },
+      {
+        "function": "pay_invoice_usdcx_via_usad",
+        "output": "zk_pay_proofs_privacy_wallet_v6.aleo/pay_invoice_usdcx_via_usad.future"
+      },
+      {
+        "function": "pay_invoice_usad_via_credits",
+        "output": "zk_pay_proofs_privacy_wallet_v6.aleo/pay_invoice_usad_via_credits.future"
+      },
+      {
+        "function": "pay_invoice_usad_via_usdcx",
+        "output": "zk_pay_proofs_privacy_wallet_v6.aleo/pay_invoice_usad_via_usdcx.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

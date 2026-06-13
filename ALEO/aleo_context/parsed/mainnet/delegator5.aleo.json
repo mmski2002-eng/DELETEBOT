@@ -1,0 +1,485 @@
+{
+  "program_id": "delegator5.aleo",
+  "calls_24h_or_metric_window": 12,
+  "imports": [
+    "credits.aleo",
+    "validator_oracle.aleo"
+  ],
+  "mappings": {
+    "state_mapping": {
+      "key": "u8.public",
+      "value": "u8.public"
+    },
+    "validator_mapping": {
+      "key": "u8.public",
+      "value": "validator_state.public"
+    },
+    "banned_validators": {
+      "key": "address.public",
+      "value": "boolean.public"
+    }
+  },
+  "structs": {
+    "committee_state": [
+      {
+        "name": "is_open",
+        "type": "boolean"
+      },
+      {
+        "name": "commission",
+        "type": "u8"
+      }
+    ],
+    "admin_operation": [
+      {
+        "name": "arg",
+        "type": "field"
+      },
+      {
+        "name": "op_type",
+        "type": "u8"
+      },
+      {
+        "name": "request_id",
+        "type": "u64"
+      }
+    ],
+    "validator_state": [
+      {
+        "name": "validator",
+        "type": "address"
+      },
+      {
+        "name": "commission",
+        "type": "u8"
+      }
+    ]
+  },
+  "records": {},
+  "functions": {
+    "initialize": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "delegator5.aleo/initialize.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [
+        "state_mapping"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "ban_validator": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "delegator5.aleo/ban_validator.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "validator_oracle.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "validator_oracle.aleo/pondo_ban_validator.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "banned_validators"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "prep_rebalance": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "delegator5.aleo/prep_rebalance.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [
+        "state_mapping"
+      ],
+      "finalize_state_writes": [
+        "state_mapping"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "is.eq"
+      ],
+      "snark_verify": false
+    },
+    "set_validator": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u8.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "delegator5.aleo/set_validator.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u8.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "state_mapping"
+      ],
+      "finalize_state_writes": [
+        "state_mapping",
+        "validator_mapping"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "is.eq"
+      ],
+      "snark_verify": false
+    },
+    "bond": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "delegator5.aleo/bond.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/bond_public.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "state_mapping",
+        "validator_mapping"
+      ],
+      "finalize_state_writes": [
+        "state_mapping"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "is.eq",
+        "lt",
+        "or"
+      ],
+      "snark_verify": false
+    },
+    "unbond": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "delegator5.aleo/unbond.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/unbond_public.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "state_mapping",
+        "validator_mapping"
+      ],
+      "finalize_state_writes": [
+        "banned_validators",
+        "state_mapping"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "gt",
+        "or"
+      ],
+      "snark_verify": false
+    },
+    "terminal_state": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "delegator5.aleo/terminal_state.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [],
+      "finalize_state_reads": [
+        "state_mapping",
+        "validator_mapping"
+      ],
+      "finalize_state_writes": [
+        "banned_validators",
+        "state_mapping"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq",
+        "is.eq"
+      ],
+      "snark_verify": false
+    },
+    "transfer_to_core_protocol": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "delegator5.aleo/transfer_to_core_protocol.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_public.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "state_mapping"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "lt"
+      ],
+      "snark_verify": false
+    },
+    "bond_failed": {
+      "inputs": [],
+      "outputs": [
+        {
+          "register": "r0",
+          "type": "delegator5.aleo/bond_failed.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [],
+      "finalize_state_reads": [
+        "state_mapping",
+        "validator_mapping"
+      ],
+      "finalize_state_writes": [
+        "banned_validators",
+        "state_mapping"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "is.eq"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "ban_validator",
+    "bond",
+    "bond_failed",
+    "initialize",
+    "prep_rebalance",
+    "set_validator",
+    "terminal_state",
+    "transfer_to_core_protocol",
+    "unbond"
+  ],
+  "cross_contract_refs": [
+    "credits.aleo",
+    "validator_oracle.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "initialize",
+    "ban_validator",
+    "prep_rebalance",
+    "set_validator",
+    "bond",
+    "unbond",
+    "terminal_state",
+    "transfer_to_core_protocol",
+    "bond_failed"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [
+      "banned_validators",
+      "state_mapping",
+      "validator_mapping"
+    ],
+    "future_outputs": [
+      {
+        "function": "initialize",
+        "output": "delegator5.aleo/initialize.future"
+      },
+      {
+        "function": "ban_validator",
+        "output": "delegator5.aleo/ban_validator.future"
+      },
+      {
+        "function": "prep_rebalance",
+        "output": "delegator5.aleo/prep_rebalance.future"
+      },
+      {
+        "function": "set_validator",
+        "output": "delegator5.aleo/set_validator.future"
+      },
+      {
+        "function": "bond",
+        "output": "delegator5.aleo/bond.future"
+      },
+      {
+        "function": "unbond",
+        "output": "delegator5.aleo/unbond.future"
+      },
+      {
+        "function": "terminal_state",
+        "output": "delegator5.aleo/terminal_state.future"
+      },
+      {
+        "function": "transfer_to_core_protocol",
+        "output": "delegator5.aleo/transfer_to_core_protocol.future"
+      },
+      {
+        "function": "bond_failed",
+        "output": "delegator5.aleo/bond_failed.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

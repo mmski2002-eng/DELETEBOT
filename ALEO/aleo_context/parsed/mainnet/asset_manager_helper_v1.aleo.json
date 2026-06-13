@@ -1,0 +1,305 @@
+{
+  "program_id": "asset_manager_helper_v1.aleo",
+  "calls_24h_or_metric_window": 86,
+  "imports": [
+    "gmp_checksum_v1.aleo",
+    "gmp_lib_v1.aleo"
+  ],
+  "mappings": {
+    "owner_amh": {
+      "key": "boolean.public",
+      "value": "address.public"
+    },
+    "hub_chain_id": {
+      "key": "boolean.public",
+      "value": "u128.public"
+    },
+    "hub_am_address": {
+      "key": "boolean.public",
+      "value": "[u8"
+    }
+  },
+  "structs": {
+    "TransferMsg": [
+      {
+        "name": "token",
+        "type": "field"
+      },
+      {
+        "name": "from",
+        "type": "[u8"
+      },
+      {
+        "name": "to",
+        "type": "[u8"
+      },
+      {
+        "name": "amount",
+        "type": "u128"
+      },
+      {
+        "name": "data",
+        "type": "[u8"
+      }
+    ]
+  },
+  "records": {},
+  "functions": {
+    "initialize": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u128.public"
+        },
+        {
+          "register": "r2",
+          "type": "[u8"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r3",
+          "type": "asset_manager_helper_v1.aleo/initialize.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u128.public"
+        },
+        {
+          "register": "r2",
+          "type": "[u8"
+        }
+      ],
+      "finalize_state_reads": [
+        "owner_amh"
+      ],
+      "finalize_state_writes": [
+        "hub_am_address",
+        "hub_chain_id",
+        "owner_amh"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "transfer_message_external": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "field.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "[u8"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        },
+        {
+          "register": "r4",
+          "type": "[u8"
+        },
+        {
+          "register": "r5",
+          "type": "u128.public"
+        },
+        {
+          "register": "r6",
+          "type": "[u8"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r8",
+          "type": "u64.private"
+        },
+        {
+          "register": "r11",
+          "type": "u128.private"
+        },
+        {
+          "register": "r16",
+          "type": "TransferMsg.private"
+        },
+        {
+          "register": "r20",
+          "type": "[u8"
+        },
+        {
+          "register": "r21",
+          "type": "asset_manager_helper_v1.aleo/transfer_message_external.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "gmp_lib_v1.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "is.eq",
+        "ternary"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u128.public"
+        },
+        {
+          "register": "r1",
+          "type": "[u8"
+        }
+      ],
+      "finalize_state_reads": [
+        "hub_am_address",
+        "hub_chain_id"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "recv_message_external": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u128.public"
+        },
+        {
+          "register": "r1",
+          "type": "[u8"
+        },
+        {
+          "register": "r2",
+          "type": "TransferMsg.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r16",
+          "type": "address.private"
+        },
+        {
+          "register": "r9",
+          "type": "u64.private"
+        },
+        {
+          "register": "r11",
+          "type": "u128.private"
+        },
+        {
+          "register": "r13",
+          "type": "field.private"
+        },
+        {
+          "register": "r6",
+          "type": "[u8"
+        },
+        {
+          "register": "r17",
+          "type": "asset_manager_helper_v1.aleo/recv_message_external.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "gmp_lib_v1.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "is.eq",
+        "ternary"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u128.public"
+        },
+        {
+          "register": "r1",
+          "type": "[u8"
+        }
+      ],
+      "finalize_state_reads": [
+        "hub_am_address",
+        "hub_chain_id"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "branch.eq"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "initialize",
+    "recv_message_external",
+    "transfer_message_external"
+  ],
+  "cross_contract_refs": [
+    "gmp_checksum_v1.aleo",
+    "gmp_lib_v1.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "initialize",
+    "transfer_message_external",
+    "recv_message_external"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [
+      "hub_am_address",
+      "hub_chain_id",
+      "owner_amh"
+    ],
+    "future_outputs": [
+      {
+        "function": "initialize",
+        "output": "asset_manager_helper_v1.aleo/initialize.future"
+      },
+      {
+        "function": "transfer_message_external",
+        "output": "asset_manager_helper_v1.aleo/transfer_message_external.future"
+      },
+      {
+        "function": "recv_message_external",
+        "output": "asset_manager_helper_v1.aleo/recv_message_external.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

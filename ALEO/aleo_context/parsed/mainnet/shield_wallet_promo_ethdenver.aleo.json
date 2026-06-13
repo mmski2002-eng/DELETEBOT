@@ -1,0 +1,175 @@
+{
+  "program_id": "shield_wallet_promo_ethdenver.aleo",
+  "calls_24h_or_metric_window": 3,
+  "imports": [
+    "credits.aleo"
+  ],
+  "mappings": {
+    "spent": {
+      "key": "signature.public",
+      "value": "boolean.public"
+    }
+  },
+  "structs": {},
+  "records": {},
+  "functions": {
+    "redeem": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "signature.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "credits.aleo/credits.record"
+        },
+        {
+          "register": "r4",
+          "type": "shield_wallet_promo_ethdenver.aleo/redeem.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "signature.public"
+        },
+        {
+          "register": "r1",
+          "type": "credits.aleo/transfer_public_to_private.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "spent"
+      ],
+      "finalize_state_writes": [
+        "spent"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "fund": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "shield_wallet_promo_ethdenver.aleo/fund.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_public_as_signer.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "refund": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "shield_wallet_promo_ethdenver.aleo/refund.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "credits.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "credits.aleo/transfer_public.future"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "fund",
+    "redeem",
+    "refund"
+  ],
+  "cross_contract_refs": [
+    "credits.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "redeem",
+    "fund",
+    "refund"
+  ],
+  "state_commitment_surfaces": {
+    "records": [],
+    "mappings": [
+      "spent"
+    ],
+    "future_outputs": [
+      {
+        "function": "redeem",
+        "output": "shield_wallet_promo_ethdenver.aleo/redeem.future"
+      },
+      {
+        "function": "fund",
+        "output": "shield_wallet_promo_ethdenver.aleo/fund.future"
+      },
+      {
+        "function": "refund",
+        "output": "shield_wallet_promo_ethdenver.aleo/refund.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

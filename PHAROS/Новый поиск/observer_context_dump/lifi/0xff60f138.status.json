@@ -1,0 +1,12 @@
+﻿{
+    "status":  "INVALID",
+    "sending":  {
+                    "chainId":  1672,
+                    "txHash":  "0xff60f1382908e824a624e0cc540c099d233b4b9d58bed36cc5b7683c8b2b9d38",
+                    "txLink":  "https://www.pharosscan.xyz/tx/0xff60f1382908e824a624e0cc540c099d233b4b9d58bed36cc5b7683c8b2b9d38"
+                },
+    "receiving":  {
+                      "chainId":  8453
+                  },
+    "tool":  "glacis"
+}

@@ -1,0 +1,418 @@
+{
+  "program_id": "squash_v4.aleo",
+  "calls_24h_or_metric_window": 116,
+  "imports": [
+    "puzzle_arcade_coin_v002.aleo",
+    "puzzle_arcade_ticket_v002.aleo",
+    "squash_timestamp.aleo",
+    "squash_v001.aleo",
+    "squash_v2.aleo",
+    "squash_v3.aleo"
+  ],
+  "mappings": {
+    "day_start": {
+      "key": "u8.public",
+      "value": "u64.public"
+    }
+  },
+  "structs": {},
+  "records": {
+    "Squash": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "kg",
+        "type": "u64.private"
+      },
+      {
+        "name": "last_water",
+        "type": "u64.private"
+      },
+      {
+        "name": "level",
+        "type": "u8.private"
+      },
+      {
+        "name": "squash_name",
+        "type": "u128.private"
+      },
+      {
+        "name": "squash_id",
+        "type": "u32.private"
+      }
+    ]
+  },
+  "functions": {
+    "mint": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "puzzle_arcade_coin_v002.aleo/PuzzleArcadeCoin.record"
+        },
+        {
+          "register": "r1",
+          "type": "address.private"
+        },
+        {
+          "register": "r2",
+          "type": "u128.private"
+        },
+        {
+          "register": "r3",
+          "type": "u32.private"
+        },
+        {
+          "register": "r4",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r6",
+          "type": "Squash.record"
+        },
+        {
+          "register": "r7",
+          "type": "squash_v4.aleo/mint.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "puzzle_arcade_coin_v002.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "day_start"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "water": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "Squash.record"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r31",
+          "type": "Squash.record"
+        },
+        {
+          "register": "r32",
+          "type": "squash_v4.aleo/water.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "and",
+        "assert.eq",
+        "gte",
+        "lt",
+        "lte",
+        "or",
+        "ternary"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "day_start"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "water_and_level_up": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "Squash.record"
+        },
+        {
+          "register": "r1",
+          "type": "u64.private"
+        },
+        {
+          "register": "r2",
+          "type": "u64.public"
+        },
+        {
+          "register": "r3",
+          "type": "u64.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r27",
+          "type": "Squash.record"
+        },
+        {
+          "register": "r25",
+          "type": "puzzle_arcade_ticket_v002.aleo/PuzzleArcadeTicket.record"
+        },
+        {
+          "register": "r28",
+          "type": "squash_v4.aleo/water_and_level_up.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [
+        "puzzle_arcade_ticket_v002.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "and",
+        "assert.eq",
+        "gt",
+        "gte",
+        "lt",
+        "lte",
+        "or"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        },
+        {
+          "register": "r1",
+          "type": "puzzle_arcade_ticket_v002.aleo/mint.future"
+        }
+      ],
+      "finalize_state_reads": [
+        "day_start"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    },
+    "set_day_start": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "u64.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "squash_v4.aleo/set_day_start.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [
+        "day_start"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "migrate_from_v3": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "squash_v3.aleo/Squash.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r1",
+          "type": "Squash.record"
+        }
+      ],
+      "has_finalize": false,
+      "async": false,
+      "returns_future": false,
+      "cross_contract_refs": [
+        "squash_v3.aleo"
+      ],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq"
+      ],
+      "finalize_inputs": [],
+      "finalize_state_reads": [],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "mint_arbitrary_squash": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "u128.private"
+        },
+        {
+          "register": "r2",
+          "type": "u32.private"
+        },
+        {
+          "register": "r3",
+          "type": "u64.private"
+        },
+        {
+          "register": "r4",
+          "type": "u64.private"
+        },
+        {
+          "register": "r5",
+          "type": "u8.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r7",
+          "type": "Squash.record"
+        },
+        {
+          "register": "r8",
+          "type": "squash_v4.aleo/mint_arbitrary_squash.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [
+        "assert.eq",
+        "lte"
+      ],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u64.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "day_start"
+      ],
+      "finalize_state_writes": [],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "mint",
+    "mint_arbitrary_squash",
+    "set_day_start",
+    "water",
+    "water_and_level_up"
+  ],
+  "cross_contract_refs": [
+    "puzzle_arcade_coin_v002.aleo",
+    "puzzle_arcade_ticket_v002.aleo",
+    "squash_v3.aleo"
+  ],
+  "async_or_conditional_paths": [
+    "mint",
+    "water",
+    "water_and_level_up",
+    "set_day_start",
+    "migrate_from_v3",
+    "mint_arbitrary_squash"
+  ],
+  "state_commitment_surfaces": {
+    "records": [
+      "Squash"
+    ],
+    "mappings": [
+      "day_start"
+    ],
+    "future_outputs": [
+      {
+        "function": "mint",
+        "output": "squash_v4.aleo/mint.future"
+      },
+      {
+        "function": "water",
+        "output": "squash_v4.aleo/water.future"
+      },
+      {
+        "function": "water_and_level_up",
+        "output": "squash_v4.aleo/water_and_level_up.future"
+      },
+      {
+        "function": "set_day_start",
+        "output": "squash_v4.aleo/set_day_start.future"
+      },
+      {
+        "function": "mint_arbitrary_squash",
+        "output": "squash_v4.aleo/mint_arbitrary_squash.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

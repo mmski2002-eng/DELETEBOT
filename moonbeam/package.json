@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "poc:public-replay": "node test/public_signature_replay_poc.js"
+  },
+  "devDependencies": {
+    "@acala-network/chopsticks": "^1.4.0",
+    "ethers": "^6.15.0",
+    "evm": "^0.2.0",
+    "ganache": "^7.9.2",
+    "solc": "^0.8.30",
+    "sqlite3": "^6.0.1"
+  }
+}

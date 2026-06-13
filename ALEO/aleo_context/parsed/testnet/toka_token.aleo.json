@@ -1,0 +1,506 @@
+{
+  "program_id": "toka_token.aleo",
+  "calls_24h_or_metric_window": 1,
+  "imports": [],
+  "mappings": {
+    "balances": {
+      "key": "address.public",
+      "value": "u128.public"
+    },
+    "approvals": {
+      "key": "field.public",
+      "value": "u128.public"
+    }
+  },
+  "structs": {
+    "Allowance": [
+      {
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "name": "spender",
+        "type": "address"
+      }
+    ]
+  },
+  "records": {
+    "Token": [
+      {
+        "name": "owner",
+        "type": "address.private"
+      },
+      {
+        "name": "amount",
+        "type": "u128.private"
+      }
+    ]
+  },
+  "functions": {
+    "approve_public": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "u128.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "toka_token.aleo/approve_public.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u128.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "approvals"
+      ],
+      "finalize_state_writes": [
+        "approvals"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "unapprove_public": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "u128.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "toka_token.aleo/unapprove_public.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "u128.public"
+        },
+        {
+          "register": "r1",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "approvals"
+      ],
+      "finalize_state_writes": [
+        "approvals"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "transfer_from_public": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "address.private"
+        },
+        {
+          "register": "r2",
+          "type": "u128.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r5",
+          "type": "toka_token.aleo/transfer_from_public.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u128.public"
+        },
+        {
+          "register": "r3",
+          "type": "field.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "approvals",
+        "balances"
+      ],
+      "finalize_state_writes": [
+        "approvals",
+        "balances"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte"
+      ],
+      "snark_verify": false
+    },
+    "transfer_public_as_signer": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "u128.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "toka_token.aleo/transfer_public_as_signer.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u128.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "balances"
+      ],
+      "finalize_state_writes": [
+        "balances"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte"
+      ],
+      "snark_verify": false
+    },
+    "transfer_public": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "u128.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "toka_token.aleo/transfer_public.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "address.public"
+        },
+        {
+          "register": "r2",
+          "type": "u128.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "balances"
+      ],
+      "finalize_state_writes": [
+        "balances"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte"
+      ],
+      "snark_verify": false
+    },
+    "transfer_private_to_public": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "u128.private"
+        },
+        {
+          "register": "r2",
+          "type": "Token.record"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r4",
+          "type": "Token.record"
+        },
+        {
+          "register": "r5",
+          "type": "toka_token.aleo/transfer_private_to_public.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u128.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "balances"
+      ],
+      "finalize_state_writes": [
+        "balances"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [],
+      "snark_verify": false
+    },
+    "transfer_public_to_private": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.private"
+        },
+        {
+          "register": "r1",
+          "type": "u128.private"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "Token.record"
+        },
+        {
+          "register": "r3",
+          "type": "toka_token.aleo/transfer_public_to_private.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u128.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "balances"
+      ],
+      "finalize_state_writes": [
+        "balances"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq",
+        "gte"
+      ],
+      "snark_verify": false
+    },
+    "mint_public": {
+      "inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u128.public"
+        }
+      ],
+      "outputs": [
+        {
+          "register": "r2",
+          "type": "toka_token.aleo/mint_public.future"
+        }
+      ],
+      "has_finalize": true,
+      "async": true,
+      "returns_future": true,
+      "cross_contract_refs": [],
+      "state_reads": [],
+      "state_writes": [],
+      "conditional_markers": [],
+      "finalize_inputs": [
+        {
+          "register": "r0",
+          "type": "address.public"
+        },
+        {
+          "register": "r1",
+          "type": "u128.public"
+        }
+      ],
+      "finalize_state_reads": [
+        "balances"
+      ],
+      "finalize_state_writes": [
+        "balances"
+      ],
+      "finalize_uses_block_height": false,
+      "finalize_conditional_markers": [
+        "assert.eq"
+      ],
+      "snark_verify": false
+    }
+  },
+  "finalizers": [
+    "approve_public",
+    "mint_public",
+    "transfer_from_public",
+    "transfer_private_to_public",
+    "transfer_public",
+    "transfer_public_as_signer",
+    "transfer_public_to_private",
+    "unapprove_public"
+  ],
+  "cross_contract_refs": [],
+  "async_or_conditional_paths": [
+    "approve_public",
+    "unapprove_public",
+    "transfer_from_public",
+    "transfer_public_as_signer",
+    "transfer_public",
+    "transfer_private_to_public",
+    "transfer_public_to_private",
+    "mint_public"
+  ],
+  "state_commitment_surfaces": {
+    "records": [
+      "Token"
+    ],
+    "mappings": [
+      "approvals",
+      "balances"
+    ],
+    "future_outputs": [
+      {
+        "function": "approve_public",
+        "output": "toka_token.aleo/approve_public.future"
+      },
+      {
+        "function": "unapprove_public",
+        "output": "toka_token.aleo/unapprove_public.future"
+      },
+      {
+        "function": "transfer_from_public",
+        "output": "toka_token.aleo/transfer_from_public.future"
+      },
+      {
+        "function": "transfer_public_as_signer",
+        "output": "toka_token.aleo/transfer_public_as_signer.future"
+      },
+      {
+        "function": "transfer_public",
+        "output": "toka_token.aleo/transfer_public.future"
+      },
+      {
+        "function": "transfer_private_to_public",
+        "output": "toka_token.aleo/transfer_private_to_public.future"
+      },
+      {
+        "function": "transfer_public_to_private",
+        "output": "toka_token.aleo/transfer_public_to_private.future"
+      },
+      {
+        "function": "mint_public",
+        "output": "toka_token.aleo/mint_public.future"
+      }
+    ]
+  },
+  "event_model_note": "Aleo does not expose EVM-style events in program source; observable commitments are records, transitions, futures/finalize effects, and mapping updates."
+}

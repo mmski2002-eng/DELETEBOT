@@ -1,0 +1,149 @@
+{
+  "generatedAt": "2026-05-12T21:33:11.445Z",
+  "results": [
+    {
+      "scenario": "S1_vlink_duplicate_attestor_threshold",
+      "status": "edge_case_reproduced",
+      "contracts": [
+        "vlink_token_bridge_v3.aleo"
+      ],
+      "inputs": {
+        "threshold": 3,
+        "attestors": [
+          "aleo_attestor_A",
+          "aleo_attestor_A",
+          "aleo_attestor_A",
+          "aleo_attestor_A",
+          "aleo_attestor_A"
+        ],
+        "signatureValidByPosition": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "expected": false,
+      "actual": true,
+      "invariant": "Bridge threshold should count unique attestors, not array positions.",
+      "observed_delta": {
+        "acceptedPositions": 5,
+        "uniqueAccepted": 1
+      }
+    },
+    {
+      "scenario": "S2_credits_partial_request_full_unbond",
+      "status": "edge_case_reproduced",
+      "contracts": [
+        "credits.aleo",
+        "whalepool_easystaking_v3.aleo"
+      ],
+      "inputs": {
+        "bonded": "10000000500",
+        "requested": "1000",
+        "minDelegatorStake": "10000000000"
+      },
+      "expected": "1000",
+      "actual": "10000000500",
+      "invariant": "A partial unbond request should not silently become full unbond unless callers account for that branch.",
+      "observed_delta": {
+        "residual": "9999999500",
+        "fallsBelowMinimum": true,
+        "extraUnbonded": "9999999500"
+      }
+    },
+    {
+      "scenario": "S3_token_registry_authorization_expiry_reordering",
+      "status": "edge_case_reproduced",
+      "contracts": [
+        "token_registry.aleo",
+        "arcn_pool_v2_2_2.aleo",
+        "hyp_warp_token_*.aleo"
+      ],
+      "inputs": {
+        "proofHeight": 999,
+        "authorizedUntil": 1000,
+        "finalizeHeightIfOrdered": 1000,
+        "finalizeHeightIfDelayed": 1001
+      },
+      "expected": true,
+      "actual": false,
+      "invariant": "A router/pool should not assume a valid private proof remains executable after block reordering delay.",
+      "observed_delta": {
+        "proofLocallyValid": true,
+        "orderedPasses": true,
+        "delayedPasses": false
+      }
+    },
+    {
+      "scenario": "S4_pondo_tvl_tolerance_stale_oracle",
+      "status": "edge_case_reproduced",
+      "contracts": [
+        "pondo_protocol.aleo",
+        "validator_oracle.aleo",
+        "credits.aleo",
+        "delegator1-5.aleo"
+      ],
+      "inputs": {
+        "reportedTvl": "1020000000000",
+        "actualRecomputedTvl": "1000000000000",
+        "tolerance": "98%-102% of reported value"
+      },
+      "expected": false,
+      "actual": true,
+      "invariant": "Oracle TVL should not be economically exploitable through tolerated drift near rebalance/accounting boundaries.",
+      "observed_delta": {
+        "lower": "999600000000",
+        "upper": "1040400000000",
+        "acceptedDrift": "20000000000"
+      }
+    },
+    {
+      "scenario": "S5_usdcx_bridge_previous_freeze_root_window",
+      "status": "edge_case_reproduced",
+      "contracts": [
+        "usdcx_bridge.aleo",
+        "usdcx_freezelist.aleo",
+        "usdcx_stablecoin.aleo"
+      ],
+      "inputs": {
+        "rootUpdatedHeight": 50000,
+        "blockHeightWindow": 360,
+        "mintHeight": 50100,
+        "usingPreviousRoot": true,
+        "nullifierPreviouslyUsed": false
+      },
+      "expected": false,
+      "actual": true,
+      "invariant": "A newly frozen address should not be mintable through an old root unless the grace window is explicitly accepted risk.",
+      "observed_delta": {
+        "previousRootValidUntil": 50360
+      }
+    },
+    {
+      "scenario": "S6_dara_stale_oracle_order_acceptance",
+      "status": "edge_case_reproduced",
+      "contracts": [
+        "dara_dp_credit_v5.aleo",
+        "dara_lend_v8.aleo",
+        "dara_flash_v1.aleo"
+      ],
+      "inputs": {
+        "currentHeight": 100000,
+        "priceUpdateBlock": 90000,
+        "assumedMaxAge": 3600,
+        "oracleRoundIncreased": true,
+        "deltaWithinLimit": true
+      },
+      "expected": false,
+      "actual": true,
+      "invariant": "Price consumers should reject stale oracle data, not only monotonic rounds or bounded deltas.",
+      "observed_delta": {
+        "stale": true,
+        "age": 10000,
+        "consumerChecksFreshness": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,275 @@
+{- dict setters and getters -}
+
+{-
+ * @notice Retrieves the vault code from the dictionary based on the asset type.
+ * @param asset_type The type of the asset for which the vault code is being retrieved.
+ * @return The cell containing the vault code corresponding to the given asset type.
+ * @dev Currently, only supports asset type of TON and Jetton.
+-}
+cell dict_get_vault_code(int asset_type) inline {
+    (slice vault_code_slice, int has_vault_type?) = factory::vault_codes.udict_get?(ASSET_TYPE_SIZE, asset_type);
+    ;; throw error if vault code not found
+    throw_unless(error::not_supported_asset_type, has_vault_type?);
+    return vault_code_slice~load_ref();
+}
+
+{-
+ * @notice Retrieves the pool code from the dictionary based on the pool type.
+ * @param pool_type The type of the pool for which the pool code is being retrieved.
+ * @return The cell containing the pool code corresponding to the given pool type.
+ * @dev Currently, only supports pool type of Base pool and Meta pool.
+-}
+cell dict_get_pool_code(int pool_type) inline {
+    (slice pool_code_slice, int has_pool_type?) = factory::pool_codes.udict_get?(POOL_TYPE_SIZE, pool_type);
+    ;; throw error if pool code not found1
+    throw_unless(error::not_supported_pool_type, has_pool_type?);
+    return pool_code_slice~load_ref();
+}
+
+{- Get contract init data and proof -}
+
+{-
+ * @notice Packs the initialization data for a jetton vault.
+ * @param jetton_master Jetton master address.
+ * @param jetton_wallet_address The wallet address slice of the jetton.
+ * @return The cell containing the packed initialization data for the jetton vault.
+-}
+cell pack_jetton_vault_init(slice jetton_master, slice jetton_wallet_address) inline {
+    return begin_cell()
+        .store_slice(factory::admin)
+        .store_slice(jetton_master)
+        .store_slice(jetton_wallet_address)
+        .store_ref(
+            begin_cell()
+            .store_ref(factory::base_code)
+            .store_slice(my_address())
+            .end_cell()
+        )
+        .end_cell();
+}
+
+{-
+ * @notice Retrieves the initialization data and proof for a jetton vault.
+ * @param jetton_master The master slice of the jetton.
+ * @param assets_cell The cell containing the assets.
+ * @param jetton_wallet_address Jetton vault's jetton wallet address.   
+ * @return A tuple containing the cell with the initialization data.
+ * @return The proof integer.
+ * @dev 
+ * - Generally, the initial value of the jetton vault's jetton wallet address will be address_none(), and it will be set through sending provide wallet address and take wallet address message to jetton master.
+ * - The LP vault's jetton wallet address will be set initially (the Factory has the pool code and LP vault address).
+-}
+(cell, int) get_jetton_vault_init_proof(slice jetton_master, cell assets_cell, slice jetton_wallet_address) inline {
+    ;; This vault_init will be updated to the actual storage data after deploy
+    cell vault_state_init = pack_jetton_vault_init(jetton_master, jetton_wallet_address);
+    
+    ;; This proof is used to calculate vault address
+    int proof = get_vault_proof(assets_cell);
+    return (vault_state_init, proof);
+}
+
+{-
+ * @notice Packs the initialization data for a TON vault.
+ * @return The cell containing the packed initialization data for the TON vault.
+-}
+cell pack_ton_vault_init() inline {
+    return begin_cell()
+        .store_slice(factory::admin)
+        .store_ref(
+            begin_cell()
+            .store_ref(factory::base_code)
+            .store_slice(my_address())
+            .end_cell()
+        )
+        .end_cell();
+}
+
+{-
+ * @notice Retrieves the initialization data and proof for a TON vault.
+ * @return The cell with the TON vault initialization data.
+ * @return TON vault proof.
+-}
+(cell, int) get_ton_vault_init_proof() inline {
+    ;; This vault_init will be updated to the actual storage data after deploy
+    cell vault_state_init = pack_ton_vault_init();
+
+    ;; This proof is used to calculate vault address
+    int proof = get_vault_proof(pack_ton_asset());
+    return (vault_state_init, proof);
+}
+
+{-
+ * @notice Retrieves the initial pool reserve data.
+ * @param assets_len The number of assets in the pool.
+ * @return The first cell contains the initial reserves for all assets, initialized to 0.
+ * @return The second cell contains the initial admin fees for all assets, initialized to 0.
+-}
+(cell, cell) get_init_reserve_data(int assets_len) inline {
+    builder reserves = begin_cell();
+    builder admin_fees = begin_cell();
+    repeat(assets_len) {
+        reserves = reserves.store_coins(0);
+        admin_fees = admin_fees.store_coins(0);
+    }
+    return (reserves.end_cell(), admin_fees.end_cell());
+}
+
+{-
+ * @notice Retrieves the initial basic information for a pool.
+ * @param A The amplification coefficient.
+ * @param fee_numerator The fee numerator (Denominator is 10^10)
+ * @param admin_fee_numerator The admin fee numerator (Denominator is 10^10).
+ * @param precision_mul The cell containing the precision multiplier.
+ * @return The cell containing the initial basic information for the pool.
+-}
+cell get_init_basic_info(int A, int fee_numerator, int admin_fee_numerator, cell precision_mul) inline {
+    return begin_cell()
+        .store_coins(fee_numerator)
+        .store_coins(admin_fee_numerator)
+        .store_uint(A, A_SIZE) ;; init A
+        .store_uint(A, A_SIZE) ;; future A
+        .store_uint(0, TIMESTAMP_SIZE) ;; init A time
+        .store_uint(0, TIMESTAMP_SIZE) ;; future A time
+        .store_coins(0) ;; lp_supply
+        .store_ref(factory::lp_wallet_code)
+        .store_ref(precision_mul)
+        .store_dict(new_dict())
+        .end_cell();
+}
+
+{-
+ * @notice Retrieves the initialization data and proof for a pool.
+ * @param use_rates? Boolean indicating whether to use rates.
+ * @param A The amplification coefficient.
+ * @param fee_numerator The fee numerator (Denominator is 10^10).
+ * @param sorted_assets The cell containing the sorted assets.
+ * @param decimals The cell containing the 10^decimal for each asset.
+ * @param assets_len The length of the assets.
+ * @param is_meta? Boolean indicating whether the pool is a meta pool.
+ * @param base_lp_index The base LP index, only used for meta pool.
+ * @return The cell containing the pool's initialization data.
+ * @return The proof for the pool, calculated by hashing the pool's assets and pool type.
+ * @return The admin_fee_numerator for the pool.
+-}
+(cell, int, int) get_pool_init_and_proof(
+    int use_rates?,
+    int A, 
+    int fee_numerator, 
+    cell sorted_assets, 
+    cell decimals,
+    int assets_len,
+    int is_meta?,
+    int base_lp_index
+) inline {
+    ;; Get init reserve data
+    (cell reserves, cell admin_fees) = get_init_reserve_data(assets_len);
+
+    ;; For now, we only support base pool and meta pool
+    int pool_type = is_meta? ? META_POOL_POOL_TYPE : BASE_POOL_POOL_TYPE;
+
+    ;; Get init basic_info
+    (slice admin_fee_slice, int has_admin_fee?) = factory::admin_fee_config.udict_get?(POOL_TYPE_SIZE, pool_type);
+    throw_unless(error::not_supported_pool_type, has_admin_fee?);
+    int admin_fee_numerator = admin_fee_slice~load_coins();
+    cell basic_info = get_init_basic_info(A * A_PRECISION, fee_numerator, admin_fee_numerator, decimals);
+
+    ;; Pack pool init
+    cell pool_init = begin_cell()
+        .store_slice(factory::admin)
+        .store_uint(factory::signer_key, SIGNER_KEY_SIZE)
+        .store_bool(TRUE) ;; is_stop is true when pool is created
+        .store_bool(use_rates?)
+        .store_uint(base_lp_index, ASSET_INDEX_SIZE)
+        .store_ref(sorted_assets)
+        .store_ref(
+            begin_cell()
+                .store_ref(reserves)
+                .store_ref(admin_fees)
+            .end_cell()
+        )
+        .store_ref(basic_info)
+        .store_ref(
+            begin_cell()
+                .store_ref(factory::base_code)
+                .store_slice(my_address())
+            .end_cell()
+        )
+        .end_cell();
+
+    ;; Calculate pool proof
+    int pool_proof = get_pool_proof(sorted_assets, pool_type);
+
+    return (pool_init, pool_proof, admin_fee_numerator);
+}
+
+{-
+ * @notice Retrieves the initialization data and proof for an LP account.
+ * @param query_id The unique query identifier
+ * @param provider The address of the liquidity provider.
+ * @param pool_address Liquidity provider deposit assets to this pool address.
+ * @param assets The cell containing pool's assets that the LP account will use this cell to find the asset index.
+ * @param next The cell containing the next data.
+ * @param provide_amount The amount of the asset to provide in this deposit transaction.
+ * @param provide_asset The cell containing the asset to provide in this deposit transaction.
+ * @param target The cell containing the amount to deposit for each asset.
+ * @return The cell containing the LP account's initialization data.
+ * @return The proof for the LP account, calculated by hashing the LP account's essential storage data.
+ * @return The sorted assets cell.
+-}
+(cell, int, cell) get_lp_account_init_and_proof(
+    int query_id, 
+    slice provider, 
+    slice pool_address, 
+    cell assets, 
+    cell next, 
+    int provide_amount,
+    cell provide_asset,
+    cell target
+) inline {
+    ;; Parse assets and sort assets
+    (cell sorted_assets, tuple sorted_assets_tuple, int assets_len) = parse_and_sort_assets(assets);
+
+    ;; Get init balances tuple by assets len
+    tuple init_balance_tuple = get_init_tuple(assets_len);
+    
+    ;; Parse deposit next to get meta_amount and meta_asset to set lp_account balance if needed
+    (_, _, int meta_amount, cell meta_asset) = parse_deposit_next(next);
+
+    ;; Set lp_account balance by provide_asset and provide_amount. 
+    ;; if this deposit has meta_asset, set meta_asset balance, lp account will wait for meta_asset deposit too
+    (cell balances, int meta_balance, _) = set_lp_account_balances(sorted_assets_tuple, provide_asset, provide_amount, init_balance_tuple, meta_asset);
+    
+    cell lp_account_init = begin_cell()
+        .store_slice(factory::admin)  
+        .store_query_id(query_id)
+        .store_slice(provider)
+        .store_slice(pool_address)
+        .store_ref(
+            begin_cell()
+                .store_maybe_ref(meta_asset)
+                .store_coins(meta_amount)
+                .store_coins(meta_balance)
+            .end_cell()
+        )
+        .store_ref(
+            begin_cell()
+                .store_ref(sorted_assets)
+                .store_ref(target)
+                .store_ref(balances)
+            .end_cell()
+        )
+        .store_ref(
+            begin_cell()
+                .store_ref(factory::base_code)
+                .store_slice(my_address())
+            .end_cell()
+        )
+    .end_cell();
+
+    ;; Get lp account proof by query_id, provider, pool_address, sorted_assets
+    int lp_account_proof = get_lp_account_proof(query_id, provider, pool_address, sorted_assets);
+
+    return (lp_account_init, lp_account_proof, sorted_assets);
+}
+
+

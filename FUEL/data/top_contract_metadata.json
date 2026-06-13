@@ -1,0 +1,94 @@
+﻿[
+    {
+        "id":  "0x02c7b1edf72ac8135d21da3eb27205432ca09c88968a65eb6eb165b48e842368",
+        "bytecode_hex_chars":  20178,
+        "salt":  "0x01dddffc00000000000000000000000000000000000000000000000000000000",
+        "balances":  {
+
+                     },
+        "errors":  {
+
+                   }
+    },
+    {
+        "id":  "0x132ab8709aff3d228bbb07af7d2338d1e4f1fcb060135922495147849dd6b8fc",
+        "bytecode_hex_chars":  22610,
+        "salt":  "0xcf500730294e90672baa0ec8cf0f04c28afea2411dfc28550212cd8a1381666f",
+        "balances":  "[{\"assetId\":\"0x1a48bde9b03ff7f6ab9d566c3f8968a532a782402976053cebfa113cbb9a03ef\",\"amount\":\"337600709\"},{\"assetId\":\"0x6c91bc65f585da1a238f8ec5e410e62616d2b2c8f2cb4701e225deb51240add6\",\"amount\":\"30623568699295\"}]",
+        "errors":  {
+
+                   }
+    },
+    {
+        "id":  "0xe749999a6a5190a2e8a53582f508a2ab1c9ba378d37b69dd9d5a3fc95ff15f3a",
+        "bytecode_hex_chars":  63922,
+        "salt":  "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "balances":  "[{\"assetId\":\"0x1a48bde9b03ff7f6ab9d566c3f8968a532a782402976053cebfa113cbb9a03ef\",\"amount\":\"1809974709\"},{\"assetId\":\"0x6c91bc65f585da1a238f8ec5e410e62616d2b2c8f2cb4701e225deb51240add6\",\"amount\":\"175689127919345\"},{\"assetId\":\"0xac2aabc1c48e634800a723b1372388ad1eb6a23d0e012cde4c603082fb1a140a\",\"amount\":\"5934500\"},{\"assetId\":\"0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07\",\"amount\":\"0\"}]",
+        "errors":  {
+
+                   }
+    },
+    {
+        "id":  "0x5a908a89f5caac1a76b199e71e44e42ffed125b2c4e64d0982e60a536a394f76",
+        "bytecode_hex_chars":  22610,
+        "salt":  "0xcf500730294e90672baa0ec8cf0f04c28afea2411dfc28550212cd8a1381666f",
+        "balances":  "[{\"assetId\":\"0x6c91bc65f585da1a238f8ec5e410e62616d2b2c8f2cb4701e225deb51240add6\",\"amount\":\"39862447418373\"},{\"assetId\":\"0xac2aabc1c48e634800a723b1372388ad1eb6a23d0e012cde4c603082fb1a140a\",\"amount\":\"13868653954\"}]",
+        "errors":  {
+
+                   }
+    },
+    {
+        "id":  "0x66fa6d1e596a43d5c6533986c54a853f870276133836a71463c2d76ba92182da",
+        "bytecode_hex_chars":  63922,
+        "salt":  "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "balances":  "[{\"assetId\":\"0x6c91bc65f585da1a238f8ec5e410e62616d2b2c8f2cb4701e225deb51240add6\",\"amount\":\"591348944533888\"},{\"assetId\":\"0xac2aabc1c48e634800a723b1372388ad1eb6a23d0e012cde4c603082fb1a140a\",\"amount\":\"296122529428\"},{\"assetId\":\"0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07\",\"amount\":\"0\"}]",
+        "errors":  {
+
+                   }
+    },
+    {
+        "id":  "0x2b50d625b7954585817c6f806c40277a7247575ad97ed3c44296254ad4a61397",
+        "bytecode_hex_chars":  63922,
+        "salt":  "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "balances":  "[{\"assetId\":\"0x2269aa41cf3982753d978a40e0f04618ff9d84b07d1ce10e99831e3217d3a9b0\",\"amount\":\"92861140773224\"},{\"assetId\":\"0x6c91bc65f585da1a238f8ec5e410e62616d2b2c8f2cb4701e225deb51240add6\",\"amount\":\"126348280049029\"},{\"assetId\":\"0xac2aabc1c48e634800a723b1372388ad1eb6a23d0e012cde4c603082fb1a140a\",\"amount\":\"5935528\"},{\"assetId\":\"0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07\",\"amount\":\"0\"}]",
+        "errors":  {
+
+                   }
+    },
+    {
+        "id":  "0xca78cbd896cd09f104cd32448e0ef155dace8a0a9ea21ad5f4f9435800038b9b",
+        "bytecode_hex_chars":  22610,
+        "salt":  "0xcf500730294e90672baa0ec8cf0f04c28afea2411dfc28550212cd8a1381666f",
+        "balances":  "[{\"assetId\":\"0x2269aa41cf3982753d978a40e0f04618ff9d84b07d1ce10e99831e3217d3a9b0\",\"amount\":\"48890795669233\"},{\"assetId\":\"0x6c91bc65f585da1a238f8ec5e410e62616d2b2c8f2cb4701e225deb51240add6\",\"amount\":\"53532965735389\"}]",
+        "errors":  {
+
+                   }
+    },
+    {
+        "id":  "0xdf873d85d8d81f2863cecd5026de76efd3d51a47736ad46d1110c56695ca2665",
+        "bytecode_hex_chars":  22610,
+        "salt":  "0xcf500730294e90672baa0ec8cf0f04c28afea2411dfc28550212cd8a1381666f",
+        "balances":  "[{\"assetId\":\"0x27821a5432b60fb3e70c64d0a612c2c86218c1088dd0f0f1b0dd6ae5ae17bd5b\",\"amount\":\"7365479746261942\"},{\"assetId\":\"0x6c91bc65f585da1a238f8ec5e410e62616d2b2c8f2cb4701e225deb51240add6\",\"amount\":\"5994257085321\"}]",
+        "errors":  {
+
+                   }
+    },
+    {
+        "id":  "0x67131671734e1f9ad71876446b46cfa799335b1e2e067647b77149695476014f",
+        "bytecode_hex_chars":  63922,
+        "salt":  "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "balances":  "[{\"assetId\":\"0x27821a5432b60fb3e70c64d0a612c2c86218c1088dd0f0f1b0dd6ae5ae17bd5b\",\"amount\":\"448423542973647\"},{\"assetId\":\"0x6c91bc65f585da1a238f8ec5e410e62616d2b2c8f2cb4701e225deb51240add6\",\"amount\":\"50202668742011\"},{\"assetId\":\"0xac2aabc1c48e634800a723b1372388ad1eb6a23d0e012cde4c603082fb1a140a\",\"amount\":\"8873869\"},{\"assetId\":\"0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07\",\"amount\":\"0\"}]",
+        "errors":  {
+
+                   }
+    },
+    {
+        "id":  "0x0b195cca69e6e71062e05cc59772e5a969fc2b332a6c78b4b42c9f24b62abab7",
+        "bytecode_hex_chars":  77186,
+        "salt":  "0x0000000000000000000000000000000000000000000000000000000000000000",
+        "balances":  "[{\"assetId\":\"0x1a48bde9b03ff7f6ab9d566c3f8968a532a782402976053cebfa113cbb9a03ef\",\"amount\":\"2669688\"},{\"assetId\":\"0x6c91bc65f585da1a238f8ec5e410e62616d2b2c8f2cb4701e225deb51240add6\",\"amount\":\"114182542662\"}]",
+        "errors":  {
+
+                   }
+    }
+]

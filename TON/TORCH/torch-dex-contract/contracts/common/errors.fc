@@ -1,0 +1,53 @@
+
+const error::wrong_op = 0xffff;
+const error::not_deployer = 1000;
+const error::not_admin = 1001;
+const error::invalid_asset_type = 1002;
+const error::not_supported_asset_type = 1003;
+const error::not_supported_pool_type = 1004;
+const error::not_vault = 1005;
+const error::not_factory = 1006;
+const error::wrong_assets = 1007;
+const error::invalid_coins_cell = 1008;
+const error::expired = 1009;
+const error::invalid_signature = 1010;
+const error::min_amount_not_reached = 1011;
+const error::wrong_jetton_wallet = 1012;
+const error::wrong_next_type = 1013;
+const error::invalid_sender = 1014;
+const error::invalid_amount = 1015;
+const error::not_lp_vault = 1016;
+const error::not_jetton_master = 1017;
+const error::asset_not_found = 1018;
+const error::invalid_deposit_one_amount = 1019;
+const error::not_enough_ton = 1020;
+const error::same_assets = 1021;
+const error::invalid_deposit_sender = 1022;
+
+;; Pool
+const error::no_suitable_D = 2000;
+const error::invalid_liquidity = 2001;
+const error::exist_zero_reserve = 2002;
+const error::invalid_ramp_a = 2003;
+const error::invalid_ramp_time = 2004;
+const error::no_signed_rates = 2005;
+const error::not_pool = 2006;
+const error::pool_in_stop_state = 2007;
+const error::invalid_admin_fee = 2008;
+const error::invalid_fee = 2009;
+const error::invalid_a_change = 2010;
+const error::no_suitable_Y = 2011;
+const error::no_suitable_Y_D = 2011;
+const error::incorrect_deposit_target = 2012;
+const error::wrong_base_pool = 2013;
+
+;; Meta Pool
+const error::wrong_base_asset = 3000;
+const error::wrong_meta_asset = 3001;
+const error::wrong_next = 3002;
+
+;; Lp account
+const error::wrong_meta_amount = 4000;
+const error::duplicate_deposit = 4001; 
+
+const error::wrong_workchain = 333;     ;; wrong workchain

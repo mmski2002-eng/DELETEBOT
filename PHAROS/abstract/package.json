@@ -1,0 +1,16 @@
+{
+  "name": "abstract-stale-replay-poc",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check:fork": "node scripts/check-fork.mjs",
+    "check:zksync-fork": "node scripts/check-zksync-fork.mjs"
+  },
+  "devDependencies": {
+    "@matterlabs/hardhat-zksync-node": "^1.5.3",
+    "ethers": "^6.16.0",
+    "hardhat": "^2.22.5",
+    "zksync-ethers": "^6.21.1"
+  }
+}
